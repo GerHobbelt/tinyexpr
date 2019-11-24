@@ -148,8 +148,8 @@ static double ncr(double n, double r) {
     return result;
 }
 static double npr(double n, double r) {return ncr(n, r) * fac(r);}
-double min(double c, double d) {return (c < d) ? c : d;}
-double max(double c, double d) {return (c > d) ? c : d;}
+static double min(double c, double d) {return (c < d) ? c : d;}
+static double max(double c, double d) {return (c > d) ? c : d;}
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
@@ -176,8 +176,8 @@ static const te_variable functions[] = {
     {"npr", npr,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
     {"pi", pi,        TE_FUNCTION0 | TE_FLAG_PURE, 0},
     {"pow", pow,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"min", min,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
     {"max", max,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
+    {"min", min,      TE_FUNCTION2 | TE_FLAG_PURE, 0},
     {"sin", sin,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"sinh", sinh,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"sqrt", sqrt,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
