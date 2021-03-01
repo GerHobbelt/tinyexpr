@@ -84,7 +84,8 @@ typedef struct state
 // Same story with the closure.
 // 000_10_XXX -- 10 is closure, XXX is num_params
 //
-// FLAG_PURE obviously means whether it modifies the parameters.
+// FLAG_PURE obviously means whether it modifies the parameters 
+// (or the captured data, in case of closures)
 // It is set as the 6th bit.
 // 00_1_-----, where ----- means any 5 bits.
 // 
@@ -326,17 +327,18 @@ static double divide(double a, double b) { return a / b; }
 static double negate(double a) { return -a; }
 static double comma(double a, double b) { (void)a; return b; }
 
-static int is_alpha(char ch) 
+static inline int is_alpha(char ch) 
 {
     return ch >= 'a' && ch <= 'z';
 }
 
-static int is_numeric(char ch)
+static inline int is_numeric(char ch)
 {
     return ch >= '0' && ch <= '9';
 }
 
-void next_token(state *s) {
+void next_token(state *s) 
+{
     s->type = TOK_NULL;
 
     do {
@@ -571,13 +573,15 @@ static te_expr *power(state *s) {
 }
 
 #ifdef TE_POW_FROM_RIGHT
-static te_expr *factor(state *s) {
+static te_expr *factor(state *s) 
+{
     /* <factor>    =    <power> {"^" <power>} */
     te_expr *ret = power(s);
 
     int neg = 0;
 
-    if (ret->type == (TE_FUNCTION1 | TE_FLAG_PURE) && ret->function == negate) {
+    if (ret->type == (TE_FUNCTION1 | TE_FLAG_PURE) && ret->function == negate) 
+    {
         te_expr *se = ret->parameters[0];
         free(ret);
         ret = se;
@@ -586,26 +590,30 @@ static te_expr *factor(state *s) {
 
     te_expr *insertion = 0;
 
-    while (s->type == TOK_INFIX && (s->function == pow)) {
+    while (s->type == TOK_INFIX && (s->function == pow)) 
+    {
         te_fun2 t = s->function;
         next_token(s);
 
-        if (insertion) {
+        if (insertion) 
+        {
             /* Make exponentiation go right-to-left. */
-            te_expr *insert = new_expr_with_params(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], power(s));
-            insert->function = t;
+            te_expr *insert = new_expr_function_with_params(
+                TE_FUNCTION2 | TE_FLAG_PURE, t, insertion->parameters[1], power(s)
+            );
             insertion->parameters[1] = insert;
             insertion = insert;
-        } else {
-            ret = new_expr_with_params(TE_FUNCTION2 | TE_FLAG_PURE, ret, power(s));
-            ret->function = t;
+        } 
+        else 
+        {
+            ret = new_expr_function_with_params(TE_FUNCTION2 | TE_FLAG_PURE, t, ret, power(s));
             insertion = ret;
         }
     }
 
-    if (neg) {
-        ret = new_expr_with_params(TE_FUNCTION1 | TE_FLAG_PURE, ret);
-        ret->function = negate;
+    if (neg) 
+    {
+        ret = new_expr_function_with_params(TE_FUNCTION1 | TE_FLAG_PURE, negate, ret);
     }
 
     return ret;
@@ -865,8 +873,8 @@ te_expr* te_expr_deep_copy(const te_expr* expr)
         case TE_CLOSURE7: case TE_FUNCTION7: 
         {
             result = new_expr_function(expr->type, expr->function, NULL);
-            int arity = ARITY(expr->type);
 
+            int arity = ARITY(expr->type);
             for (int i = 0; i < arity; i++)
             {
                 result->parameters[i] = te_expr_deep_copy(expr->parameters[i]);
@@ -876,6 +884,7 @@ te_expr* te_expr_deep_copy(const te_expr* expr)
             {
                 result->parameters[arity] = expr->parameters[arity];
             }
+
             break;
         }
     }
@@ -891,8 +900,9 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
 static te_expr* power_rule_one_parameter_function(void* derivative_function, te_expr* inner_expr, const void* variable)
 {
     te_expr* inner_derivative = differentiate_symbolically(inner_expr, variable);
-    te_expr* rhs_expr  = new_expr_function(TE_FUNCTION1|TE_FLAG_PURE, derivative_function, NULL);
-    rhs_expr->parameters[0] = te_expr_deep_copy(inner_expr);
+    te_expr* rhs_expr = new_expr_function_with_params(
+        TE_FUNCTION1|TE_FLAG_PURE, derivative_function, te_expr_deep_copy(inner_expr)
+    );
     return new_expr_function_with_params(TE_FUNCTION2|TE_FLAG_PURE, mul, rhs_expr, inner_derivative);
 }
 
@@ -1007,7 +1017,7 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             else if (expr->function == divide)
             {
                 te_expr* b_squared = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, mul, te_expr_deep_copy(b), new_expr_constant(2)
+                    TE_FUNCTION2|TE_FLAG_PURE, pow, te_expr_deep_copy(b), new_expr_constant(2)
                 );
                 te_expr* mul_1 = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, te_expr_deep_copy(b)

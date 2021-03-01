@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[])
 {
-    const char *expression_string = "(sin(pi*x))^2";
+    const char *expression_string = "sin(sin(sin(x/8)))";
     double x = 0.5; te_variable var = { "x", &x }; int error;
     
     te_expr* expr = te_compile(expression_string, &var, 1, &error);
