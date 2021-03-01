@@ -52,13 +52,7 @@ For log = natural log uncomment the next line. */
 
 typedef double (*te_fun2)(double, double);
 
-enum {
-    TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
-    TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
-};
 
-
-enum {TE_CONSTANT = 1};
 
 
 typedef struct state 
@@ -139,6 +133,7 @@ static te_expr *new_expr_not_function(const te_type type)
     const int size = sizeof(te_expr) - sizeof(void*);
     te_expr *ret = calloc(1, size);
     ret->type = type;
+    return ret;
 }
 
 static te_expr *new_expr_constant(double value)
@@ -849,7 +844,7 @@ void te_print(const te_expr *n)
 
 te_expr* te_expr_deep_copy(const te_expr* expr)
 {
-    te_expr* result;
+    te_expr* result = NULL;
 
     switch(TYPE_MASK(expr->type)) 
     {
