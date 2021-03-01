@@ -945,7 +945,7 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             else if (expr->function == log)
             {
                 result = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, div, 
+                    TE_FUNCTION2|TE_FLAG_PURE, divide, 
                     differentiate_symbolically(a, variable),
                     te_expr_deep_copy(a)
                 );
@@ -1026,7 +1026,6 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             // (a^b)' = a^b * (a' * b / a + b' * ln(a))
             else if (expr->function == pow)
             {
-                puts("Doing power");
                 te_expr* a_prime_times_b = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, te_expr_deep_copy(b)
                 );
