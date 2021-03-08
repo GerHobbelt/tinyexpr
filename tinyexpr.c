@@ -973,12 +973,12 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
         {
             const te_expr* a = expr->parameters[0];
             const te_expr* b = expr->parameters[1];
-            te_expr* a_prime = differentiate_symbolically(a, variable);
-            te_expr* b_prime = differentiate_symbolically(b, variable);
 
             // (a + b)' = a' + b'
             if (expr->function == add)
             {
+                te_expr* a_prime = differentiate_symbolically(a, variable);
+                te_expr* b_prime = differentiate_symbolically(b, variable);
                 result = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, add, a_prime, b_prime
                 );
@@ -987,6 +987,8 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             // (a - b)' = a' - b'
             else if (expr->function == sub)
             {
+                te_expr* a_prime = differentiate_symbolically(a, variable);
+                te_expr* b_prime = differentiate_symbolically(b, variable);
                 result = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, sub, a_prime, b_prime
                 );
@@ -997,6 +999,9 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             {
                 te_expr* a_copy  = te_expr_deep_copy(a);
                 te_expr* b_copy  = te_expr_deep_copy(b);
+                te_expr* a_prime = differentiate_symbolically(a, variable);
+                te_expr* b_prime = differentiate_symbolically(b, variable);
+
                 te_expr* mul_1 = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, b_copy
                 );
@@ -1011,6 +1016,9 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             // (a / b)' = (a' * b - a * b') / b^2
             else if (expr->function == divide)
             {
+                te_expr* a_prime = differentiate_symbolically(a, variable);
+                te_expr* b_prime = differentiate_symbolically(b, variable);
+
                 te_expr* b_squared = new_expr_function_with_params(
                     TE_FUNCTION2|TE_FLAG_PURE, pow, te_expr_deep_copy(b), new_expr_constant(2)
                 );
@@ -1028,27 +1036,83 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
                 );
             }
 
-            // (a^b)' = a^b * (a' * b / a + b' * ln(a))
             else if (expr->function == pow)
             {
-                te_expr* a_prime_times_b = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, te_expr_deep_copy(b)
-                );
-                te_expr* a_prime_times_b_over_a = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, divide, a_prime_times_b, te_expr_deep_copy(a)
-                );
-                te_expr* ln_a = new_expr_function_with_params(
-                    TE_FUNCTION1|TE_FLAG_PURE, log, te_expr_deep_copy(a)
-                );
-                te_expr* b_prime_times_ln_a = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, mul, b_prime, ln_a
-                );
-                te_expr* sum = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, add, a_prime_times_b_over_a, b_prime_times_ln_a
-                );
-                result = new_expr_function_with_params(
-                    TE_FUNCTION2|TE_FLAG_PURE, mul, te_expr_deep_copy(expr), sum
-                );
+                if (TYPE_MASK(b->type) == TE_CONSTANT)
+                {
+                    if (TYPE_MASK(a->type) == TE_CONSTANT)
+                    {
+                        // constant ^ constant is still a constant
+                        result = new_expr_constant(0);
+                    }
+                    else if (TYPE_MASK(a->type) == TE_VARIABLE)
+                    {
+                        if (a->bound != variable)
+                        {
+                            // constant ^ not_x is still a constant
+                            result = new_expr_constant(0);
+                        }
+                        else
+                        {
+                            // The usual power rule works in this case
+                            // (a^b)' = b * a^(b - 1)
+                            te_expr* a_copy      = new_expr_variable(a->bound);
+                            te_expr* b_copy      = new_expr_constant(b->value);
+                            te_expr* b_minus_one = new_expr_constant(b->value - 1.0);
+                            te_expr* a_power     = new_expr_function_with_params(
+                                TE_FUNCTION2|TE_FLAG_PURE, pow, a_copy, b_minus_one
+                            );
+                            result = new_expr_function_with_params(
+                                TE_FUNCTION2|TE_FLAG_PURE, mul, b_copy, a_power
+                            );
+                        }
+                    }
+                    else
+                    {
+                        // (a^b)' = a' * b * a^(b - 1)
+                        te_expr* a_copy      = te_expr_deep_copy(a);
+                        te_expr* b_copy      = new_expr_constant(b->value);
+                        te_expr* b_minus_one = new_expr_constant(b->value - 1.0);
+                        te_expr* a_prime = differentiate_symbolically(a, variable);
+                        
+                        te_expr* a_power     = new_expr_function_with_params(
+                            TE_FUNCTION2|TE_FLAG_PURE, pow, a_copy, b_minus_one
+                        );
+                        te_expr* a_prime_times_b = new_expr_function_with_params(
+                            TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, b_copy
+                        );
+                        result = new_expr_function_with_params(
+                            TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime_times_b, a_power
+                        );
+                    }
+                }
+
+                // Does not work for negative values of a! Simply gives NAN's in that case
+                // (a^b)' = a^b * (a' * b / a + b' * ln(a))
+                else 
+                {
+                    te_expr* a_prime = differentiate_symbolically(a, variable);
+                    te_expr* b_prime = differentiate_symbolically(b, variable);
+
+                    te_expr* a_prime_times_b = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime, te_expr_deep_copy(b)
+                    );
+                    te_expr* a_prime_times_b_over_a = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, divide, a_prime_times_b, te_expr_deep_copy(a)
+                    );
+                    te_expr* ln_a = new_expr_function_with_params(
+                        TE_FUNCTION1|TE_FLAG_PURE, log, te_expr_deep_copy(a)
+                    );
+                    te_expr* b_prime_times_ln_a = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, mul, b_prime, ln_a
+                    );
+                    te_expr* sum = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, add, a_prime_times_b_over_a, b_prime_times_ln_a
+                    );
+                    result = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, mul, te_expr_deep_copy(expr), sum
+                    );
+                }
             }
 
             else
