@@ -1040,22 +1040,24 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
             {
                 if (TYPE_MASK(b->type) == TE_CONSTANT)
                 {
+                    // constant ^ constant is still a constant
                     if (TYPE_MASK(a->type) == TE_CONSTANT)
                     {
-                        // constant ^ constant is still a constant
                         result = new_expr_constant(0);
                     }
+
                     else if (TYPE_MASK(a->type) == TE_VARIABLE)
                     {
+                        // constant ^ not_x is still a constant
                         if (a->bound != variable)
                         {
-                            // constant ^ not_x is still a constant
                             result = new_expr_constant(0);
                         }
+                        
+                        // The usual power rule works in this case
+                        // (a^b)' = b * a^(b - 1)
                         else
                         {
-                            // The usual power rule works in this case
-                            // (a^b)' = b * a^(b - 1)
                             te_expr* a_copy      = new_expr_variable(a->bound);
                             te_expr* b_copy      = new_expr_constant(b->value);
                             te_expr* b_minus_one = new_expr_constant(b->value - 1.0);
@@ -1067,14 +1069,14 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
                             );
                         }
                     }
+                    // (a^b)' = a' * b * a^(b - 1)
                     else
                     {
-                        // (a^b)' = a' * b * a^(b - 1)
                         te_expr* a_copy      = te_expr_deep_copy(a);
                         te_expr* b_copy      = new_expr_constant(b->value);
                         te_expr* b_minus_one = new_expr_constant(b->value - 1.0);
                         te_expr* a_prime = differentiate_symbolically(a, variable);
-                        
+
                         te_expr* a_power     = new_expr_function_with_params(
                             TE_FUNCTION2|TE_FLAG_PURE, pow, a_copy, b_minus_one
                         );
@@ -1085,6 +1087,24 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
                             TE_FUNCTION2|TE_FLAG_PURE, mul, a_prime_times_b, a_power
                         );
                     }
+                }
+
+                // a is a constant, b is not a constant
+                // a^b = ln(a) * b' * a^b
+                else if (TYPE_MASK(a->type) == TE_CONSTANT)
+                {
+                    te_expr* a_copy = new_expr_constant(a->value);
+                    te_expr* b_prime = differentiate_symbolically(b, variable);
+                    
+                    te_expr* ln_a = new_expr_function_with_params(
+                        TE_FUNCTION1|TE_FLAG_PURE, log, a_copy
+                    );
+                    te_expr* b_prime_times_ln_a = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, mul, b_prime, ln_a
+                    );
+                    result = new_expr_function_with_params(
+                        TE_FUNCTION2|TE_FLAG_PURE, mul, b_prime_times_ln_a, te_expr_deep_copy(expr)
+                    );
                 }
 
                 // Does not work for negative values of a! Simply gives NAN's in that case
