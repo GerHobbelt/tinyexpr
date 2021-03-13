@@ -962,6 +962,21 @@ static te_expr* differentiate_symbolically(const te_expr* expr, const void* vari
                 result = power_rule_one_parameter_function(exp, a, variable);
             }
 
+            // atan(a)' = a' / (1 - a^2) 
+            else if (expr->function == atan)
+            {
+                te_expr* a_2 = new_expr_function_with_params(
+                    TE_FUNCTION2|TE_FLAG_PURE, mul, te_expr_deep_copy(a), new_expr_constant(2)
+                );
+                te_expr* denominator = new_expr_function_with_params(
+                    TE_FUNCTION2|TE_FLAG_PURE, sub, new_expr_constant(1), a_2
+                );
+                result = new_expr_function_with_params(
+                    TE_FUNCTION2|TE_FLAG_PURE, divide,
+                    differentiate_symbolically(a, variable), denominator
+                );
+            }
+
             else
             {
                 printf("Unsupported function.\n");
