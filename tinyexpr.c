@@ -106,9 +106,6 @@ static te_expr *new_expr_function(const te_type type, const void* function, cons
     const int arity = ARITY(type);
     const int param_size = sizeof(void*) * arity;
 
-    // Why is there a - sizeof(void*)? https://www.wikiwand.com/en/Flexible_array_member 
-    // says you can declare flexible arrays simply with bracket[] syntax. No [1] necessary.
-    // Or is this a question about compiler compatibility?
     const int size = (sizeof(te_expr) - sizeof(void*)) + param_size + (IS_CLOSURE(type) ? sizeof(void*) : 0);
 
     // Is calloc() not available for older compilers? It does these two, but a bit faster.

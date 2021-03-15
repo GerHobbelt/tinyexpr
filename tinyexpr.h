@@ -36,10 +36,7 @@ typedef struct te_expr
 {
     int type;
     union { double value; const double *bound; const void *function; };
-    void *parameters[1]; // This [1] is confusing me. Is this for debugger, or for implicit casts?
-                         // It is really misleading, since the length of this is actually variable.
-                         // But the memory for parameters is allocated in-place.
-                         // Thing to remember is, this could be 1, but it could as well be 0.
+    void *parameters[1]; // https://stackoverflow.com/a/4413035/9731532
 } te_expr;
 
 
