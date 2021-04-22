@@ -150,6 +150,8 @@ static double ncr(double n, double r) {
     return result;
 }
 static double npr(double n, double r) {return ncr(n, r) * fac(r);}
+static double sd_ceil(double n, double r) { return ceil(n); }
+static double sd_floor(double n, double r) { return floor(n); }
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
@@ -158,13 +160,13 @@ static const te_variable functions[] = {
     {"asin", asin,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"atan", atan,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"atan2", atan2,  TE_FUNCTION2 | TE_FLAG_PURE, 0},
-    {"ceil", ceil,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"ceil", sd_ceil,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"cos", cos,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"cosh", cosh,    TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"e", e,          TE_FUNCTION0 | TE_FLAG_PURE, 0},
     {"exp", exp,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"fac", fac,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
-    {"floor", floor,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
+    {"floor", sd_floor,  TE_FUNCTION1 | TE_FLAG_PURE, 0},
     {"ln", log,       TE_FUNCTION1 | TE_FLAG_PURE, 0},
 #ifdef TE_NAT_LOG
     {"log", log,      TE_FUNCTION1 | TE_FLAG_PURE, 0},
@@ -259,7 +261,7 @@ void next_token(state *s) {
                     {
                         case TE_VARIABLE:
                             s->type = TOK_VARIABLE;
-                            s->expr.bound = var->address;
+                            s->expr.bound = var->el.variable;
                             break;
 
                         case TE_CLOSURE0: case TE_CLOSURE1: case TE_CLOSURE2: case TE_CLOSURE3:         /* Falls through. */
@@ -269,7 +271,7 @@ void next_token(state *s) {
                         case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:     /* Falls through. */
                         case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:     /* Falls through. */
                             s->type = var->type;
-                            s->expr.function = var->address;
+                            s->expr.function = var->el.address;
                             break;
                     }
                 }

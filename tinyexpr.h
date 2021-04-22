@@ -32,9 +32,11 @@ extern "C" {
 
 
 
+typedef double (*te_fun2)(double, double);
+
 typedef struct te_expr {
     int type;
-    union {double value; const double *bound; const void *function;} expr;
+    union {double value; const double *bound; te_fun2 function;} expr;
     void *parameters[1];
 } te_expr;
 
@@ -53,7 +55,10 @@ enum {
 
 typedef struct te_variable {
     const char *name;
-    const void *address;
+	union {
+		te_fun2 address;
+		double* variable;
+	} el;
     int type;
     void *context;
 } te_variable;

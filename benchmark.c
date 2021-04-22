@@ -41,7 +41,7 @@ void bench(const char *expr, function1 func) {
     double tmp;
     clock_t start;
 
-    te_variable lk = {"a", &tmp};
+    te_variable lk = {"a", (te_fun2)&tmp};
 
     printf("Expression: %s\n", expr);
 
