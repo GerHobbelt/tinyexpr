@@ -34,7 +34,7 @@ extern "C" {
 
 typedef struct te_expr {
     int type;
-    union {double value; const double *bound; const void *function;};
+    union {double value; const double *bound; const void *function;} expr;
     void *parameters[1];
 } te_expr;
 

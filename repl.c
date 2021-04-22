@@ -62,7 +62,12 @@ static void repl() {
     }
 }
 
-int main(int argc, char **argv) {
+#if defined(MONOLITHIC)
+int tiny_expr_repl_main(int argc, char* argv[])
+#else
+int main(int argc, char* argv[])
+#endif
+{
     if (argc == 3 && strcmp(argv[1], "-e") == 0) {
         if (eval(argv[2]) == -1) {
             return 1;

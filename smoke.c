@@ -565,7 +565,7 @@ void test_optimize() {
 
         /* The answer should be know without
          * even running eval. */
-        lfequal(ex->value, answer);
+        lfequal(ex->expr.value, answer);
         lfequal(te_eval(ex), answer);
 
         te_free(ex);
@@ -690,7 +690,11 @@ void test_combinatorics() {
 }
 
 
-int main(int argc, char *argv[])
+#if defined(MONOLITHIC)
+int tiny_expr_smoke_main(int argc, char* argv[])
+#else
+int main(int argc, char* argv[])
+#endif
 {
     lrun("Results", test_results);
     lrun("Syntax", test_syntax);

@@ -120,7 +120,11 @@ double al(double a) {
     return (1/(a+1)+2/(a+2)+3/(a+3));
 }
 
-int main(int argc, char *argv[])
+#if defined(MONOLITHIC)
+int tiny_expr_benchmark_main(int argc, char* argv[])
+#else
+int main(int argc, char* argv[])
+#endif
 {
 
     bench("a+5", a5);
