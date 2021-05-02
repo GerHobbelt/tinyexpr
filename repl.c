@@ -63,9 +63,9 @@ static void repl() {
 }
 
 #if defined(MONOLITHIC)
-int tiny_expr_repl_main(int argc, char* argv[])
+int tiny_expr_repl_main(int argc, const char* argv[])
 #else
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 #endif
 {
     if (argc == 3 && strcmp(argv[1], "-e") == 0) {
@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
         repl();
         return 0;
     } else {
-        printf("Usage: %s\n", argv[0]);
-        printf("       %s -e <expression>\n", argv[0]);
+        fprintf(stderr, "Usage: %s\n", argv[0]);
+        fprintf(stderr, "       %s -e <expression>\n", argv[0]);
         return 1;
     }
 }
