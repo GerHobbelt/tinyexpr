@@ -37,7 +37,7 @@ typedef double (*te_fun2)(double, double);
 /* Public */
 typedef struct te_expr {
     int type;
-    union {double value; const double *bound; te_fun0 fun0; te_fun1 fun1; te_fun2 fun2;};
+    union {double value; const double *bound; te_fun0 fun0; te_fun1 fun1; te_fun2 fun2;} expr;
     struct te_expr *parameters[1];
 } te_expr;
 
