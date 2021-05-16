@@ -152,6 +152,8 @@ static double gcd(double x, double y) {
     return (double) a;
 }
 
+static double sd_ceil(double n, double r) { return ceil(n); }
+static double sd_floor(double n, double r) { return floor(n); }
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
@@ -161,13 +163,13 @@ static const te_variable functions[] = {
     {.name="atan",  .el.fun1=atan,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="atan2", .el.fun2=atan2, .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="cbrt",  .el.fun1=cbrt,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
-    {.name="ceil",  .el.fun1=ceil,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="ceil",  .el.fun1=sd_ceil,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="cos",   .el.fun1=cos,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="cosh",  .el.fun1=cosh,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="e",     .el.fun0=e,     .type=TE_FUNCTION0 | TE_FLAG_PURE, .context=0},
     {.name="exp",   .el.fun1=exp,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="fac",   .el.fun1=fac,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
-    {.name="floor", .el.fun1=floor, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="floor", .el.fun1=sd_floor, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="gamma", .el.fun1=tgamma,.type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="gcd",   .el.fun2=gcd,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="log",   .el.fun1=log,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
