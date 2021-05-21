@@ -152,8 +152,8 @@ static double gcd(double x, double y) {
     return (double) a;
 }
 
-static double sd_ceil(double n, double r) { return ceil(n); }
-static double sd_floor(double n, double r) { return floor(n); }
+static double sd_ceil(double n) { return ceil(n); }
+static double sd_floor(double n) { return floor(n); }
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
