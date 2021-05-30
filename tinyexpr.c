@@ -152,8 +152,19 @@ static double gcd(double x, double y) {
     return (double) a;
 }
 
+/*
+warning C4232: nonstandard extension used: 'fun1': address of dllimport 'cbrt' is not static, identity not guaranteed
+2>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(493): message : see declaration of 'cbrt'
+warning C4232: nonstandard extension used: 'fun1': address of dllimport 'tgamma' is not static, identity not guaranteed
+2>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(534): message : see declaration of 'tgamma'
+warning C4232: nonstandard extension used: 'fun1': address of dllimport 'log2' is not static, identity not guaranteed
+2>C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_math.h(516): message : see declaration of 'log2'
+*/
 static double sd_ceil(double n) { return ceil(n); }
 static double sd_floor(double n) { return floor(n); }
+static double sd_cbrt(double n) { return cbrt(n); }
+static double sd_tgamma(double n) { return tgamma(n); }
+static double sd_log2(double n) { return log2(n); }
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
@@ -162,7 +173,7 @@ static const te_variable functions[] = {
     {.name="asin",  .el.fun1=asin,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="atan",  .el.fun1=atan,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="atan2", .el.fun2=atan2, .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
-    {.name="cbrt",  .el.fun1=cbrt,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="cbrt",  .el.fun1=sd_cbrt,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="ceil",  .el.fun1=sd_ceil,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="cos",   .el.fun1=cos,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="cosh",  .el.fun1=cosh,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
@@ -170,11 +181,11 @@ static const te_variable functions[] = {
     {.name="exp",   .el.fun1=exp,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="fac",   .el.fun1=fac,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="floor", .el.fun1=sd_floor, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
-    {.name="gamma", .el.fun1=tgamma,.type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="gamma", .el.fun1=sd_tgamma,.type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="gcd",   .el.fun2=gcd,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="log",   .el.fun1=log,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="log10", .el.fun1=log10, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
-    {.name="log2",  .el.fun1=log2,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="log2",  .el.fun1=sd_log2,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="ncr",   .el.fun2=ncr,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="npr",   .el.fun2=npr,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="pi",    .el.fun0=pi,    .type=TE_FUNCTION0 | TE_FLAG_PURE, .context=0},
