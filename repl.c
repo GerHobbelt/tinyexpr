@@ -66,7 +66,7 @@ static void repl() {
     }
 }
 
-#if defined(MONOLITHIC)
+#if defined(BUILD_MONOLITHIC)
 int tiny_expr_repl_main(int argc, const char* argv[])
 #else
 int main(int argc, const char* argv[])
