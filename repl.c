@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifdef BUILD_MONOLITHIC
+#include "monolithic_examples.h"
+#endif
+
+
 #ifdef USE_READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -67,10 +72,10 @@ static void repl() {
 }
 
 #if defined(BUILD_MONOLITHIC)
-int tiny_expr_repl_main(int argc, const char* argv[])
-#else
-int main(int argc, const char* argv[])
+#define main(c, a)			tiny_expr_repl_main(c, a)
 #endif
+
+int main(int argc, const char* argv[])
 {
     if (argc == 3 && strcmp(argv[1], "-e") == 0) {
         if (eval(argv[2]) == -1) {
