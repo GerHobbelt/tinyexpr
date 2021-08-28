@@ -167,6 +167,11 @@ static double sd_cbrt(double n) { return cbrt(n); }
 static double sd_tgamma(double n) { return tgamma(n); }
 static double sd_log2(double n) { return log2(n); }
 
+#ifdef _MSC_VER
+#pragma function (ceil)
+#pragma function (floor)
+#endif
+
 static const te_variable functions[] = {
     /* must be in alphabetical order */
     {.name="abs",   .el.fun1=fabs,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
