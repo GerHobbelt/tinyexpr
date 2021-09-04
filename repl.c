@@ -75,7 +75,7 @@ static void repl() {
 #define main(c, a)			tiny_expr_repl_main(c, a)
 #endif
 
-int main(int argc, const char* argv[])
+int main(int argc, const char** argv)
 {
     if (argc == 3 && strcmp(argv[1], "-e") == 0) {
         if (eval(argv[2]) == -1) {

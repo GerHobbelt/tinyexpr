@@ -127,7 +127,7 @@ line. It also does error checking and binds the variables `x` and `y` to *3* and
     #include "tinyexpr.h"
     #include <stdio.h>
 
-    int main(int argc, char *argv[])
+    int main(int argc, const char** argv)
     {
         if (argc < 2) {
             printf("Usage: example2 \"expression\"\n");
