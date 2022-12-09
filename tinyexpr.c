@@ -78,12 +78,15 @@ typedef struct state {
 #else
 #define NEW_EXPR(type, ...) new_expr((type), (const te_expr*[]){__VA_ARGS__})
 #endif
+#define CHECK_NULL(ptr, ...) if ((ptr) == NULL) { __VA_ARGS__; return NULL; }
 
 static te_expr *new_expr(const int type, const te_expr * const parameters[]) {
     const int arity = ARITY(type);
     const int psize = sizeof(void*) * arity;
     const int size = (sizeof(te_expr) - sizeof(void*)) + psize + (IS_CLOSURE(type) ? sizeof(void*) : 0);
     te_expr *ret = (te_expr *) malloc(size);
+    CHECK_NULL(ret);
+
     memset(ret, 0, size);
     if (arity && parameters) {
         memcpy(ret->parameters, parameters, psize);
@@ -329,12 +332,16 @@ static te_expr *base(state *s) {
     switch (TYPE_MASK(s->type)) {
         case TOK_NUMBER:
             ret = new_expr(TE_CONSTANT, 0);
+            CHECK_NULL(ret);
+
             ret->expr.value = s->expr.value;
             next_token(s);
             break;
 
         case TOK_VARIABLE:
             ret = new_expr(TE_VARIABLE, 0);
+            CHECK_NULL(ret);
+
             ret->expr.bound = s->expr.bound;
             next_token(s);
             break;
@@ -342,6 +349,8 @@ static te_expr *base(state *s) {
         case TE_FUNCTION0:
         case TE_CLOSURE0:
             ret = new_expr(s->type, 0);
+            CHECK_NULL(ret);
+
             ret->expr.fun0 = s->expr.fun0;
             if (IS_CLOSURE(s->type)) ret->parameters[0] = s->context;
             next_token(s);
@@ -358,10 +367,13 @@ static te_expr *base(state *s) {
         case TE_FUNCTION1:
         case TE_CLOSURE1:
             ret = new_expr(s->type, 0);
+            CHECK_NULL(ret);
+
             ret->expr.fun1 = s->expr.fun1;
             if (IS_CLOSURE(s->type)) ret->parameters[1] = s->context;
             next_token(s);
             ret->parameters[0] = power(s);
+            CHECK_NULL(ret->parameters[0], te_free(ret));
             break;
 
         case TE_FUNCTION2: case TE_FUNCTION3: case TE_FUNCTION4:
@@ -371,6 +383,8 @@ static te_expr *base(state *s) {
             arity = ARITY(s->type);
 
             ret = new_expr(s->type, 0);
+            CHECK_NULL(ret);
+
             ret->expr.fun2 = s->expr.fun2;
             if (IS_CLOSURE(s->type)) ret->parameters[arity] = s->context;
             next_token(s);
@@ -382,6 +396,8 @@ static te_expr *base(state *s) {
                 for(i = 0; i < arity; i++) {
                     next_token(s);
                     ret->parameters[i] = expr(s);
+                    CHECK_NULL(ret->parameters[i], te_free(ret));
+
                     if(s->type != TOK_SEP) {
                         break;
                     }
@@ -398,6 +414,8 @@ static te_expr *base(state *s) {
         case TOK_OPEN:
             next_token(s);
             ret = list(s);
+            CHECK_NULL(ret);
+
             if (s->type != TOK_CLOSE) {
                 s->type = TOK_ERROR;
             } else {
@@ -407,6 +425,8 @@ static te_expr *base(state *s) {
 
         default:
             ret = new_expr(0, 0);
+            CHECK_NULL(ret);
+
             s->type = TOK_ERROR;
             ret->expr.value = NAN;
             break;
@@ -429,7 +449,12 @@ static te_expr *power(state *s) {
     if (sign == 1) {
         ret = base(s);
     } else {
-        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, base(s));
+        te_expr *b = base(s);
+        CHECK_NULL(b);
+
+        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, b);
+        CHECK_NULL(ret, te_free(b));
+
         ret->expr.fun1 = negate;
     }
 
@@ -439,6 +464,7 @@ static te_expr *power(state *s) {
 static te_expr *factor(state *s) {
     /* <factor>    =    <power> {"**" <power>} */
     te_expr *ret = power(s);
+    CHECK_NULL(ret);
 
     int neg = 0;
 
@@ -457,19 +483,33 @@ static te_expr *factor(state *s) {
 
         if (insertion) {
             /* Make exponentiation go right-to-left. */
-            te_expr *insert = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], power(s));
+            te_expr *p = power(s);
+            CHECK_NULL(p, te_free(ret));
+
+            te_expr *insert = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], p);
+            CHECK_NULL(insert, te_free(p), te_free(ret));
+
             insert->expr.fun2 = t;
             insertion->parameters[1] = insert;
             insertion = insert;
         } else {
-            ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, power(s));
+            te_expr *p = power(s);
+            CHECK_NULL(p, te_free(ret));
+
+            te_expr *prev = ret;
+            ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, p);
+            CHECK_NULL(ret, te_free(p), te_free(prev));
+
             ret->expr.fun2 = t;
             insertion = ret;
         }
     }
 
     if (neg) {
+        te_expr *prev = ret;
         ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+        CHECK_NULL(ret, te_free(prev));
+
         ret->expr.fun1 = negate;
     }
 
@@ -479,11 +519,18 @@ static te_expr *factor(state *s) {
 static te_expr *term(state *s) {
     /* <term>      =    <factor> {("*" | "/" | "%") <factor>} */
     te_expr *ret = factor(s);
+    CHECK_NULL(ret);
     te_fun2 dmod = fmod; /* resolve c++ overloading */
     while (s->type == TOK_INFIX && (s->expr.fun2 == mul || s->expr.fun2 == divide || s->expr.fun2 == dmod)) {
         te_fun2 t = s->expr.fun2;
         next_token(s);
-        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, factor(s));
+        te_expr *f = factor(s);
+        CHECK_NULL(f, te_free(ret));
+
+        te_expr *prev = ret;
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, f);
+        CHECK_NULL(ret, te_free(f), te_free(prev));
+
         ret->expr.fun2 = t;
     }
 
@@ -494,11 +541,18 @@ static te_expr *term(state *s) {
 static te_expr *expr(state *s) {
     /* <expr>      =    <term> {("+" | "-") <term>} */
     te_expr *ret = term(s);
+    CHECK_NULL(ret);
 
     while (s->type == TOK_INFIX && (s->expr.fun2 == add || s->expr.fun2 == sub)) {
         te_fun2 t = s->expr.fun2;
         next_token(s);
-        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, term(s));
+        te_expr *te = term(s);
+        CHECK_NULL(te, te_free(ret));
+
+        te_expr *prev = ret;
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, te);
+        CHECK_NULL(ret, te_free(te), te_free(prev));
+
         ret->expr.fun2 = t;
     }
 
@@ -509,10 +563,17 @@ static te_expr *expr(state *s) {
 static te_expr *list(state *s) {
     /* <list>      =    <expr> {"," <expr>} */
     te_expr *ret = expr(s);
+    CHECK_NULL(ret);
 
     while (s->type == TOK_SEP) {
         next_token(s);
-        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, expr(s));
+        te_expr *e = expr(s);
+        CHECK_NULL(e, te_free(ret));
+
+        te_expr *prev = ret;
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, e);
+        CHECK_NULL(ret, te_free(e), te_free(prev));
+
         ret->expr.fun2 = comma;
     }
 
@@ -609,6 +670,10 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 
     next_token(&s);
     te_expr *root = list(&s);
+    if (root == NULL) {
+        if (error) *error = -1;
+        return NULL;
+    }
 
     if (s.type != TOK_END) {
         te_free(root);
@@ -627,6 +692,10 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
 
 double te_interp(const char *expression, int *error) {
     te_expr *n = te_compile(expression, 0, 0, error);
+    if (n == NULL) {
+        return NAN;
+    }
+
     double ret;
     if (n) {
         ret = te_eval(n);
