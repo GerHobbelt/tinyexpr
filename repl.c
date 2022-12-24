@@ -3,9 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef BUILD_MONOLITHIC
 #include "monolithic_examples.h"
-#endif
 
 
 #ifdef USE_READLINE

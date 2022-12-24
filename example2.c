@@ -1,7 +1,12 @@
 #include "tinyexpr.h"
 #include <stdio.h>
 
-int main(int argc, char *argv[])
+
+#if defined(BUILD_MONOLITHIC)
+#define main      tiny_expr_example2_main
+#endif
+
+int main(int argc, const char **argv)
 {
     if (argc < 2) {
         printf("Usage: example2 \"expression\"\n");
@@ -32,7 +37,6 @@ int main(int argc, char *argv[])
         /* Show the user where the error is at. */
         printf("\t%*s^\nError near here", err-1, "");
     }
-
 
     return 0;
 }

@@ -792,11 +792,11 @@ void test_logic() {
 
 
 
-#if defined(MONOLITHIC)
-int tiny_expr_smoke_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
+#if defined(BUILD_MONOLITHIC)
+#define main      tiny_expr_smoke_main
 #endif
+
+int main(int argc, const char** argv)
 {
     lrun("Results", test_results);
     lrun("Syntax", test_syntax);

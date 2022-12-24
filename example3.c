@@ -9,8 +9,8 @@ double my_sum(double a, double b) {
 }
 
 
-#if !defined(MURASTER_STANDALONE) && defined(BUILD_MONOLITHIC)
-#define main      texpr_example3_main
+#if defined(BUILD_MONOLITHIC)
+#define main      tiny_expr_example3_main
 #endif
 
 int main(int argc, const char **argv)

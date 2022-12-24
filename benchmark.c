@@ -120,11 +120,12 @@ double al(double a) {
     return (1/(a+1)+2/(a+2)+3/(a+3));
 }
 
-#if defined(MONOLITHIC)
-int tiny_expr_benchmark_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
+
+#if defined(BUILD_MONOLITHIC)
+#define main      tiny_expr_benchmark_main
 #endif
+
+int main(int argc, const char** argv)
 {
 
     bench("a+5", a5);

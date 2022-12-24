@@ -1,7 +1,12 @@
 #include "tinyexpr.c"
 #include <stdio.h>
 
-int main(int argc, char *argv[])
+
+#if defined(BUILD_MONOLITHIC)
+#define main      tiny_expr_eexample1_main
+#endif
+
+int main(void)
 {
     const char *c = "sqrt(5**2 * 2 + 7**2 + 11**2 + (8 - 2)**2)";
     double r = te_interp(c, 0);
