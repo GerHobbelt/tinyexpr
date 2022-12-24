@@ -1,5 +1,5 @@
 CC = gcc
-CCFLAGS = -Wall -Wshadow -O2
+CCFLAGS = -Wall -Wshadow -O2 -std=c99
 LFLAGS = -lm
 
 .PHONY = all clean

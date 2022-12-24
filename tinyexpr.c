@@ -262,6 +262,12 @@ static double logical_not(double a) {return a == 0.0;}
 static double logical_notnot(double a) {return a != 0.0;}
 static double negate_logical_not(double a) {return -(a == 0.0);}
 static double negate_logical_notnot(double a) {return -(a != 0.0);}
+static double shift_left(double a, double b) {return llround(a) << llround(b);}
+static double shift_right(double a, double b) {return llround(a) >> llround(b);}
+static double bitwise_and(double a, double b) {return llround(a) & llround(b);}
+static double bitwise_or(double a, double b) {return llround(a) | llround(b);}
+static double bitwise_xor(double a, double b) {return llround(a) ^ llround(b);}
+// TODO static double bitwise_not(double a) {return ~llround(a) & 0x1FFFFFFFFFFFFFLL;}
 
 
 void next_token(state *s) {
@@ -337,18 +343,24 @@ void next_token(state *s) {
                         }
                         break;
                     case '<':
-                        if (s->next++[0] == '=') {
+                        if (s->next[0] == '=') {
+                            s->next++;
                             s->type = TOK_INFIX; s->function = lower_eq;
+                        } else if (s->next[0] == '<') {
+                            s->next++;
+                            s->type = TOK_INFIX; s->function = shift_left;
                         } else {
-                            s->next--;
                             s->type = TOK_INFIX; s->function = lower;
                         }
                         break;
                     case '>':
-                        if (s->next++[0] == '=') {
+                        if (s->next[0] == '=') {
+                            s->next++;
                             s->type = TOK_INFIX; s->function = greater_eq;
+                        } else if (s->next[0] == '>') {
+                            s->next++;
+                            s->type = TOK_INFIX; s->function = shift_right;
                         } else {
-                            s->next--;
                             s->type = TOK_INFIX; s->function = greater;
                         }
                         break;
@@ -356,16 +368,20 @@ void next_token(state *s) {
                         if (s->next++[0] == '&') {
                             s->type = TOK_INFIX; s->function = logical_and;
                         } else {
-                            s->type = TOK_ERROR;
+                            s->next--;
+                            s->type = TOK_INFIX; s->function = bitwise_and;
                         }
                         break;
                     case '|':
                         if (s->next++[0] == '|') {
                             s->type = TOK_INFIX; s->function = logical_or;
                         } else {
-                            s->type = TOK_ERROR;
+                            s->next--;
+                            s->type = TOK_INFIX; s->function = bitwise_or;
                         }
                         break;
+                    case '^': s->type = TOK_INFIX; s->function = bitwise_xor; break;
+                    // TODO case '~': s->type = TOK_INFIX; s->function = bitwise_not; break;
                     case '(': s->type = TOK_OPEN; break;
                     case ')': s->type = TOK_CLOSE; break;
                     case ',': s->type = TOK_SEP; break;
@@ -645,12 +661,12 @@ static te_expr *sum_expr(state *s) {
     return ret;
 }
 
-static te_expr *test_expr(state *s) {
-    /* <expr>      =    <sum_expr> {(">" | ">=" | "<" | "<=" | "==" | "!=") <sum_expr>} */
+
+static te_expr *shift_expr(state *s) {
+    /* <expr>      =    <sum_expr> {("<<" | ">>") <sum_expr>} */
     te_expr *ret = sum_expr(s);
 
-    while (s->type == TOK_INFIX && (s->function == greater || s->function == greater_eq ||
-        s->function == lower || s->function == lower_eq || s->function == equal || s->function == not_equal)) {
+    while (s->type == TOK_INFIX && (s->function == shift_left || s->function == shift_right)) {
         te_fun2 t = s->function;
         next_token(s);
         ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, sum_expr(s));
@@ -661,14 +677,45 @@ static te_expr *test_expr(state *s) {
 }
 
 
-static te_expr *expr(state *s) {
-    /* <expr>      =    <test_expr> {("&&" | "||") <test_expr>} */
+static te_expr *test_expr(state *s) {
+    /* <expr>      =    <shift_expr> {(">" | ">=" | "<" | "<=" | "==" | "!=") <shift_expr>} */
+    te_expr *ret = shift_expr(s);
+
+    while (s->type == TOK_INFIX && (s->function == greater || s->function == greater_eq ||
+        s->function == lower || s->function == lower_eq || s->function == equal || s->function == not_equal)) {
+        te_fun2 t = s->function;
+        next_token(s);
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, shift_expr(s));
+        ret->function = t;
+    }
+
+    return ret;
+}
+
+
+static te_expr *bitw_expr(state *s) {
+    /* <expr>      =    <test_expr> {("&" | "|" | "^") <test_expr>} */
     te_expr *ret = test_expr(s);
+
+    while (s->type == TOK_INFIX && (s->function == bitwise_and || s->function == bitwise_or || s->function == bitwise_xor)) {
+        te_fun2 t = s->function;
+        next_token(s);
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, test_expr(s));
+        ret->function = t;
+    }
+
+    return ret;
+}
+
+
+static te_expr *expr(state *s) {
+    /* <expr>      =    <bitw_expr> {("&&" | "||") <bitw_expr>} */
+    te_expr *ret = bitw_expr(s);
 
     while (s->type == TOK_INFIX && (s->function == logical_and || s->function == logical_or)) {
         te_fun2 t = s->function;
         next_token(s);
-        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, test_expr(s));
+        ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, bitw_expr(s));
         ret->function = t;
     }
 
