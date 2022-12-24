@@ -35,11 +35,24 @@ typedef double (*te_fun0)(void);
 typedef double (*te_fun1)(double);
 typedef double (*te_fun2)(double, double);
 
+typedef double (*te_clo0)(void* context);
+typedef double (*te_clo1)(void* context, double a);
+typedef double (*te_clo2)(void* context, double a, double b);
+
 /* Public */
 typedef struct te_expr {
-    int type;
-    union {double value; const double *bound; te_fun0 fun0; te_fun1 fun1; te_fun2 fun2;} expr;
-    struct te_expr *parameters[1];
+	int type;
+	union {
+		double value; 
+		const double *bound; 
+		te_fun0 fun0; 
+		te_fun1 fun1; 
+		te_fun2 fun2; 
+		te_clo0 clo0; 
+		te_clo1 clo1; 
+		te_clo2 clo2;
+	} expr;
+	struct te_expr *parameters[1];
 } te_expr;
 
 
@@ -63,6 +76,9 @@ typedef struct te_variable {
 		te_fun0 fun0; 
 		te_fun1 fun1; 
 		te_fun2 fun2;
+		te_clo0 clo0;
+		te_clo1 clo1;
+		te_clo2 clo2;
 	} el;
     int type;
     te_expr *context;

@@ -279,7 +279,7 @@ void test_infs() {
 void test_variables() {
 
     double x, y, test;
-    te_variable lookup[] = {{"x", (te_fun2)&x}, {"y", (te_fun2)&y}, {"te_st", (te_fun2)&test}};
+	te_variable lookup[] = { {.name = "x", {.variable = &x }}, {.name = "y", {.variable = &y }}, {.name = "te_st", {.variable = &test }} };
 
     int err;
 
@@ -355,7 +355,7 @@ void test_variables() {
 void test_functions() {
 
     double x, y;
-    te_variable lookup[] = {{"x", (te_fun2)&x}, {"y", (te_fun2)&y}};
+	te_variable lookup[] = { {.name = "x", {.variable = &x }}, {.name = "y", {.variable = &y }} };
 
     int err;
     te_expr *expr;
@@ -387,7 +387,7 @@ void test_functions() {
 }
 
 
-double sum0() {
+double sum0(void) {
     return 6;
 }
 double sum1(double a) {
@@ -417,16 +417,16 @@ void test_dynamic() {
 
     double x, f;
     te_variable lookup[] = {
-        {"x", (te_fun2)&x},
-        {"f", (te_fun2)&f},
-        {"sum0", sum0, TE_FUNCTION0},
-        {"sum1", sum1, TE_FUNCTION1},
-        {"sum2", sum2, TE_FUNCTION2},
-        {"sum3", sum3, TE_FUNCTION3},
-        {"sum4", sum4, TE_FUNCTION4},
-        {"sum5", sum5, TE_FUNCTION5},
-        {"sum6", sum6, TE_FUNCTION6},
-        {"sum7", sum7, TE_FUNCTION7},
+		{"x", {.variable = &x}},
+		{"f", {.variable = &f}},
+		{"sum0", {.fun0 = sum0 }, TE_FUNCTION0},
+		{"sum1", {.fun1 = sum1 }, TE_FUNCTION1},
+		{"sum2", {.fun2 = sum2 }, TE_FUNCTION2},
+		{"sum3", {.fun2 = sum3 }, TE_FUNCTION3},
+		{"sum4", {.fun2 = sum4 }, TE_FUNCTION4},
+		{"sum5", {.fun2 = sum5 }, TE_FUNCTION5},
+		{"sum6", {.fun2 = sum6 }, TE_FUNCTION6},
+		{"sum7", {.fun2 = sum7 }, TE_FUNCTION7},
     };
 
     test_case cases[] = {
@@ -494,11 +494,18 @@ void test_closure() {
     double extra;
     double c[] = {5,6,7,8,9};
 
+	te_expr closures[] = {
+	{.expr = {.bound = &extra }},
+	{.expr = {.bound = &extra }},
+	{.expr = {.bound = &extra }},
+	{.expr = {.bound = c }},
+	};
+
     te_variable lookup[] = {
-        {"c0", clo0, TE_CLOSURE0, &extra},
-        {"c1", clo1, TE_CLOSURE1, &extra},
-        {"c2", clo2, TE_CLOSURE2, &extra},
-        {"cell", cell, TE_CLOSURE1, c},
+		{"c0", {.clo0 = clo0}, TE_CLOSURE0, .context = &closures[0]},
+		{"c1", {.clo1 = clo1}, TE_CLOSURE1, .context = &closures[1]},
+		{"c2", {.clo2 = clo2}, TE_CLOSURE2, .context = &closures[2]},
+		{"cell", {.clo1 = cell}, TE_CLOSURE1, .context = &closures[3]},
     };
 
     test_case cases[] = {
@@ -615,8 +622,8 @@ void test_pow() {
     double a = 2, b = 3;
 
     te_variable lookup[] = {
-        {"a", (te_fun2)&a},
-        {"b", (te_fun2)&b}
+		{"a", {.variable = &a}},
+		{"b", {.variable = &b}}
     };
 
     int i;

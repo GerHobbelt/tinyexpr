@@ -9,10 +9,14 @@ double my_sum(double a, double b) {
 }
 
 
-int main(int argc, char *argv[])
+#if !defined(MURASTER_STANDALONE) && defined(BUILD_MONOLITHIC)
+#define main      texpr_example3_main
+#endif
+
+int main(int argc, const char **argv)
 {
     te_variable vars[] = {
-        {.name="mysum", .fun2=my_sum, .type=TE_FUNCTION2}
+		{.name = "mysum", {.fun2 = my_sum}, .type = TE_FUNCTION2}
     };
 
     const char *expression = "mysum(5, 6)";
@@ -29,7 +33,6 @@ int main(int argc, char *argv[])
         /* Show the user where the error is at. */
         printf("\t%*s^\nError near here", err-1, "");
     }
-
 
     return 0;
 }
