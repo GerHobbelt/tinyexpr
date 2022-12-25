@@ -1,9 +1,11 @@
 #include "tinyexpr.c"
 #include <stdio.h>
 
+#include "monolithic_examples.h"
+
 
 #if defined(BUILD_MONOLITHIC)
-#define main      tiny_expr_eexample1_main
+#define main      tiny_expr_example1_main
 #endif
 
 int main(void)

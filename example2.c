@@ -1,6 +1,8 @@
 #include "tinyexpr.h"
 #include <stdio.h>
 
+#include "monolithic_examples.h"
+
 
 #if defined(BUILD_MONOLITHIC)
 #define main      tiny_expr_example2_main

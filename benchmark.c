@@ -27,6 +27,8 @@
 #include <math.h>
 #include "tinyexpr.h"
 
+#include "monolithic_examples.h"
+
 
 
 #define loops 10000
@@ -35,7 +37,7 @@
 
 typedef double (*function1)(double);
 
-void bench(const char *expr, function1 func) {
+static void bench(const char *expr, function1 func) {
     int i, j;
     volatile double d;
     double tmp;
@@ -92,31 +94,31 @@ void bench(const char *expr, function1 func) {
 }
 
 
-double a5(double a) {
+static double a5(double a) {
     return a+5;
 }
 
-double a55(double a) {
+static double a55(double a) {
     return 5+a+5;
 }
 
-double a5abs(double a) {
+static double a5abs(double a) {
     return fabs(a+5);
 }
 
-double a52(double a) {
+static double a52(double a) {
     return (a+5)*2;
 }
 
-double a10(double a) {
+static double a10(double a) {
     return a+(5*2);
 }
 
-double as(double a) {
+static double as(double a) {
     return sqrt(pow(a, 1.5) + pow(a, 2.5));
 }
 
-double al(double a) {
+static double al(double a) {
     return (1/(a+1)+2/(a+2)+3/(a+3));
 }
 

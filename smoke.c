@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include "minctest.h"
 
+#include "monolithic_examples.h"
+
 
 typedef struct {
     const char *expr;
@@ -39,7 +41,7 @@ typedef struct {
 
 
 
-void test_results() {
+static void test_results() {
     test_case cases[] = {
         {"1", 1},
         {"1 ", 1},
@@ -97,28 +99,30 @@ void test_results() {
         {"log10(1000)", 3},
         {"log10(1e3)", 3},
         {"log10 1.0e3", 3},
-        {"10^5*5e-5", 5},
+        {"10**5*5e-5", 5},
 
 #ifdef TE_NAT_LOG
         {"log 1000", 6.9078},
         {"log e", 1},
-        {"log (e^10)", 10},
+        {"log (e**10)", 10},
 #else
         {"log 1000", 3},
+		{"log (10**e)", exp(1)},
+		{"log (10**10)", 10},
 #endif
 
-        {"ln (e^10)", 10},
-        {"100^.5+1", 11},
-        {"100 ^.5+1", 11},
-        {"100^+.5+1", 11},
-        {"100^--.5+1", 11},
-        {"100^---+-++---++-+-+-.5+1", 11},
+        {"ln (e**10)", 10},
+        {"100**.5+1", 11},
+        {"100 **.5+1", 11},
+        {"100**+.5+1", 11},
+        {"100**--.5+1", 11},
+        {"100**---+-++---++-+-+-.5+1", 11},
 
-        {"100^-.5+1", 1.1},
-        {"100^---.5+1", 1.1},
-        {"100^+---.5+1", 1.1},
-        {"1e2^+---.5e0+1e0", 1.1},
-        {"--(1e2^(+(-(-(-.5e0))))+1e0)", 1.1},
+        {"100**-.5+1", 1.1},
+        {"100**---.5+1", 1.1},
+        {"100**+---.5+1", 1.1},
+        {"1e2**+---.5e0+1e0", 1.1},
+        {"--(1e2**(+(-(-(-.5e0))))+1e0)", 1.1},
 
         {"sqrt 100 + 7", 17},
         {"sqrt 100 * 7", 70},
@@ -132,7 +136,7 @@ void test_results() {
         {"1,(2,3)", 3},
         {"-(1,(2,3))", -3},
 
-        {"2^2", 4},
+        {"2**2", 4},
         {"pow(2,2)", 4},
 
         {"atan2(1,1)", 0.7854},
@@ -144,7 +148,18 @@ void test_results() {
         {"atan2((3+3),4*2)", 0.6435},
         {"atan2((3+3),(4*2))", 0.6435},
 
-    };
+		{ "1**1", 1 },
+		{ "1**5", 1 },
+
+		{ "!3", 0 },
+		{ "!+5", 0 },
+		{ "!-5", 0 },
+		{ "!0", 1 },
+		{ "!!!0", 1 },
+
+		{ "~3", 0 },
+		{ "~0", -1 },
+	};
 
 
     int i;
@@ -154,15 +169,26 @@ void test_results() {
 
         int err;
         const double ev = te_interp(expr, &err);
-        lok(!err);
-        lfequal(ev, answer);
+        lok(!err, expr);
+        lfequal(ev, answer, expr);
 
         if (err) {
-            printf("FAILED: %s (%d)\n", expr, err);
+            printf("FAILED: [%s] --> (error position: %d)\n", expr, err);
         }
     }
 }
 
+
+static int isNaN(double f)
+{
+	// the standard (f != f) check doesn't work for MSVC(2022) as the default NAN assigned is a NaN which apparently doesn't fail this standard check. Weird.
+#if !defined(isnan)
+	int rv = (f != f);
+#else
+	int rv = isnan(f);
+#endif
+	return rv;
+}
 
 void test_syntax() {
     test_case errors[] = {
@@ -170,16 +196,16 @@ void test_syntax() {
         {"1+", 2},
         {"1)", 2},
         {"(1", 2},
-        {"1**1", 3},
+        {"1***1", 4},
         {"1*2(+4", 4},
         {"1*2(1+4", 4},
         {"a+5", 1},
-        {"!+5", 1},
         {"_a+5", 1},
         {"#a+5", 1},
         {"1^^5", 3},
-        {"1**5", 3},
-        {"sin(cos5", 8},
+        {"1*^5", 3},
+		{"1^*5", 3},
+		{"sin(cos5", 8},
     };
 
 
@@ -190,19 +216,19 @@ void test_syntax() {
 
         int err;
         const double r = te_interp(expr, &err);
-        lequal(err, e);
-        lok(r != r);
+        lequal(err, e, expr);
+        lok(isNaN(r), expr);
 
         te_expr *n = te_compile(expr, 0, 0, &err);
-        lequal(err, e);
-        lok(!n);
+        lequal(err, e, expr);
+        lok(!n, expr);
 
         if (err != e) {
             printf("FAILED: %s\n", expr);
         }
 
         const double k = te_interp(expr, 0);
-        lok(k != k);
+        lok(isNaN(k), expr);
     }
 }
 
@@ -229,14 +255,14 @@ void test_nans() {
 
         int err;
         const double r = te_interp(expr, &err);
-        lequal(err, 0);
-        lok(r != r);
+        lequal(err, 0, expr);
+        lok(isNaN(r), expr);
 
         te_expr *n = te_compile(expr, 0, 0, &err);
-        lok(n);
-        lequal(err, 0);
+        lok(n, expr);
+        lequal(err, 0, expr);
         const double c = te_eval(n);
-        lok(c != c);
+        lok(isNaN(c), expr);
         te_free(n);
     }
 }
@@ -263,14 +289,14 @@ void test_infs() {
 
         int err;
         const double r = te_interp(expr, &err);
-        lequal(err, 0);
-        lok(r == r + 1);
+        lequal(err, 0, expr);
+        lok(r == r + 1, expr);
 
         te_expr *n = te_compile(expr, 0, 0, &err);
-        lok(n);
-        lequal(err, 0);
+        lok(n, expr);
+        lequal(err, 0, expr);
         const double c = te_eval(n);
-        lok(c == c + 1);
+        lok(c == c + 1, expr);
         te_free(n);
     }
 }
@@ -284,37 +310,37 @@ void test_variables() {
     int err;
 
     te_expr *expr1 = te_compile("cos x + sin y", lookup, 2, &err);
-    lok(expr1);
-    lok(!err);
+    lok(expr1, "cos x + sin y");
+    lok(!err, "cos x + sin y");
 
     te_expr *expr2 = te_compile("x+x+x-y", lookup, 2, &err);
-    lok(expr2);
-    lok(!err);
+    lok(expr2, "x+x+x-y");
+    lok(!err, "x+x+x-y");
 
-    te_expr *expr3 = te_compile("x*y^3", lookup, 2, &err);
-    lok(expr3);
-    lok(!err);
+    te_expr *expr3 = te_compile("x*y**3", lookup, 2, &err);
+    lok(expr3, "x*y**3");
+    lok(!err, "x*y**3");
 
     te_expr *expr4 = te_compile("te_st+5", lookup, 3, &err);
-    lok(expr4);
-    lok(!err);
+    lok(expr4, "te_st+5");
+    lok(!err, "te_st+5");
 
     for (y = 2; y < 3; ++y) {
         for (x = 0; x < 5; ++x) {
             double ev;
 
             ev = te_eval(expr1);
-            lfequal(ev, cos(x) + sin(y));
+            lfequal(ev, cos(x) + sin(y), "cos x + sin y");
 
             ev = te_eval(expr2);
-            lfequal(ev, x+x+x-y);
+            lfequal(ev, x+x+x-y, "x+x+x-y");
 
             ev = te_eval(expr3);
-            lfequal(ev, x*y*y*y);
+            lfequal(ev, x*y*y*y, "x*y**3");
 
             test = x;
             ev = te_eval(expr4);
-            lfequal(ev, x+5);
+            lfequal(ev, x+5, "te_st+5");
         }
     }
 
@@ -325,21 +351,21 @@ void test_variables() {
 
 
 
-    te_expr *expr5 = te_compile("xx*y^3", lookup, 2, &err);
-    lok(!expr5);
-    lok(err);
+    te_expr *expr5 = te_compile("xx*y**3", lookup, 2, &err);
+    lok(!expr5, "xx*y**3");
+    lok(err, "xx*y**3");
 
     te_expr *expr6 = te_compile("tes", lookup, 3, &err);
-    lok(!expr6);
-    lok(err);
+    lok(!expr6, "tes");
+    lok(err, "tes");
 
     te_expr *expr7 = te_compile("sinn x", lookup, 2, &err);
-    lok(!expr7);
-    lok(err);
+    lok(!expr7, "sinn x");
+    lok(err, "sinn x");
 
     te_expr *expr8 = te_compile("si x", lookup, 2, &err);
-    lok(!expr8);
-    lok(err);
+    lok(!expr8, "si x");
+    lok(err, "si x");
 }
 
 
@@ -347,8 +373,8 @@ void test_variables() {
 #define cross_check(a, b) do {\
     if ((b)!=(b)) break;\
     expr = te_compile((a), lookup, 2, &err);\
-    lfequal(te_eval(expr), (b));\
-    lok(!err);\
+    lfequal(te_eval(expr), (b), (a));\
+    lok(!err, (a));\
     te_free(expr);\
 }while(0)
 
@@ -422,11 +448,11 @@ void test_dynamic() {
 		{"sum0", {.fun0 = sum0 }, TE_FUNCTION0},
 		{"sum1", {.fun1 = sum1 }, TE_FUNCTION1},
 		{"sum2", {.fun2 = sum2 }, TE_FUNCTION2},
-		{"sum3", {.fun2 = sum3 }, TE_FUNCTION3},
-		{"sum4", {.fun2 = sum4 }, TE_FUNCTION4},
-		{"sum5", {.fun2 = sum5 }, TE_FUNCTION5},
-		{"sum6", {.fun2 = sum6 }, TE_FUNCTION6},
-		{"sum7", {.fun2 = sum7 }, TE_FUNCTION7},
+		{"sum3", {.fun3 = sum3 }, TE_FUNCTION3},
+		{"sum4", {.fun4 = sum4 }, TE_FUNCTION4},
+		{"sum5", {.fun5 = sum5 }, TE_FUNCTION5},
+		{"sum6", {.fun6 = sum6 }, TE_FUNCTION6},
+		{"sum7", {.fun7 = sum7 }, TE_FUNCTION7},
     };
 
     test_case cases[] = {
@@ -464,28 +490,28 @@ void test_dynamic() {
 
         int err;
         te_expr *ex = te_compile(expr, lookup, sizeof(lookup)/sizeof(te_variable), &err);
-        lok(ex);
-        lfequal(te_eval(ex), answer);
+        lok(ex, expr);
+        lfequal(te_eval(ex), answer, expr);
         te_free(ex);
     }
 }
 
 
-double clo0(void *context) {
-    if (context) return *((double*)context) + 6;
+double clo0(te_expr *context) {
+    if (context) return *(context->expr.bound) + 6;
     return 6;
 }
-double clo1(void *context, double a) {
-    if (context) return *((double*)context) + a * 2;
+double clo1(te_expr *context, double a) {
+    if (context) return *(context->expr.bound) + a * 2;
     return a * 2;
 }
-double clo2(void *context, double a, double b) {
-    if (context) return *((double*)context) + a + b;
+double clo2(te_expr *context, double a, double b) {
+    if (context) return *(context->expr.bound) + a + b;
     return a + b;
 }
 
-double cell(void *context, double a) {
-    double *c = context;
+double cell(te_expr *context, double a) {
+    const double *c = context->expr.bound;
     return c[(int)a];
 }
 
@@ -521,13 +547,13 @@ void test_closure() {
 
         int err;
         te_expr *ex = te_compile(expr, lookup, sizeof(lookup)/sizeof(te_variable), &err);
-        lok(ex);
+        lok(ex, expr);
 
         extra = 0;
-        lfequal(te_eval(ex), answer + extra);
+        lfequal(te_eval(ex), answer + extra, expr);
 
         extra = 10;
-        lfequal(te_eval(ex), answer + extra);
+        lfequal(te_eval(ex), answer + extra, expr);
 
         te_free(ex);
     }
@@ -546,8 +572,8 @@ void test_closure() {
 
         int err;
         te_expr *ex = te_compile(expr, lookup, sizeof(lookup)/sizeof(te_variable), &err);
-        lok(ex);
-        lfequal(te_eval(ex), answer);
+        lok(ex, expr);
+        lfequal(te_eval(ex), answer, expr);
         te_free(ex);
     }
 }
@@ -568,12 +594,12 @@ void test_optimize() {
 
         int err;
         te_expr *ex = te_compile(expr, 0, 0, &err);
-        lok(ex);
+        lok(ex, expr);
 
         /* The answer should be know without
          * even running eval. */
-        lfequal(ex->expr.value, answer);
-        lfequal(te_eval(ex), answer);
+        lfequal(ex->expr.value, answer, expr);
+        lfequal(te_eval(ex), answer, expr);
 
         te_free(ex);
     }
@@ -582,40 +608,40 @@ void test_optimize() {
 void test_pow() {
 #ifdef TE_POW_FROM_RIGHT
     test_equ cases[] = {
-        {"2^3^4", "2^(3^4)"},
-        {"-2^2", "-(2^2)"},
-        {"--2^2", "(2^2)"},
-        {"---2^2", "-(2^2)"},
-        {"-(2*1)^2", "-(2^2)"},
-        {"-2^2", "-4"},
-        {"2^1.1^1.2^1.3", "2^(1.1^(1.2^1.3))"},
-        {"-a^b", "-(a^b)"},
-        {"-a^-b", "-(a^-b)"},
-        {"1^0", "1"},
-        {"(1)^0", "1"},
-        {"-(2)^2", "-(2^2)"}
-        /* TODO POW FROM RIGHT IS STILL BUGGY
-        {"(-2)^2", "4"},
-        {"(-1)^0", "1"},
-        {"(-5)^0", "1"},
-        {"-2^-3^-4", "-(2^(-(3^-4)))"}*/
+        {"2**3**4", "2**(3**4)"},
+        {"-2**2", "-(2**2)"},
+        {"--2**2", "(2**2)"},
+        {"---2**2", "-(2**2)"},
+        {"-(2*1)**2", "-(2**2)"},
+        {"-2**2", "-4"},
+        {"2**1.1**1.2**1.3", "2**(1.1**(1.2**1.3))"},
+        {"-a**b", "-(a**b)"},
+        {"-a**-b", "-(a**-b)"},
+        {"1**0", "1"},
+        {"(1)**0", "1"},
+        {"-(2)**2", "-(2**2)"},
+        /* TODO POW FROM RIGHT IS STILL BUGGY */
+        {"(-2)**2", "4"},
+        {"(-1)**0", "1"},
+        {"(-5)**0", "1"},
+        {"-2**-3**-4", "-(2**(-(3**-4)))"},
     };
 #else
     test_equ cases[] = {
-        {"2^3^4", "(2^3)^4"},
-        {"-2^2", "(-2)^2"},
-        {"(-2)^2", "4"},
-        {"--2^2", "2^2"},
-        {"---2^2", "(-2)^2"},
-        {"-2^2", "4"},
-        {"2^1.1^1.2^1.3", "((2^1.1)^1.2)^1.3"},
-        {"-a^b", "(-a)^b"},
-        {"-a^-b", "(-a)^(-b)"},
-        {"1^0", "1"},
-        {"(1)^0", "1"},
-        {"(-1)^0", "1"},
-        {"(-5)^0", "1"},
-        {"-2^-3^-4", "((-2)^(-3))^(-4)"}
+        {"2**3**4", "(2**3)**4"},
+        {"-2**2", "(-2)**2"},
+        {"(-2)**2", "4"},
+        {"--2**2", "2**2"},
+        {"---2**2", "(-2)**2"},
+        {"-2**2", "4"},
+        {"2**1.1**1.2**1.3", "((2**1.1)**1.2)**1.3"},
+        {"-a**b", "(-a)**b"},
+        {"-a**-b", "(-a)**(-b)"},
+        {"1**0", "1"},
+        {"(1)**0", "1"},
+        {"(-1)**0", "1"},
+        {"(-5)**0", "1"},
+        {"-2**-3**-4", "((-2)**(-3))**(-4)"}
     };
 #endif
 
@@ -634,15 +660,15 @@ void test_pow() {
         te_expr *ex1 = te_compile(expr1, lookup, sizeof(lookup)/sizeof(te_variable), 0);
         te_expr *ex2 = te_compile(expr2, lookup, sizeof(lookup)/sizeof(te_variable), 0);
 
-        lok(ex1);
-        lok(ex2);
+        lok(ex1, expr1);
+        lok(ex2, expr2);
 
         double r1 = te_eval(ex1);
         double r2 = te_eval(ex2);
 
         fflush(stdout);
         const int olfail = lfails;
-        lfequal(r1, r2);
+		lfequal(r1, r2, "(see next report line:)");
         if (olfail != lfails) {
             printf("Failed expression: %s <> %s\n", expr1, expr2);
         }
@@ -687,8 +713,8 @@ void test_combinatorics() {
 
         int err;
         const double ev = te_interp(expr, &err);
-        lok(!err);
-        lfequal(ev, answer);
+        lok(!err, expr);
+        lfequal(ev, answer, expr);
 
         if (err) {
             printf("FAILED: %s (%d)\n", expr, err);
@@ -751,7 +777,7 @@ void test_logic() {
             {"1 < 1+1", 1},
             {"1 < 1*2", 1},
             {"1 < 2/2", 0},
-            {"1 < 2^2", 1},
+            {"1 < 2**2", 1},
 
             {"5+5 < 4+10", 1},
             {"5+(5 < 4)+10", 15},
@@ -762,13 +788,13 @@ void test_logic() {
             {"!(5+5 < 4)+10", 11},
 
 #ifdef TE_POW_FROM_RIGHT
-            {"!0^2", 1},
-            {"!0^-1", 0},
-            {"-!0^2", -1},
+            {"!0**2", 1},
+            {"!0**-1", 0},
+            {"-!0**2", -1},
 #else
-            {"!0^2", 1},
-            {"!0^-1", 1},
-            {"-!0^2", 1},
+            {"!0**2", 1},
+            {"!0**-1", 1},
+            {"-!0**2", 1},
 #endif
 
     };
@@ -781,8 +807,8 @@ void test_logic() {
 
         int err;
         const double ev = te_interp(expr, &err);
-        lok(!err);
-        lfequal(ev, answer);
+        lok(!err, expr);
+        lfequal(ev, answer, expr);
 
         if (err) {
             printf("FAILED: %s (%d)\n", expr, err);

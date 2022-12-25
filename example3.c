@@ -1,9 +1,11 @@
 #include "tinyexpr.h"
 #include <stdio.h>
 
+#include "monolithic_examples.h"
+
 
 /* An example of calling a C function. */
-double my_sum(double a, double b) {
+static double my_sum(double a, double b) {
     printf("Called C function with %f and %f.\n", a, b);
     return a + b;
 }

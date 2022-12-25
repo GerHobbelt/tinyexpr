@@ -30,28 +30,49 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 /* Private */
 typedef double (*te_fun0)(void);
 typedef double (*te_fun1)(double);
 typedef double (*te_fun2)(double, double);
+typedef double (*te_fun3)(double, double, double);
+typedef double (*te_fun4)(double, double, double, double);
+typedef double (*te_fun5)(double, double, double, double, double);
+typedef double (*te_fun6)(double, double, double, double, double, double);
+typedef double (*te_fun7)(double, double, double, double, double, double, double);
 
 typedef double (*te_clo0)(void* context);
 typedef double (*te_clo1)(void* context, double a);
 typedef double (*te_clo2)(void* context, double a, double b);
+typedef double (*te_clo3)(void* context, double a, double b, double c);
+typedef double (*te_clo4)(void* context, double a, double b, double c, double d);
+typedef double (*te_clo5)(void* context, double a, double b, double c, double d, double e);
+typedef double (*te_clo6)(void* context, double a, double b, double c, double d, double e, double f);
+typedef double (*te_clo7)(void* context, double a, double b, double c, double d, double e, double f, double g);
 
 /* Public */
 typedef struct te_expr {
-	int type;
 	union {
 		double value; 
 		const double *bound; 
-		te_fun0 fun0; 
-		te_fun1 fun1; 
-		te_fun2 fun2; 
-		te_clo0 clo0; 
-		te_clo1 clo1; 
+		te_fun0 fun0;
+		te_fun1 fun1;
+		te_fun2 fun2;
+		te_fun3 fun3;
+		te_fun4 fun4;
+		te_fun5 fun5;
+		te_fun6 fun6;
+		te_fun7 fun7;
+		te_clo0 clo0;
+		te_clo1 clo1;
 		te_clo2 clo2;
+		te_clo3 clo3;
+		te_clo4 clo4;
+		te_clo5 clo5;
+		te_clo6 clo6;
+		te_clo7 clo7;
 	} expr;
+	int type;
 	struct te_expr *parameters[1];
 } te_expr;
 
@@ -76,9 +97,19 @@ typedef struct te_variable {
 		te_fun0 fun0; 
 		te_fun1 fun1; 
 		te_fun2 fun2;
+		te_fun3 fun3;
+		te_fun4 fun4;
+		te_fun5 fun5;
+		te_fun6 fun6;
+		te_fun7 fun7;
 		te_clo0 clo0;
 		te_clo1 clo1;
 		te_clo2 clo2;
+		te_clo3 clo3;
+		te_clo4 clo4;
+		te_clo5 clo5;
+		te_clo6 clo6;
+		te_clo7 clo7;
 	} el;
     int type;
     te_expr *context;

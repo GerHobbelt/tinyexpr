@@ -98,30 +98,30 @@ static int lfails = 0;
 
 
 /* Assert a true statement. */
-#define lok(test) do {\
+#define lok(test, x) do {\
     ++ltests;\
     if (!(test)) {\
         ++lfails;\
-        printf("%s:%d error \n", __FILE__, __LINE__);\
+        printf("%s:%d error ([%s] FAILED for [%s])\n", __FILE__, __LINE__, #test, x);\
     }} while (0)
 
 
 /* Assert two integers are equal. */
-#define lequal(a, b) do {\
+#define lequal(a, b, x) do {\
     ++ltests;\
     if ((a) != (b)) {\
         ++lfails;\
-        printf("%s:%d (%d != %d)\n", __FILE__, __LINE__, (a), (b));\
+        printf("%s:%d (%d != %d) ([%s] != [%s] for [%s])\n", __FILE__, __LINE__, (a), (b), #a, #b, x);\
     }} while (0)
 
 
 /* Assert two floats are equal (Within LTEST_FLOAT_TOLERANCE). */
-#define lfequal(a, b) do {\
+#define lfequal(a, b, x) do {\
     ++ltests;\
     const double __LF_COMPARE = fabs((double)(a)-(double)(b));\
     if (__LF_COMPARE > LTEST_FLOAT_TOLERANCE || (__LF_COMPARE != __LF_COMPARE)) {\
         ++lfails;\
-        printf("%s:%d (%f != %f)\n", __FILE__, __LINE__, (double)(a), (double)(b));\
+        printf("%s:%d (%f != %f) ([%s] != [%s] for [%s])\n", __FILE__, __LINE__, (double)(a), (double)(b), #a, #b, x);\
     }} while (0)
 
 

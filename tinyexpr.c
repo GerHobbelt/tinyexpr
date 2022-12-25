@@ -64,9 +64,19 @@ typedef struct state {
 		te_fun0 fun0;
 		te_fun1 fun1;
 		te_fun2 fun2;
+		te_fun3 fun3;
+		te_fun4 fun4;
+		te_fun5 fun5;
+		te_fun6 fun6;
+		te_fun7 fun7;
 		te_clo0 clo0;
 		te_clo1 clo1;
 		te_clo2 clo2;
+		te_clo3 clo3;
+		te_clo4 clo4;
+		te_clo5 clo5;
+		te_clo6 clo6;
+		te_clo7 clo7;
 	} expr;
     te_expr *context;
 
@@ -131,7 +141,10 @@ static double pi(void) {return 3.14159265358979323846;}
 static double e(void) {return 2.71828182845904523536;}
 
 static double fac(double a) {
-    return tgamma(a + 1);
+	// tweak to ensure factorial(-1) -> NaN instead of +INF, which tgamma(a+1) would deliver cf. C std spec.
+	if (a > 0)
+	    return tgamma(a + 1);
+	return NAN;
 }
 
 static double ncr(double n, double r) { // combinations
@@ -179,10 +192,90 @@ static double sd_cbrt(double n) { return cbrt(n); }
 static double sd_tgamma(double n) { return tgamma(n); }
 static double sd_log2(double n) { return log2(n); }
 
+static double sd_ln(double n) { return log(n); }
+static double sd_log10(double n) { return log10(n); }
+
 #ifdef _MSC_VER
 #pragma function (ceil)
 #pragma function (floor)
 #endif
+
+/*
+	_Check_return_ double __cdecl acos(_In_ double _X);
+	_Check_return_ double __cdecl asin(_In_ double _X);
+	_Check_return_ double __cdecl atan(_In_ double _X);
+	_Check_return_ double __cdecl atan2(_In_ double _Y, _In_ double _X);
+
+	_Check_return_ double __cdecl cos(_In_ double _X);
+	_Check_return_ double __cdecl cosh(_In_ double _X);
+	_Check_return_ double __cdecl exp(_In_ double _X);
+	_Check_return_ _CRT_JIT_INTRINSIC double __cdecl fabs(_In_ double _X);
+	_Check_return_ double __cdecl fmod(_In_ double _X, _In_ double _Y);
+	_Check_return_ double __cdecl log(_In_ double _X);
+	_Check_return_ double __cdecl log10(_In_ double _X);
+	_Check_return_ double __cdecl pow(_In_ double _X, _In_ double _Y);
+	_Check_return_ double __cdecl sin(_In_ double _X);
+	_Check_return_ double __cdecl sinh(_In_ double _X);
+	_Check_return_ _CRT_JIT_INTRINSIC double __cdecl sqrt(_In_ double _X);
+	_Check_return_ double __cdecl tan(_In_ double _X);
+	_Check_return_ double __cdecl tanh(_In_ double _X);
+
+	_Check_return_ _ACRTIMP double    __cdecl acosh(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl asinh(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl atanh(_In_ double _X);
+	_Check_return_ _ACRTIMP  double    __cdecl atof(_In_z_ char const* _String);
+	_Check_return_ _ACRTIMP  double    __cdecl _atof_l(_In_z_ char const* _String, _In_opt_ _locale_t _Locale);
+	_Check_return_ _ACRTIMP double    __cdecl _cabs(_In_ struct _complex _Complex_value);
+	_Check_return_ _ACRTIMP double    __cdecl cbrt(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl ceil(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl _chgsign(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl copysign(_In_ double _Number, _In_ double _Sign);
+	_Check_return_ _ACRTIMP double    __cdecl _copysign(_In_ double _Number, _In_ double _Sign);
+	_Check_return_ _ACRTIMP double    __cdecl erf(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl erfc(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl exp2(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl expm1(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl fdim(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double    __cdecl floor(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl fma(_In_ double _X, _In_ double _Y, _In_ double _Z);
+	_Check_return_ _ACRTIMP double    __cdecl fmax(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double    __cdecl fmin(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double    __cdecl frexp(_In_ double _X, _Out_ int* _Y);
+	_Check_return_ _ACRTIMP double    __cdecl hypot(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double    __cdecl _hypot(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP int       __cdecl ilogb(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl ldexp(_In_ double _X, _In_ int _Y);
+	_Check_return_ _ACRTIMP double    __cdecl lgamma(_In_ double _X);
+	_Check_return_ _ACRTIMP long long __cdecl llrint(_In_ double _X);
+	_Check_return_ _ACRTIMP long long __cdecl llround(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl log1p(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl log2(_In_ double _X);
+	_Check_return_ _ACRTIMP double    __cdecl logb(_In_ double _X);
+	_Check_return_ _ACRTIMP long      __cdecl lrint(_In_ double _X);
+	_Check_return_ _ACRTIMP long      __cdecl lround(_In_ double _X);
+
+	int __CRTDECL _matherr(_Inout_ struct _exception* _Except);
+
+	_Check_return_ _ACRTIMP double __cdecl modf(_In_ double _X, _Out_ double* _Y);
+	_Check_return_ _ACRTIMP double __cdecl nan(_In_ char const* _X);
+	_Check_return_ _ACRTIMP double __cdecl nearbyint(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl nextafter(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double __cdecl nexttoward(_In_ double _X, _In_ long double _Y);
+	_Check_return_ _ACRTIMP double __cdecl remainder(_In_ double _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double __cdecl remquo(_In_ double _X, _In_ double _Y, _Out_ int* _Z);
+	_Check_return_ _ACRTIMP double __cdecl rint(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl round(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl scalbln(_In_ double _X, _In_ long _Y);
+	_Check_return_ _ACRTIMP double __cdecl scalbn(_In_ double _X, _In_ int _Y);
+	_Check_return_ _ACRTIMP double __cdecl tgamma(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl trunc(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl _j0(_In_ double _X );
+	_Check_return_ _ACRTIMP double __cdecl _j1(_In_ double _X );
+	_Check_return_ _ACRTIMP double __cdecl _jn(int _X, _In_ double _Y);
+	_Check_return_ _ACRTIMP double __cdecl _y0(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl _y1(_In_ double _X);
+	_Check_return_ _ACRTIMP double __cdecl _yn(_In_ int _X, _In_ double _Y);
+*/
 
 static const te_variable functions[] = {
     /* must be in alphabetical order */
@@ -201,8 +294,9 @@ static const te_variable functions[] = {
     {.name="floor", .el.fun1=sd_floor, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="gamma", .el.fun1=sd_tgamma,.type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="gcd",   .el.fun2=gcd,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
-    {.name="log",   .el.fun1=log,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
-    {.name="log10", .el.fun1=log10, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+	{.name="ln",    .el.fun1=sd_ln, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+	{.name="log",   .el.fun1=sd_log10,   .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
+    {.name="log10", .el.fun1=sd_log10, .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="log2",  .el.fun1=sd_log2,  .type=TE_FUNCTION1 | TE_FLAG_PURE, .context=0},
     {.name="ncr",   .el.fun2=ncr,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
     {.name="npr",   .el.fun2=npr,   .type=TE_FUNCTION2 | TE_FLAG_PURE, .context=0},
@@ -752,16 +846,7 @@ static te_expr *list(state *s) {
 }
 
 
-#define TE_FUN(...) ((double(*)(__VA_ARGS__))n->expr.fun1)
 #define M(e) te_eval(n->parameters[e])
-#define D(e) double
-#define TE_R1(x) x(0)
-#define TE_R2(x) TE_R1(x), x(1)
-#define TE_R3(x) TE_R2(x), x(2)
-#define TE_R4(x) TE_R3(x), x(3)
-#define TE_R5(x) TE_R4(x), x(4)
-#define TE_R6(x) TE_R5(x), x(5)
-#define TE_R7(x) TE_R6(x), x(6)
 
 
 double te_eval(const te_expr *n) {
@@ -777,26 +862,26 @@ double te_eval(const te_expr *n) {
                 case 0: return n->expr.fun0();
                 case 1: return n->expr.fun1( M(0) );
                 case 2: return n->expr.fun2( M(0), M(1) );
-                case 3: return TE_FUN(TE_R3(D))( TE_R3(M) );
-                case 4: return TE_FUN(TE_R4(D))( TE_R4(M) );
-                case 5: return TE_FUN(TE_R5(D))( TE_R5(M) );
-                case 6: return TE_FUN(TE_R6(D))( TE_R6(M) );
-                case 7: return TE_FUN(TE_R7(D))( TE_R7(M) );
+                case 3: return n->expr.fun3(M(0), M(1), M(2));
+                case 4: return n->expr.fun4(M(0), M(1), M(2), M(3));
+                case 5: return n->expr.fun5(M(0), M(1), M(2), M(3), M(4));
+                case 6: return n->expr.fun6(M(0), M(1), M(2), M(3), M(4), M(5));
+                case 7: return n->expr.fun7(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
                 default: return NAN;
             }
 
         case TE_CLOSURE0: case TE_CLOSURE1: case TE_CLOSURE2: case TE_CLOSURE3:
         case TE_CLOSURE4: case TE_CLOSURE5: case TE_CLOSURE6: case TE_CLOSURE7:
             switch(ARITY(n->type)) {
-                case 0: return ((double(*)(te_expr*))n->expr.fun1)( n->parameters[0] );
-                case 1: return TE_FUN(te_expr*, TE_R1(D))( n->parameters[1], TE_R1(M) );
-                case 2: return TE_FUN(te_expr*, TE_R2(D))( n->parameters[2], TE_R2(M) );
-                case 3: return TE_FUN(te_expr*, TE_R3(D))( n->parameters[3], TE_R3(M) );
-                case 4: return TE_FUN(te_expr*, TE_R4(D))( n->parameters[4], TE_R4(M) );
-                case 5: return TE_FUN(te_expr*, TE_R5(D))( n->parameters[5], TE_R5(M) );
-                case 6: return TE_FUN(te_expr*, TE_R6(D))( n->parameters[6], TE_R6(M) );
-                case 7: return TE_FUN(te_expr*, TE_R7(D))( n->parameters[7], TE_R7(M) );
-                default: return NAN;
+                case 0: return n->expr.clo0( n->parameters[0] );
+				case 1: return n->expr.clo1(n->parameters[1], M(0));
+				case 2: return n->expr.clo2(n->parameters[2], M(0), M(1));
+				case 3: return n->expr.clo3(n->parameters[3], M(0), M(1), M(2));
+				case 4: return n->expr.clo4(n->parameters[4], M(0), M(1), M(2), M(3));
+				case 5: return n->expr.clo5(n->parameters[5], M(0), M(1), M(2), M(3), M(4));
+				case 6: return n->expr.clo6(n->parameters[6], M(0), M(1), M(2), M(3), M(4), M(5));
+				case 7: return n->expr.clo7(n->parameters[7], M(0), M(1), M(2), M(3), M(4), M(5), M(6));
+				default: return NAN;
             }
 
         default: return NAN;
@@ -819,7 +904,7 @@ static void optimize(te_expr *n) {
         int i;
         for (i = 0; i < arity; ++i) {
             optimize(n->parameters[i]);
-            if (((te_expr*)(n->parameters[i]))->type != TE_CONSTANT) {
+            if (n->parameters[i]->type != TE_CONSTANT) {
                 known = 0;
             }
         }
@@ -842,20 +927,23 @@ te_expr *te_compile(const char *expression, const te_variable *variables, int va
     next_token(&s);
     te_expr *root = list(&s);
     if (root == NULL) {
-        if (error) *error = -1;
+        if (error)
+			*error = -1;
         return NULL;
     }
 
     if (s.type != TOK_END) {
-        te_free(root);
         if (error) {
             *error = (s.next - s.start);
-            if (*error == 0) *error = 1;
+            if (*error == 0)
+				*error = 1;
         }
-        return 0;
+		te_free(root);
+		return 0;
     } else {
         optimize(root);
-        if (error) *error = 0;
+        if (error)
+			*error = 0;
         return root;
     }
 }
