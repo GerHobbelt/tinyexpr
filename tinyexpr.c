@@ -23,9 +23,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+ /* COMPILE TIME OPTIONS */
+
  /* Exponentiation associativity:
-    a**b**c = a**(b**c) and -a**b = -(a**b)
- */
+ For a^b^c = (a^b)^c and -a^b = (-a)^b do nothing.
+ For a^b^c = a^(b^c) and -a^b = -(a^b) uncomment the next line.*/
+ /* #define TE_POW_FROM_RIGHT */
+
+ /* Logarithms
+ For log = base 10 log do nothing
+ For log = natural log uncomment the next line. */
+ /* #define TE_NAT_LOG */
 
 #include "tinyexpr.h"
 
@@ -45,19 +53,10 @@
 #endif
 
 
-enum {
-    TOK_NULL = TE_CLOSURE7 + 1, TOK_ERROR, TOK_END, TOK_SEP,
-    TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
-};
-
-
-enum { TE_CONSTANT = 1 };
-
-
 typedef struct state {
     const char* start;
     const char* next;
-    int type;
+    te_type type;
     union {
         double value;
         const double* bound;
@@ -85,12 +84,34 @@ typedef struct state {
 } state;
 
 
+// If it is a variable, the byte is 0
+// If it's a constant, the byte is 1 (0000 0001)
+//
+// If it's a function, the byte indicates the number of parameters 
+// 000_01_XXX -- 01 is func, XXX is num_params
+// (Underscores indicate spaces)
+//
+// Same story with the closure.
+// 000_10_XXX -- 10 is closure, XXX is num_params
+//
+// FLAG_PURE obviously means whether it modifies the parameters 
+// (or the captured data, in case of closures)
+// It is set as the 6th bit.
+// 00_1_-----, where ----- means any 5 bits.
+// 
+// This means the type occupies only the last 6 bits. 
+// (that is, if you count the pure flag a part of the type)
+// For this macro, that flag is neglected.
 #define TYPE_MASK(TYPE) ((TYPE)&0x0000001F)
 
 #define IS_PURE(TYPE) (((TYPE) & TE_FLAG_PURE) != 0)
-#define IS_FUNCTION(TYPE) (((TYPE) & TE_FUNCTION0) != 0)
-#define IS_CLOSURE(TYPE) (((TYPE) & TE_CLOSURE0) != 0)
-#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION0 | TE_CLOSURE0)) ? ((TYPE) & 0x00000007) : 0 )
+#define IS_FUNCTION(TYPE) (((TYPE) & TE_FUNCTION) != 0)
+#define IS_CLOSURE(TYPE) (((TYPE) & TE_CLOSURE) != 0)
+
+// Returns the number of arguments the function takes. 
+// If the input is not a function, the result is 0.
+// The number of arguments is determined by examining the flags
+#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION | TE_CLOSURE)) ? ((TYPE) & 0x00000007) : 0 )
 #ifdef __cplusplus
 #include <initializer_list>
 #define NEW_EXPR(type, ...) new_expr((type), &*std::initializer_list<const te_expr *>({__VA_ARGS__}).begin())
@@ -295,7 +316,11 @@ static const te_variable functions[] = {
     {.name = "gamma", .el.fun1 = sd_tgamma,.type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "gcd",   .el.fun2 = gcd,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "ln",    .el.fun1 = sd_ln, .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
+#ifdef TE_NAT_LOG
+    {.name = "log",   .el.fun1 = sd_ln,   .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
+#else
     {.name = "log",   .el.fun1 = sd_log10,   .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
+#endif
     {.name = "log10", .el.fun1 = sd_log10, .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "log2",  .el.fun1 = sd_log2,  .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "ncr",   .el.fun2 = ncr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
@@ -318,6 +343,9 @@ static const te_variable* find_builtin(const char* name, int len) {
     while (imax >= imin) {
         const int i = (imin + ((imax - imin) / 2));
         int c = strncmp(name, functions[i].name, len);
+
+		// In case the lengths are the same, verify if they both null terminate:
+		// f.e. consider searching for `sin`: `sinh` would match too.
         if (!c) c = '\0' - functions[i].name[len];
         if (c == 0) {
             return functions + i;
@@ -338,6 +366,8 @@ static const te_variable* find_lookup(const state* s, const char* name, int len)
     const te_variable* var;
     if (!s->lookup) return 0;
 
+	// Does a linear search. Could keep a sorted tree for these, maybe.
+	// It doesn't really matter, since few variables will be defined, probably.
     for (var = s->lookup, iters = s->lookup_len; iters; ++var, --iters) {
         if (strncmp(name, var->name, len) == 0 && var->name[len] == '\0') {
             return var;
@@ -372,8 +402,9 @@ static double shift_right(double a, double b) { return llround(a) >> llround(b);
 static double bitwise_and(double a, double b) { return llround(a) & llround(b); }
 static double bitwise_or(double a, double b) { return llround(a) | llround(b); }
 static double bitwise_xor(double a, double b) { return llround(a) ^ llround(b); }
-// TODO static double bitwise_not(double a) {return ~llround(a) & 0x1FFFFFFFFFFFFFLL;}
-
+static double bitwise_not(double a) {
+	return ~llround(a) & 0x1FFFFFFFFFFFFFLL;
+}
 
 void next_token(state* s) {
     s->type = TOK_NULL;
@@ -386,7 +417,7 @@ void next_token(state* s) {
         }
 
         /* Try reading a number. */
-        if ((s->next[0] >= '0' && s->next[0] <= '9') || s->next[0] == '.') {
+        if (isdigit(s->next[0]) || s->next[0] == '.') {
             s->expr.value = strtod(s->next, (char**)&s->next);
             s->type = TOK_NUMBER;
         }
@@ -401,6 +432,7 @@ void next_token(state* s) {
                 if (!var) var = find_builtin(start, s->next - start);
 
                 if (!var) {
+					// TODO: Maybe add better errors?
                     s->type = TOK_ERROR;
                 }
                 else {
@@ -497,7 +529,7 @@ void next_token(state* s) {
                     }
                     break;
                 case '^': s->type = TOK_INFIX; s->expr.fun2 = bitwise_xor; break;
-                    // TODO case '~': s->type = TOK_INFIX; s->expr.fun1 = bitwise_not; break;
+                case '~': s->type = TOK_INFIX; s->expr.fun1 = bitwise_not; break;
                 case '(': s->type = TOK_OPEN; break;
                 case ')': s->type = TOK_CLOSE; break;
                 case ',': s->type = TOK_SEP; break;
@@ -510,7 +542,7 @@ void next_token(state* s) {
 }
 
 
-static te_expr* list(state* s);
+static te_expr* list(state* s);  // comma separated expressions
 static te_expr* expr(state* s);
 static te_expr* power(state* s);
 
@@ -536,13 +568,19 @@ static te_expr* base(state* s) {
         next_token(s);
         break;
 
+		// Function without input parameters
     case TE_FUNCTION0:
     case TE_CLOSURE0:
         ret = new_expr(s->type, 0);
         CHECK_NULL(ret);
 
         ret->expr.fun0 = s->expr.fun0;
-        if (IS_CLOSURE(s->type)) ret->parameters[0] = s->context;
+
+		// The last parameter of a closure is always a pointer to the context.
+        if (IS_CLOSURE(s->type)) 
+			ret->parameters[0] = s->context;
+
+		// Expect an opening and then a closing parenthesis
         next_token(s);
         if (s->type == TOK_OPEN) {
             next_token(s);
@@ -555,14 +593,19 @@ static te_expr* base(state* s) {
         }
         break;
 
+		// Function with 1 input parameter
     case TE_FUNCTION1:
     case TE_CLOSURE1:
         ret = new_expr(s->type, 0);
         CHECK_NULL(ret);
 
         ret->expr.fun1 = s->expr.fun1;
-        if (IS_CLOSURE(s->type)) ret->parameters[1] = s->context;
+
+        if (IS_CLOSURE(s->type)) 
+			ret->parameters[1] = s->context;
+
         next_token(s);
+
         ret->parameters[0] = power(s);
         CHECK_NULL(ret->parameters[0], te_free(ret));
         break;
@@ -577,9 +620,13 @@ static te_expr* base(state* s) {
         CHECK_NULL(ret);
 
         ret->expr.fun2 = s->expr.fun2;
-        if (IS_CLOSURE(s->type)) ret->parameters[arity] = s->context;
+
+        if (IS_CLOSURE(s->type)) 
+			ret->parameters[arity] = s->context;
+			
         next_token(s);
 
+		// Expect parenthesis to be opened
         if (s->type != TOK_OPEN) {
             s->type = TOK_ERROR;
         }
@@ -687,6 +734,8 @@ static te_expr* power(state* s) {
     return ret;
 }
 
+#ifdef TE_POW_FROM_RIGHT
+
 static te_expr* factor(state* s) {
     /* <factor>    =    <power> {"**" <power>} */
     te_expr* ret = power(s);
@@ -743,6 +792,67 @@ static te_expr* factor(state* s) {
 
     return ret;
 }
+
+#else
+
+static te_expr* factor(state* s) {
+    /* <factor>    =    <power> {"**" <power>} */
+    te_expr* ret = power(s);
+    CHECK_NULL(ret);
+
+    te_fun1 left_function = NULL;
+
+    if (ret->type == (TE_FUNCTION1 | TE_FLAG_PURE) &&
+        (ret->expr.fun1 == negate || ret->expr.fun1 == logical_not || ret->expr.fun1 == logical_notnot ||
+            ret->expr.fun1 == negate_logical_not || ret->expr.fun1 == negate_logical_notnot)) {
+        left_function = ret->expr.fun1;
+        te_expr* se = ret->parameters[0];
+        free(ret);
+        ret = se;
+    }
+
+    te_expr* insertion = 0;
+    te_fun2 dpow = pow; /* resolve overloading for g++ */
+    while (s->type == TOK_INFIX && (s->expr.fun2 == dpow)) {
+        te_fun2 t = s->expr.fun2;
+        next_token(s);
+
+        if (insertion) {
+            /* TODO: Make exponentiation go left-ro-right. */
+            te_expr* p = power(s);
+            CHECK_NULL(p, te_free(ret));
+
+            te_expr* insert = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], p);
+            CHECK_NULL(insert, te_free(p), te_free(ret));
+
+            insert->expr.fun2 = t;
+            insertion->parameters[1] = insert;
+            insertion = insert;
+        }
+        else {
+            te_expr* p = power(s);
+            CHECK_NULL(p, te_free(ret));
+
+            te_expr* prev = ret;
+            ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, p);
+            CHECK_NULL(ret, te_free(p), te_free(prev));
+
+            ret->expr.fun2 = t;
+            insertion = ret;
+        }
+    }
+
+    if (left_function) {
+        te_expr* prev = ret;
+        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+        ret->expr.fun1 = left_function;
+        CHECK_NULL(ret, te_free(prev));
+    }
+
+    return ret;
+}
+
+#endif
 
 static te_expr* term(state* s) {
     /* <term>      =    <factor> {("*" | "/" | "%") <factor>} */
@@ -913,7 +1023,6 @@ double te_eval(const te_expr* n) {
 
 }
 
-#undef D
 #undef M
 
 static void optimize(te_expr* n) {

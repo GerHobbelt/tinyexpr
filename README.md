@@ -19,7 +19,7 @@ the standard C math functions and runtime binding of variables.
 - Single source file and header file.
 - Simple and fast.
 - Implements standard operators precedence.
-- Exposes standard C math functions (sin, sqrt, log, etc.).
+- Exposes standard C math functions (sin, sqrt, ln, log10, etc.).
 - Can add custom functions and variables easily.
 - Can bind variables at eval-time.
 - Released under the zlib license - free for nearly any use.
@@ -271,7 +271,7 @@ left-to-right, but this can be changed - see below).
 
 The following C math functions are also supported:
 
-- abs, acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, gamma, log, log2, log10, pow, sin, sinh, sqrt, tan, tanh
+- abs (calls to *fabs*), acos, asin, atan, atan2, cbrt, ceil, cos, cosh, exp, floor, ln (calls to *log*), log (calls to *log10* by default, see below), log10, log2, pow, sin, sinh, sqrt, tan, tanh
 
 The following functions are also built-in and provided by TinyExpr:
 
@@ -285,6 +285,28 @@ Also, the following constants are available:
 - `pi`, `e`
 
 
+## Compile-time options
+
+
+By default, TinyExpr does exponentiation from left to right. For example:
+
+`a^b^c == (a^b)^c` and `-a^b == (-a)^b`
+
+This is by design. It's the way that spreadsheets do it (e.g. Excel, Google Sheets).
+
+
+If you would rather have exponentiation work from right to left, you need to
+define `TE_POW_FROM_RIGHT` when compiling `tinyexpr.c`. There is a
+commented-out define near the top of that file. With this option enabled, the
+behaviour is:
+
+`a^b^c == a^(b^c)` and `-a^b == -(a^b)`
+
+That will match how many scripting languages do it (e.g. Python, Ruby).
+
+Also, if you'd like `log` to default to the natural log instead of `log10`,
+then you can define `TE_NAT_LOG`.
+
 ## Hints
 
 - All functions/types start with the letters *te*.
@@ -295,3 +317,4 @@ Also, the following constants are available:
   parentheses are important, because TinyExpr will not change the order of
   evaluation. If you instead compiled "x+1+5" TinyExpr will insist that "1" is
   added to "x" first, and "5" is added the result second.
+

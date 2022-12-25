@@ -50,6 +50,25 @@ extern "C" {
     typedef double (*te_clo6)(void* context, double a, double b, double c, double d, double e, double f);
     typedef double (*te_clo7)(void* context, double a, double b, double c, double d, double e, double f, double g);
 
+
+	typedef enum te_type
+	{
+		TE_VARIABLE = 0,
+		TE_CONSTANT = 1,
+
+		TE_FUNCTION = 8, TE_FUNCTION0 = 8, TE_FUNCTION1, TE_FUNCTION2, TE_FUNCTION3,
+		TE_FUNCTION4, TE_FUNCTION5, TE_FUNCTION6, TE_FUNCTION7,
+
+		TE_CLOSURE = 16, TE_CLOSURE0 = 16, TE_CLOSURE1, TE_CLOSURE2, TE_CLOSURE3,
+		TE_CLOSURE4, TE_CLOSURE5, TE_CLOSURE6, TE_CLOSURE7,
+
+		TE_FLAG_PURE = 32,
+
+		TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
+		TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
+	} te_type;
+
+
     /* Public */
     typedef struct te_expr {
         union {
@@ -72,22 +91,10 @@ extern "C" {
             te_clo6 clo6;
             te_clo7 clo7;
         } expr;
-        int type;
-        struct te_expr *parameters[1];
+        te_type type;
+        struct te_expr *parameters[1]; // https://stackoverflow.com/a/4413035/9731532
     } te_expr;
 
-
-    enum {
-        TE_VARIABLE = 0,
-
-        TE_FUNCTION0 = 8, TE_FUNCTION1, TE_FUNCTION2, TE_FUNCTION3,
-        TE_FUNCTION4, TE_FUNCTION5, TE_FUNCTION6, TE_FUNCTION7,
-
-        TE_CLOSURE0 = 16, TE_CLOSURE1, TE_CLOSURE2, TE_CLOSURE3,
-        TE_CLOSURE4, TE_CLOSURE5, TE_CLOSURE6, TE_CLOSURE7,
-
-        TE_FLAG_PURE = 32
-    };
 
     typedef struct te_variable {
         const char *name;
@@ -111,7 +118,7 @@ extern "C" {
             te_clo6 clo6;
             te_clo7 clo7;
         } el;
-        int type;
+        te_type type;
         te_expr *context;
     } te_variable;
 
