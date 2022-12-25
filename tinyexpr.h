@@ -32,64 +32,64 @@ extern "C" {
 
 
 
-typedef struct te_expr 
-{
-    int type;
-    union { double value; const double *bound; const void *function; };
-    void *parameters[1]; // https://stackoverflow.com/a/4413035/9731532
-} te_expr;
+	typedef struct te_expr
+	{
+		int type;
+		union { double value; const double *bound; const void *function; };
+		void *parameters[1]; // https://stackoverflow.com/a/4413035/9731532
+	} te_expr;
 
 
-typedef enum te_type 
-{
-    TE_VARIABLE = 0,
-    TE_CONSTANT = 1,
+	typedef enum te_type
+	{
+		TE_VARIABLE = 0,
+		TE_CONSTANT = 1,
 
-    TE_FUNCTION = 8, TE_FUNCTION0 = 8, TE_FUNCTION1, TE_FUNCTION2, TE_FUNCTION3,
-    TE_FUNCTION4, TE_FUNCTION5, TE_FUNCTION6, TE_FUNCTION7,
+		TE_FUNCTION = 8, TE_FUNCTION0 = 8, TE_FUNCTION1, TE_FUNCTION2, TE_FUNCTION3,
+		TE_FUNCTION4, TE_FUNCTION5, TE_FUNCTION6, TE_FUNCTION7,
 
-    TE_CLOSURE = 16, TE_CLOSURE0 = 16, TE_CLOSURE1, TE_CLOSURE2, TE_CLOSURE3,
-    TE_CLOSURE4, TE_CLOSURE5, TE_CLOSURE6, TE_CLOSURE7,
+		TE_CLOSURE = 16, TE_CLOSURE0 = 16, TE_CLOSURE1, TE_CLOSURE2, TE_CLOSURE3,
+		TE_CLOSURE4, TE_CLOSURE5, TE_CLOSURE6, TE_CLOSURE7,
 
-    TE_FLAG_PURE = 32,
-    
-    TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
-    TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
-} te_type;
+		TE_FLAG_PURE = 32,
 
-
-typedef struct te_variable 
-{
-    const char *name;
-    const void *address;  // either the literal address of the variable, or the function pointer
-    te_type type;
-    void *context;        // used for closures
-} te_variable;
+		TOK_NULL = TE_CLOSURE7+1, TOK_ERROR, TOK_END, TOK_SEP,
+		TOK_OPEN, TOK_CLOSE, TOK_NUMBER, TOK_VARIABLE, TOK_INFIX
+	} te_type;
 
 
+	typedef struct te_variable
+	{
+		const char *name;
+		const void *address;  // either the literal address of the variable, or the function pointer
+		te_type type;
+		void *context;        // used for closures
+	} te_variable;
 
-/* Parses the input expression, evaluates it, and frees it. */
-/* Returns NaN on error. */
-double te_interp(const char *expression, int *error);
 
-/* Parses the input expression and binds variables. */
-/* Returns NULL on error. */
-te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, int *error);
 
-/* Evaluates the expression. */
-double te_eval(const te_expr *n);
+	/* Parses the input expression, evaluates it, and frees it. */
+	/* Returns NaN on error. */
+	double te_interp(const char *expression, int *error);
 
-/* Prints debugging information on the syntax tree. */
-void te_print(const te_expr *n);
+	/* Parses the input expression and binds variables. */
+	/* Returns NULL on error. */
+	te_expr *te_compile(const char *expression, const te_variable *variables, int var_count, int *error);
 
-/* Frees the expression. */
-/* This is safe to call on NULL pointers. */
-void te_free(te_expr *n);
+	/* Evaluates the expression. */
+	double te_eval(const te_expr *n);
 
-te_expr* te_expr_deep_copy(const te_expr* expr);
+	/* Prints debugging information on the syntax tree. */
+	void te_print(const te_expr *n);
 
-/* Symbolically differentiates the given expression with respect to the given variable */
-te_expr *te_differentiate_symbolically(const te_expr* expression, const te_variable* var, int* error);
+	/* Frees the expression. */
+	/* This is safe to call on NULL pointers. */
+	void te_free(te_expr *n);
+
+	te_expr* te_expr_deep_copy(const te_expr* expr);
+
+	/* Symbolically differentiates the given expression with respect to the given variable */
+	te_expr *te_differentiate_symbolically(const te_expr* expression, const te_variable* var, int* error);
 
 #ifdef __cplusplus
 }
