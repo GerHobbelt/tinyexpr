@@ -25,16 +25,6 @@
 
  /* COMPILE TIME OPTIONS */
 
- /* Exponentiation associativity:
- For a^b^c = (a^b)^c and -a^b = (-a)^b do nothing.
- For a^b^c = a^(b^c) and -a^b = -(a^b) uncomment the next line.*/
- /* #define TE_POW_FROM_RIGHT */
-
- /* Logarithms
- For log = base 10 log do nothing
- For log = natural log uncomment the next line. */
- /* #define TE_NAT_LOG */
-
 #include "tinyexpr.h"
 
 #include <stdlib.h>
@@ -102,7 +92,7 @@ typedef struct state {
 // This means the type occupies only the last 6 bits. 
 // (that is, if you count the pure flag a part of the type)
 // For this macro, that flag is neglected.
-#define TYPE_MASK(TYPE) ((TYPE)&0x0000001F)
+#define TYPE_MASK(TYPE) ((TYPE) & TE_FUNCTION_TYPE_MASK)
 
 #define IS_PURE(TYPE) (((TYPE) & TE_FLAG_PURE) != 0)
 #define IS_FUNCTION(TYPE) (((TYPE) & TE_FUNCTION) != 0)
@@ -111,7 +101,7 @@ typedef struct state {
 // Returns the number of arguments the function takes. 
 // If the input is not a function, the result is 0.
 // The number of arguments is determined by examining the flags
-#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION | TE_CLOSURE)) ? ((TYPE) & 0x00000007) : 0 )
+#define ARITY(TYPE) ( ((TYPE) & (TE_FUNCTION | TE_CLOSURE)) ? ((TYPE) & TE_FUNCTION_ARITY_MASK) : 0 )
 #ifdef __cplusplus
 #include <initializer_list>
 #define NEW_EXPR(type, ...) new_expr((type), &*std::initializer_list<const te_expr *>({__VA_ARGS__}).begin())
@@ -214,14 +204,19 @@ static double sd_tgamma(double n) { return tgamma(n); }
 static double sd_log2(double n) { return log2(n); }
 static double sd_min(double c, double d) {return (c < d) ? c : d;}
 static double sd_max(double c, double d) {return (c > d) ? c : d;}
+static double sd_pow(double n, double e) { return pow(n, e); } /* resolve overloading for g++ */
+static double sd_mod(double n, double d) { return fmod(n, d); }
 
 static double sd_ln(double n) { return log(n); }
 static double sd_log10(double n) { return log10(n); }
 
+#if 0
 #ifdef _MSC_VER
 #pragma function (ceil)
 #pragma function (floor)
 #endif
+#endif
+
 
 /*
     _Check_return_ double __cdecl acos(_In_ double _X);
@@ -327,10 +322,11 @@ static const te_variable functions[] = {
     {.name = "log2",  .el.fun1 = sd_log2,  .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "max", .el.fun2 = sd_max,      .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "min", .el.fun2 = sd_min,      .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
-    {.name = "ncr",   .el.fun2 = ncr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
+	{.name = "mod", .el.fun2 = sd_mod,      .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
+	{.name = "ncr",   .el.fun2 = ncr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "npr",   .el.fun2 = npr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "pi",    .el.fun0 = pi,    .type = TE_FUNCTION0 | TE_FLAG_PURE, .context = 0},
-    {.name = "pow",   .el.fun2 = pow,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
+    {.name = "pow",   .el.fun2 = sd_pow,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "sin",   .el.fun1 = sin,   .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "sinh",  .el.fun1 = sinh,  .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "sqrt",  .el.fun1 = sqrt,  .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
@@ -397,6 +393,7 @@ static double equal(double a, double b) { return a == b; }
 static double not_equal(double a, double b) { return a != b; }
 static double logical_and(double a, double b) { return a != 0.0 && b != 0.0; }
 static double logical_or(double a, double b) { return a != 0.0 || b != 0.0; }
+static double logical_xor(double a, double b) { return (a != 0.0) ^ (b != 0.0); }
 static double logical_not(double a) { return a == 0.0; }
 static double logical_notnot(double a) { return a != 0.0; }
 static double negate_logical_not(double a) { return -(a == 0.0); }
@@ -408,6 +405,9 @@ static double bitwise_or(double a, double b) { return llround(a) | llround(b); }
 static double bitwise_xor(double a, double b) { return llround(a) ^ llround(b); }
 static double bitwise_not(double a) {
 	return ~llround(a) & 0x1FFFFFFFFFFFFFLL;
+}
+static double bitwise_notnot(double a) {
+	return llround(a) & 0x1FFFFFFFFFFFFFLL;
 }
 
 void next_token(state* s) {
@@ -427,9 +427,9 @@ void next_token(state* s) {
         }
         else {
             /* Look for a variable or builtin function call. */
-            if (isalpha(s->next[0])) {
+            if (isalpha(s->next[0]) || (s->next[0] == '_')) {
                 const char* start;
-                start = s->next;
+                start = s->next++;
                 while (isalpha(s->next[0]) || isdigit(s->next[0]) || (s->next[0] == '_')) s->next++;
 
                 const te_variable* var = find_lookup(s, start, s->next - start);
@@ -466,11 +466,11 @@ void next_token(state* s) {
                 case '+': s->type = TOK_INFIX; s->expr.fun2 = add; break;
                 case '-': s->type = TOK_INFIX; s->expr.fun2 = sub; break;
                 case '*':
-                    if (*s->next == '*') { ++s->next; s->expr.fun2 = pow; }
+                    if (*s->next == '*') { ++s->next; s->expr.fun2 = sd_pow; }
                     else s->expr.fun2 = mul;
                     s->type = TOK_INFIX; break;
                 case '/': s->type = TOK_INFIX; s->expr.fun2 = divide; break;
-                case '%': s->type = TOK_INFIX; s->expr.fun2 = fmod; break;
+                case '%': s->type = TOK_INFIX; s->expr.fun2 = sd_mod; break;
                 case '!':
                     if (s->next++[0] == '=') {
                         s->type = TOK_INFIX; s->expr.fun2 = not_equal;
@@ -497,7 +497,12 @@ void next_token(state* s) {
                         s->next++;
                         s->type = TOK_INFIX; s->expr.fun2 = shift_left;
                     }
-                    else {
+					else if (s->next[0] == '>') {
+						// `<>` is an alias for the `!=` operator
+						s->next++;
+						s->type = TOK_INFIX; s->expr.fun2 = not_equal;
+					}
+					else {
                         s->type = TOK_INFIX; s->expr.fun2 = lower;
                     }
                     break;
@@ -532,7 +537,15 @@ void next_token(state* s) {
                         s->type = TOK_INFIX; s->expr.fun2 = bitwise_or;
                     }
                     break;
-                case '^': s->type = TOK_INFIX; s->expr.fun2 = bitwise_xor; break;
+                case '^':
+					if (s->next++[0] == '^') {
+						s->type = TOK_INFIX; s->expr.fun2 = logical_xor;
+					}
+					else {
+						s->next--;
+						s->type = TOK_INFIX; s->expr.fun2 = bitwise_xor;
+					}
+					break;
                 case '~': s->type = TOK_INFIX; s->expr.fun1 = bitwise_not; break;
                 case '(': s->type = TOK_OPEN; break;
                 case ')': s->type = TOK_CLOSE; break;
@@ -597,7 +610,7 @@ static te_expr* base(state* s) {
         }
         break;
 
-		// Function with 1 input parameter
+		// Function with 1 input parameter (optimization/shorthand: no braces needed when the function argument is itself a unary expression)
     case TE_FUNCTION1:
     case TE_CLOSURE1:
         ret = new_expr(s->type, 0);
@@ -682,51 +695,152 @@ static te_expr* base(state* s) {
 
 
 static te_expr* power(state* s) {
-    /* <power>     =    {("-" | "+" | "!")} <base> */
-    int sign = 1;
-    while (s->type == TOK_INFIX && (s->expr.fun2 == add || s->expr.fun2 == sub)) {
-        if (s->expr.fun2 == sub) sign = -sign;
-        next_token(s);
-    }
+	/* <power>     =    {("-" | "+" | "!" | "~")} <base> */
 
+	// optimization: roll multiple unary operators into one (or nil) IFF we can do that already right here: that'll save
+	// some optimizer effort and memory allocation/free-ing down that lane:
+    int sign = 1;
     int logical = 0;
-    while (s->type == TOK_INFIX && (s->expr.fun2 == add || s->expr.fun2 == sub || s->expr.fun1 == logical_not)) {
+	int bitwise_neg = 0;
+	int complex = 0;
+	while (s->type == TOK_INFIX) {
         if (s->expr.fun1 == logical_not) {
             if (logical == 0) {
-                logical = -1;
+				if (bitwise_neg != 0) {
+					// we already encountered a bitwise_not before this op, e.g. `~!x`, which we
+					// treat as a 'complex' unary expression, delegating the logical_not here
+					// to the next parse level.
+					complex = 1;
+					break;
+				}
+				logical = -1;
             }
             else {
                 logical = -logical;
             }
         }
-        next_token(s);
+		else if (s->expr.fun1 == bitwise_not) {
+			if (logical == 0) {
+				if (sign != 1) {
+					// we already encountered a value negation before this op, e.g. `-~x`, which we
+					// treat as a 'complex' unary expression, delegating the bitwise_not here
+					// to the next parse level.
+					complex = 1;
+					break;
+				}
+				if (bitwise_neg == 0) {
+					bitwise_neg = -1;
+				}
+				else {
+					bitwise_neg = -bitwise_neg;
+				}
+			}
+			else {
+				// we already encountered a logical_not before this op, e.g. `!~x`, which turns
+				// any subordinate bitwise negation (like this one) into the equivalent of a logical one:
+				// `!~x` === `!!x` for both `x = 0` and any `x != 0`.
+				// 
+				// ^^^^^^ *WRONG*! The stated equivalence only applies to small numbers, but TE
+				// *masks* larger numbers when applying bitwise logic, hence this combination
+				// must be marked as 'complex' instead!
+#if 0
+				logical = -logical;
+#else
+				complex = 1;
+				break;
+#endif
+			}
+		}
+		else if (s->expr.fun2 == sub) {
+			if (logical == 0) {
+				if (bitwise_neg == 0) {
+					sign = -sign;
+				}
+				else {
+					// we already encountered a bitwise_not before this op, e.g. `~-x`, which turns
+					// this unary expression into a complex one, so we'll have to leave to a more
+					// sophisticated optimizer and/or evaluator to calculate: we therefore push the
+					// the unary operator(s) collected thus far as a single token, then re-invoke
+					// this parse leel to collect this last (and any following) unary ops in a
+					// separate token.
+					complex = 1;
+					break;
+				}
+			}
+			else {
+				// we already encountered a logical_not before this op, e.g. `!-x`, which turns
+				// any subordinate negation (like this one) into a no-op:
+				// `!-x` === `!x` for both `x = 0` and any `x != 0`.
+				(void)0;   //no-op
+			}
+		}
+		else if (s->expr.fun2 == add) {
+			// else: unary_plus doesn't change a thing, no matter whether it's mixed with logical
+			// and/or bitwise negations --> no change = no-op then.
+			(void)0;   //no-op
+		}
+		else {
+			// stop the unary op gathering when we encounter anything else!
+			break;
+		}
+
+		next_token(s);
     }
 
     te_expr* ret;
 
+	if (complex) {
+		ret = power(s);
+		CHECK_NULL(ret);
+	}
+	else {
+		ret = base(s);
+		CHECK_NULL(ret);
+	}
+
+	te_expr* b = ret;
+
     if (sign == 1) {
-        if (logical == 0) {
-            ret = base(s);
+		if (logical == 0) {
+			if (bitwise_neg == 0) {
+				ret = ret;
+			}
+			else if (bitwise_neg == -1) {
+				ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+				CHECK_NULL(ret, te_free(b));
+				ret->expr.fun1 = bitwise_not;
+			}
+			else {
+				ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+				CHECK_NULL(ret, te_free(b));
+				ret->expr.fun1 = bitwise_notnot;
+			}
         }
         else if (logical == -1) {
-            ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, base(s));
-            ret->expr.fun1 = logical_not;
+            ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+			CHECK_NULL(ret, te_free(b));
+			ret->expr.fun1 = logical_not;
         }
         else {
-            ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, base(s));
-            ret->expr.fun1 = logical_notnot;
+            ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
+			CHECK_NULL(ret, te_free(b));
+			ret->expr.fun1 = logical_notnot;
         }
     }
     else {
-        te_expr* b = base(s);
-        CHECK_NULL(b);
-
-        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, b);
+        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
         CHECK_NULL(ret, te_free(b));
 
         if (logical == 0) {
-            ret->expr.fun1 = negate;
-        }
+			#ifndef NDEBUG
+			if (bitwise_neg != 0)
+			{
+				fprintf(stderr, "Assertion failure: unexpected combo of unary operators: -~ in [%s]\n", s->start);
+				return NULL;
+			}
+			#endif
+			ret->expr.fun1 = negate;
+		}
         else if (logical == -1) {
             ret->expr.fun1 = negate_logical_not;
         }
@@ -742,118 +856,70 @@ static te_expr* power(state* s) {
 
 static te_expr* factor(state* s) {
     /* <factor>    =    <power> {"**" <power>} */
-    te_expr* ret = power(s);
-    CHECK_NULL(ret);
+	te_expr* ret = power(s);
+	CHECK_NULL(ret);
 
-    te_fun1 left_function = NULL;
+	if (s->type == TOK_INFIX && (s->expr.fun2 == sd_pow)) {
+		te_fun2 t = s->expr.fun2;
+		next_token(s);
+		te_expr* f = power(s);
+		CHECK_NULL(f, te_free(ret));
 
-    if (ret->type == (TE_FUNCTION1 | TE_FLAG_PURE) &&
-        (ret->expr.fun1 == negate || ret->expr.fun1 == logical_not || ret->expr.fun1 == logical_notnot ||
-            ret->expr.fun1 == negate_logical_not || ret->expr.fun1 == negate_logical_notnot)) {
-        left_function = ret->expr.fun1;
-        te_expr* se = ret->parameters[0];
-        free(ret);
-        ret = se;
-    }
+		te_expr* prev = ret;
+		ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, f);
+		CHECK_NULL(ret, te_free(f), te_free(prev));
 
-    te_expr* insertion = 0;
-    te_fun2 dpow = pow; /* resolve overloading for g++ */
-    while (s->type == TOK_INFIX && (s->expr.fun2 == dpow)) {
-        te_fun2 t = s->expr.fun2;
-        next_token(s);
+		ret->expr.fun2 = t;   // sd_pow()
+	}
 
-        if (insertion) {
-            /* Make exponentiation go right-to-left. */
-            te_expr* p = power(s);
-            CHECK_NULL(p, te_free(ret));
+	// right associativity: scan if there's an a**b**c... expression going on:
 
-            te_expr* insert = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], p);
-            CHECK_NULL(insert, te_free(p), te_free(ret));
+	te_expr* base = ret;
 
-            insert->expr.fun2 = t;
-            insertion->parameters[1] = insert;
-            insertion = insert;
-        }
-        else {
-            te_expr* p = power(s);
-            CHECK_NULL(p, te_free(ret));
+	while (s->type == TOK_INFIX && (s->expr.fun2 == sd_pow)) {
+		te_fun2 t = s->expr.fun2;
+		next_token(s);
+		te_expr* f = power(s);
+		CHECK_NULL(f, te_free(ret));
 
-            te_expr* prev = ret;
-            ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, p);
-            CHECK_NULL(ret, te_free(p), te_free(prev));
+		// pop original exponent 'b'
+		te_expr* exp = base->parameters[1];
+		// construct 'b**c': right associative operator
+		te_expr* super = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, exp, f);
+		CHECK_NULL(super, te_free(f), te_free(ret));
+		// push exponent *expression* 'b**c' into base power expression
+		base->parameters[1] = super;
 
-            ret->expr.fun2 = t;
-            insertion = ret;
-        }
-    }
+		super->expr.fun2 = t;   // sd_pow()
 
-    if (left_function) {
-        te_expr* prev = ret;
-        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
-        ret->expr.fun1 = left_function;
-        CHECK_NULL(ret, te_free(prev));
-    }
+		// and set the new 'base' expression to the 'b**c' AST token:
+		base = super;
+	}
 
-    return ret;
+	return ret;
 }
 
 #else
 
 static te_expr* factor(state* s) {
-    /* <factor>    =    <power> {"**" <power>} */
-    te_expr* ret = power(s);
-    CHECK_NULL(ret);
+	/* <factor>    =    <power> {"**" <power>} */
+	te_expr* ret = power(s);
+	CHECK_NULL(ret);
 
-    te_fun1 left_function = NULL;
+	while (s->type == TOK_INFIX && (s->expr.fun2 == sd_pow)) {
+		te_fun2 t = s->expr.fun2;
+		next_token(s);
+		te_expr* f = power(s);
+		CHECK_NULL(f, te_free(ret));
 
-    if (ret->type == (TE_FUNCTION1 | TE_FLAG_PURE) &&
-        (ret->expr.fun1 == negate || ret->expr.fun1 == logical_not || ret->expr.fun1 == logical_notnot ||
-            ret->expr.fun1 == negate_logical_not || ret->expr.fun1 == negate_logical_notnot)) {
-        left_function = ret->expr.fun1;
-        te_expr* se = ret->parameters[0];
-        free(ret);
-        ret = se;
-    }
+		te_expr* prev = ret;
+		ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, f);
+		CHECK_NULL(ret, te_free(f), te_free(prev));
 
-    te_expr* insertion = 0;
-    te_fun2 dpow = pow; /* resolve overloading for g++ */
-    while (s->type == TOK_INFIX && (s->expr.fun2 == dpow)) {
-        te_fun2 t = s->expr.fun2;
-        next_token(s);
+		ret->expr.fun2 = t;   // sd_pow()
+	}
 
-        if (insertion) {
-            /* TODO: Make exponentiation go left-ro-right. */
-            te_expr* p = power(s);
-            CHECK_NULL(p, te_free(ret));
-
-            te_expr* insert = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, insertion->parameters[1], p);
-            CHECK_NULL(insert, te_free(p), te_free(ret));
-
-            insert->expr.fun2 = t;
-            insertion->parameters[1] = insert;
-            insertion = insert;
-        }
-        else {
-            te_expr* p = power(s);
-            CHECK_NULL(p, te_free(ret));
-
-            te_expr* prev = ret;
-            ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, p);
-            CHECK_NULL(ret, te_free(p), te_free(prev));
-
-            ret->expr.fun2 = t;
-            insertion = ret;
-        }
-    }
-
-    if (left_function) {
-        te_expr* prev = ret;
-        ret = NEW_EXPR(TE_FUNCTION1 | TE_FLAG_PURE, ret);
-        ret->expr.fun1 = left_function;
-        CHECK_NULL(ret, te_free(prev));
-    }
-
-    return ret;
+	return ret;
 }
 
 #endif
@@ -862,8 +928,8 @@ static te_expr* term(state* s) {
     /* <term>      =    <factor> {("*" | "/" | "%") <factor>} */
     te_expr* ret = factor(s);
     CHECK_NULL(ret);
-    te_fun2 dmod = fmod; /* resolve c++ overloading */
-    while (s->type == TOK_INFIX && (s->expr.fun2 == mul || s->expr.fun2 == divide || s->expr.fun2 == dmod)) {
+
+    while (s->type == TOK_INFIX && (s->expr.fun2 == mul || s->expr.fun2 == divide || s->expr.fun2 == sd_mod)) {
         te_fun2 t = s->expr.fun2;
         next_token(s);
         te_expr* f = factor(s);
@@ -949,10 +1015,10 @@ static te_expr* bitw_expr(state* s) {
 
 
 static te_expr* expr(state* s) {
-    /* <expr>      =    <bitw_expr> {("&&" | "||") <bitw_expr>} */
+    /* <expr>      =    <bitw_expr> {("&&" | "||" | "^^") <bitw_expr>} */
     te_expr* ret = bitw_expr(s);
 
-    while (s->type == TOK_INFIX && (s->expr.fun2 == logical_and || s->expr.fun2 == logical_or)) {
+    while (s->type == TOK_INFIX && (s->expr.fun2 == logical_and || s->expr.fun2 == logical_or || s->expr.fun2 == logical_xor)) {
         te_fun2 t = s->expr.fun2;
         next_token(s);
         ret = NEW_EXPR(TE_FUNCTION2 | TE_FLAG_PURE, ret, bitw_expr(s));
@@ -988,46 +1054,37 @@ static te_expr* list(state* s) {
 
 
 double te_eval(const te_expr* n) {
-    if (!n) return NAN;
+	if (!n) return NAN;
 
-    switch (TYPE_MASK(n->type)) {
-    case TE_CONSTANT: return n->expr.value;
-    case TE_VARIABLE: return *n->expr.bound;
+	switch (TYPE_MASK(n->type)) {
+	case TE_CONSTANT: return n->expr.value;
+	case TE_VARIABLE: return *n->expr.bound;
 
-    case TE_FUNCTION0: case TE_FUNCTION1: case TE_FUNCTION2: case TE_FUNCTION3:
-    case TE_FUNCTION4: case TE_FUNCTION5: case TE_FUNCTION6: case TE_FUNCTION7:
-        switch (ARITY(n->type)) {
-        case 0: return n->expr.fun0();
-        case 1: return n->expr.fun1(M(0));
-        case 2: return n->expr.fun2(M(0), M(1));
-        case 3: return n->expr.fun3(M(0), M(1), M(2));
-        case 4: return n->expr.fun4(M(0), M(1), M(2), M(3));
-        case 5: return n->expr.fun5(M(0), M(1), M(2), M(3), M(4));
-        case 6: return n->expr.fun6(M(0), M(1), M(2), M(3), M(4), M(5));
-        case 7: return n->expr.fun7(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
-        default: return NAN;
-        }
+	case TE_FUNCTION0: return n->expr.fun0();
+	case TE_FUNCTION1: return n->expr.fun1(M(0));
+	case TE_FUNCTION2: return n->expr.fun2(M(0), M(1));
+	case TE_FUNCTION3: return n->expr.fun3(M(0), M(1), M(2));
+	case TE_FUNCTION4: return n->expr.fun4(M(0), M(1), M(2), M(3));
+	case TE_FUNCTION5: return n->expr.fun5(M(0), M(1), M(2), M(3), M(4));
+	case TE_FUNCTION6: return n->expr.fun6(M(0), M(1), M(2), M(3), M(4), M(5));
+	case TE_FUNCTION7: return n->expr.fun7(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
 
-    case TE_CLOSURE0: case TE_CLOSURE1: case TE_CLOSURE2: case TE_CLOSURE3:
-    case TE_CLOSURE4: case TE_CLOSURE5: case TE_CLOSURE6: case TE_CLOSURE7:
-        switch (ARITY(n->type)) {
-        case 0: return n->expr.clo0(n->parameters[0]);
-        case 1: return n->expr.clo1(n->parameters[1], M(0));
-        case 2: return n->expr.clo2(n->parameters[2], M(0), M(1));
-        case 3: return n->expr.clo3(n->parameters[3], M(0), M(1), M(2));
-        case 4: return n->expr.clo4(n->parameters[4], M(0), M(1), M(2), M(3));
-        case 5: return n->expr.clo5(n->parameters[5], M(0), M(1), M(2), M(3), M(4));
-        case 6: return n->expr.clo6(n->parameters[6], M(0), M(1), M(2), M(3), M(4), M(5));
-        case 7: return n->expr.clo7(n->parameters[7], M(0), M(1), M(2), M(3), M(4), M(5), M(6));
-        default: return NAN;
-        }
+	case TE_CLOSURE0: return n->expr.clo0(n->parameters[0]);
+	case TE_CLOSURE1: return n->expr.clo1(n->parameters[1], M(0));
+	case TE_CLOSURE2: return n->expr.clo2(n->parameters[2], M(0), M(1));
+	case TE_CLOSURE3: return n->expr.clo3(n->parameters[3], M(0), M(1), M(2));
+	case TE_CLOSURE4: return n->expr.clo4(n->parameters[4], M(0), M(1), M(2), M(3));
+	case TE_CLOSURE5: return n->expr.clo5(n->parameters[5], M(0), M(1), M(2), M(3), M(4));
+	case TE_CLOSURE6: return n->expr.clo6(n->parameters[6], M(0), M(1), M(2), M(3), M(4), M(5));
+	case TE_CLOSURE7: return n->expr.clo7(n->parameters[7], M(0), M(1), M(2), M(3), M(4), M(5), M(6));
 
-    default: return NAN;
-    }
-
+	default: return NAN;
+	}
 }
 
+
 #undef M
+
 
 static void optimize(te_expr* n) {
     /* Evaluates as much as possible. */
@@ -1103,6 +1160,7 @@ double te_interp(const char* expression, int* error) {
     }
     return ret;
 }
+
 
 static void pn(const te_expr* n, int depth) {
     int i, arity;

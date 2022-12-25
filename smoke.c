@@ -28,6 +28,15 @@
 
 #include "monolithic_examples.h"
 
+#ifndef M_E
+#define M_E  (exp(1))
+#endif
+
+#ifndef M_PI
+#define M_PI  (acos(-1))
+#endif
+
+#define nelem(a)   ( sizeof(a) / sizeof((a)[0]) )
 
 typedef struct {
     const char* expr;
@@ -40,6 +49,17 @@ typedef struct {
 } test_equ;
 
 
+static int isNaN(double f)
+{
+	// the standard (f != f) check doesn't work for MSVC(2022) as the default NAN assigned is a NaN which apparently doesn't fail this standard check. Weird.
+#if !defined(isnan)
+	int rv = (f != f);
+#else
+	int rv = isnan(f);
+#endif
+	return rv;
+}
+
 
 static void test_results() {
     test_case cases[] = {
@@ -47,9 +67,9 @@ static void test_results() {
         {"1 ", 1},
         {"(1)", 1},
 
-        {"pi", 3.14159},
+        {"pi", M_PI},
         {"atan(1)*4 - pi", 0},
-        {"e", 2.71828},
+        {"e", M_E},
 
         {"2+1", 2 + 1},
         {"(((2+(1))))", 2 + 1},
@@ -107,7 +127,7 @@ static void test_results() {
         {"log (e**10)", 10},
 #else
         {"log 1000", 3},
-        {"log (10**e)", exp(1)},
+        {"log (10**e)", M_E},
         {"log (10**10)", 10},
 #endif
 
@@ -137,7 +157,10 @@ static void test_results() {
         {"-(1,(2,3))", -3},
 
         {"2**2", 4},
-        {"pow(2,2)", 4},
+		{"-2**2", +4},
+		{"-(2**2)", -4},
+		{"2**-2", pow(2, -2)},
+		{"pow(2,2)", 4},
 
         {"atan2(1,1)", 0.7854},
         {"atan2(1,2)", 0.4636},
@@ -157,13 +180,21 @@ static void test_results() {
         { "!0", 1 },
         { "!!!0", 1 },
 
-        { "~3", 0 },
-        { "~0", -1 },
+        { "~3", 0x1FFFFFFFFFFFFFLL & ~3LL },
+        { "~0", 0x1FFFFFFFFFFFFFLL & ~0LL },
+
+		{ "1^^5", 0 },
+		{ "1^5", 4 },
+		{ "1&5", 1 },
+		{ "1|5", 5 },
+		{ "31&&5", 1 },
+		{ "31||5", 1 },
+
     };
 
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
@@ -179,17 +210,6 @@ static void test_results() {
 }
 
 
-static int isNaN(double f)
-{
-    // the standard (f != f) check doesn't work for MSVC(2022) as the default NAN assigned is a NaN which apparently doesn't fail this standard check. Weird.
-#if !defined(isnan)
-    int rv = (f != f);
-#else
-    int rv = isnan(f);
-#endif
-    return rv;
-}
-
 void test_syntax() {
     test_case errors[] = {
         {"", 1},
@@ -200,19 +220,19 @@ void test_syntax() {
         {"1*2(+4", 4},
         {"1*2(1+4", 4},
         {"a+5", 1},
-        {"_a+5", 1},
+        {"_a+5", 2},
         {"#a+5", 1},
-		{"A+5", 1},
-		{"Aa+5", 1},
-        {"1^^5", 3},
+		{"A+5", 1},		// undefined variables...
+		{"Aa+5", 2},
         {"1*^5", 3},
         {"1^*5", 3},
         {"sin(cos5", 8},
-    };
+		{"cos5", 4},
+	};
 
 
     int i;
-    for (i = 0; i < sizeof(errors) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(errors); ++i) {
         const char* expr = errors[i].expr;
         const int e = errors[i].answer;
 
@@ -235,6 +255,67 @@ void test_syntax() {
 }
 
 
+static void test_unary_ops() {
+	test_case cases[] = {
+		{ "!~-1023", !(0x1FFFFFFFFFFFFFLL & ~- 1023LL) },
+		{"+1", 1},
+		{"-1 ", -1},
+		{"!1", 0},
+
+		{"-pi", -M_PI},
+		{"-e", -M_E},
+
+		{"100**---+-++---++-+-+-.5+1", 11},
+
+		{ "!3", 0 },
+		{ "!!+5", 1 },
+		{ "!-5", 0 },
+		{ "!0", 1 },
+		{ "!!!0", 1 },
+
+		{ "~3", 0x1FFFFFFFFFFFFFLL & ~3LL },
+		{ "~0", 0x1FFFFFFFFFFFFFLL },
+		{ "~-25", 0x1FFFFFFFFFFFFFLL & ~-25LL },
+		{ "-~~~-1023", -(0x1FFFFFFFFFFFFFLL & ~~~-1023LL) },
+		{ "~-1023", (0x1FFFFFFFFFFFFFLL & ~-1023LL) },
+		{ "!~-1023", !(0x1FFFFFFFFFFFFFLL & ~- 1023LL) },
+		{ "!!~-1023", !!(0x1FFFFFFFFFFFFFLL & ~-1023LL) },
+		{ "~!!~-1023", (0x1FFFFFFFFFFFFFLL & ~!!(0x1FFFFFFFFFFFFFLL & ~-1023LL) ) },
+		{ "~~!!~-1023", (0x1FFFFFFFFFFFFFLL & ~~!!(0x1FFFFFFFFFFFFFLL & ~-1023LL)) },
+		{ "-~~!!~-1023", -(0x1FFFFFFFFFFFFFLL & ~~!!(0x1FFFFFFFFFFFFFLL & ~- 1023LL)) },
+		{ "!!-1023", !!-1023 },
+		{ "-!!--!!-1023", -!!-(-!!-1023)},
+	};
+
+
+	int i;
+	for (i = 0; i < nelem(cases); ++i) {
+		const char* expr = cases[i].expr;
+		const double answer = cases[i].answer;
+
+		int err;
+		const double ev = te_interp(expr, &err);
+		lok(!err, expr);
+		lfequal(ev, answer, expr);
+
+		if (err) {
+			printf("FAILED: [%s] --> (error position: %d)\n", expr, err);
+		}
+
+		// all the test expressions should optimize to a TE_CONSTANT token by constant folding and unary operator folding.
+		te_expr* n = te_compile(expr, 0, 0, &err);
+		lok(n, expr);
+		lequal(err, 0, expr);
+		if (n)
+		{
+			lequal(n->type, TE_CONSTANT, expr);
+			te_free(n);
+		}
+	}
+}
+
+
+
 void test_nans() {
 
     const char* nans[] = {
@@ -252,7 +333,7 @@ void test_nans() {
     };
 
     int i;
-    for (i = 0; i < sizeof(nans) / sizeof(const char*); ++i) {
+    for (i = 0; i < nelem(nans); ++i) {
         const char* expr = nans[i];
 
         int err;
@@ -286,7 +367,7 @@ void test_infs() {
     };
 
     int i;
-    for (i = 0; i < sizeof(infs) / sizeof(const char*); ++i) {
+    for (i = 0; i < nelem(infs); ++i) {
         const char* expr = infs[i];
 
         int err;
@@ -370,6 +451,43 @@ void test_variables() {
     lok(err, "si x");
 }
 
+
+void test_variables2() {
+
+	double x = 1, y = 2, a = 3, _a_ = 4, ca = 5, aa = 6;
+	te_variable lookup[] = {
+		{.name = "x", {.variable = &x }},
+		{.name = "y", {.variable = &y }},
+		{.name = "a", {.variable = &a }},
+		{.name = "_a_", {.variable = &_a_ }},
+		{.name = "A", {.variable = &ca }},
+		{.name = "Aa", {.variable = &aa }},
+	};
+
+	test_case exprs[] = {
+		{"x+5", 6},
+		{"y+5", 7},
+		{"a+5", 8},
+		{"_a_+5", 9},
+		{"A+5", 10},
+		{"Aa+5", 11},
+		{"x+y+a+_a_+A+Aa", 21},
+	};
+
+	int i;
+	for (i = 0; i < nelem(exprs); ++i) {
+		const char* expr = exprs[i].expr;
+		double answer = exprs[i].answer;
+
+		int err;
+		te_expr* n = te_compile(expr, lookup, nelem(lookup), &err);
+		lok(n, expr);
+		lequal(err, 0, expr);
+		const double c = te_eval(n);
+		lfequal(c, answer, expr);
+		te_free(n);
+	}
+}
 
 
 #define cross_check(a, b) do {\
@@ -486,12 +604,12 @@ void test_dynamic() {
     f = 5;
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
         int err;
-        te_expr* ex = te_compile(expr, lookup, sizeof(lookup) / sizeof(te_variable), &err);
+        te_expr* ex = te_compile(expr, lookup, nelem(lookup), &err);
         lok(ex, expr);
         lfequal(te_eval(ex), answer, expr);
         te_free(ex);
@@ -543,12 +661,12 @@ void test_closure() {
     };
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
         int err;
-        te_expr* ex = te_compile(expr, lookup, sizeof(lookup) / sizeof(te_variable), &err);
+        te_expr* ex = te_compile(expr, lookup, nelem(lookup), &err);
         lok(ex, expr);
 
         extra = 0;
@@ -568,12 +686,12 @@ void test_closure() {
         {"cell 1 * cell 3 + cell 4", 57},
     };
 
-    for (i = 0; i < sizeof(cases2) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases2); ++i) {
         const char* expr = cases2[i].expr;
         const double answer = cases2[i].answer;
 
         int err;
-        te_expr* ex = te_compile(expr, lookup, sizeof(lookup) / sizeof(te_variable), &err);
+        te_expr* ex = te_compile(expr, lookup, nelem(lookup), &err);
         lok(ex, expr);
         lfequal(te_eval(ex), answer, expr);
         te_free(ex);
@@ -590,7 +708,7 @@ void test_optimize() {
     };
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
@@ -627,7 +745,8 @@ void test_pow() {
         {"(-1)**0", "1"},
         {"(-5)**0", "1"},
         {"-2**-3**-4", "-(2**(-(3**-4)))"},
-    };
+		{"-2**-3**-4", "-(2**(-(3**(-4))))"},
+	};
 #else
     test_equ cases[] = {
         {"2**3**4", "(2**3)**4"},
@@ -655,12 +774,12 @@ void test_pow() {
     };
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_equ); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr1 = cases[i].expr1;
         const char* expr2 = cases[i].expr2;
 
-        te_expr* ex1 = te_compile(expr1, lookup, sizeof(lookup) / sizeof(te_variable), 0);
-        te_expr* ex2 = te_compile(expr2, lookup, sizeof(lookup) / sizeof(te_variable), 0);
+        te_expr* ex1 = te_compile(expr1, lookup, nelem(lookup), 0);
+        te_expr* ex2 = te_compile(expr2, lookup, nelem(lookup), 0);
 
         lok(ex1, expr1);
         lok(ex2, expr2);
@@ -672,7 +791,7 @@ void test_pow() {
         const int olfail = lfails;
         lfequal(r1, r2, "(see next report line:)");
         if (olfail != lfails) {
-            printf("Failed expression: %s <> %s\n", expr1, expr2);
+            printf("Failed expression: [%s] <> [%s] (%f <> %f)\n", expr1, expr2, r1, r2);
         }
 
         te_free(ex1);
@@ -688,7 +807,7 @@ void test_combinatorics() {
             {"fac(1)", 1},
             {"fac(2)", 2},
             {"fac(3)", 6},
-            {"fac(4.8)", 24},
+            {"fac(4.8)", 85.621738 /* 24 */ },
             {"fac(10)", 3628800},
 
             {"ncr(0,0)", 1},
@@ -709,7 +828,7 @@ void test_combinatorics() {
 
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
@@ -803,7 +922,7 @@ void test_logic() {
 
 
     int i;
-    for (i = 0; i < sizeof(cases) / sizeof(test_case); ++i) {
+    for (i = 0; i < nelem(cases); ++i) {
         const char* expr = cases[i].expr;
         const double answer = cases[i].answer;
 
@@ -820,24 +939,89 @@ void test_logic() {
 
 
 
+
+void test_left_assoc() {
+	test_case cases[] = {
+		{"0 + 2 + 3 + 4 + 5 + 6", 20},
+		{"0 - 2 - 3 - 4 - 5 - 6", -20},
+		{"0 +- 2 +- 3 +- 4 +- 5 +- 6", -20},
+		{"0 -+ 2 -+ 3 -+ 4 -+ 5 -+ 6", -20},
+		{"0 -+- 2 -+- 3 -+- 4 -+- 5 -+- 6", 20},
+
+		{"1 * 2 * 3 * 4 * 5 * 6", 2 * 3 * 4 * 5 * 6},
+		{"-1 * -2 * -3 * -4 * -5 * -6", 2 * 3 * 4 * 5 * 6},
+		{"+1 * +2 * +3 * +4 * +5 * +6", 2 * 3 * 4 * 5 * 6},
+		{"720 / 2 / 3 / 4 / 5 / 6", 720 / 2 / 3 / 4 / 5 / 6},
+	};
+
+
+	int i;
+	for (i = 0; i < nelem(cases); ++i) {
+		const char* expr = cases[i].expr;
+		const double answer = cases[i].answer;
+
+		int err;
+		const double ev = te_interp(expr, &err);
+		lok(!err, expr);
+		lfequal(ev, answer, expr);
+
+		if (err) {
+			printf("FAILED: %s (%d)\n", expr, err);
+		}
+	}
+}
+
+
+
+void test_right_assoc() {
+	test_case cases[] = {
+		{"2 ** 3 ** 4", pow(2, 9 * 9)},
+	};
+
+
+	int i;
+	for (i = 0; i < nelem(cases); ++i) {
+		const char* expr = cases[i].expr;
+		const double answer = cases[i].answer;
+
+		int err;
+		const double ev = te_interp(expr, &err);
+		lok(!err, expr);
+		lfequal(ev, answer, expr);
+
+		if (err) {
+			printf("FAILED: %s (%d)\n", expr, err);
+		}
+	}
+}
+
+
+
+
+
 #if defined(BUILD_MONOLITHIC)
 #define main      tiny_expr_smoke_main
 #endif
 
 int main(int argc, const char** argv)
 {
-    lrun("Results", test_results);
+	lrun("Pow", test_pow);
+	lrun("Results", test_results);
     lrun("Syntax", test_syntax);
     lrun("NaNs", test_nans);
     lrun("INFs", test_infs);
-    lrun("Variables", test_variables);
-    lrun("Functions", test_functions);
+	lrun("UnaryOpeerators", test_unary_ops);
+	lrun("Variables #1", test_variables);
+	lrun("Variables #2", test_variables2);
+	lrun("Functions", test_functions);
     lrun("Dynamic", test_dynamic);
     lrun("Closure", test_closure);
     lrun("Optimize", test_optimize);
     lrun("Pow", test_pow);
     lrun("Combinatorics", test_combinatorics);
-    lrun("Logic", test_logic);
+	lrun("Left Associativity", test_left_assoc);
+	lrun("Right Associativity", test_right_assoc);
+	lrun("Logic", test_logic);
     lresults();
 
     return lfails != 0;
