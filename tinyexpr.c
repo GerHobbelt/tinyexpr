@@ -212,6 +212,8 @@ static double sd_floor(double n) { return floor(n); }
 static double sd_cbrt(double n) { return cbrt(n); }
 static double sd_tgamma(double n) { return tgamma(n); }
 static double sd_log2(double n) { return log2(n); }
+static double sd_min(double c, double d) {return (c < d) ? c : d;}
+static double sd_max(double c, double d) {return (c > d) ? c : d;}
 
 static double sd_ln(double n) { return log(n); }
 static double sd_log10(double n) { return log10(n); }
@@ -323,6 +325,8 @@ static const te_variable functions[] = {
 #endif
     {.name = "log10", .el.fun1 = sd_log10, .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
     {.name = "log2",  .el.fun1 = sd_log2,  .type = TE_FUNCTION1 | TE_FLAG_PURE, .context = 0},
+    {.name = "max", .el.fun2 = sd_max,      .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
+    {.name = "min", .el.fun2 = sd_min,      .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "ncr",   .el.fun2 = ncr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "npr",   .el.fun2 = npr,   .type = TE_FUNCTION2 | TE_FLAG_PURE, .context = 0},
     {.name = "pi",    .el.fun0 = pi,    .type = TE_FUNCTION0 | TE_FLAG_PURE, .context = 0},
