@@ -787,7 +787,7 @@ namespace te_builtins
             }
 
         const uint32_t intVal{ static_cast<uint32_t>(val) };
-        const decltype(intVal) result{ static_cast<decltype(intVal)>(~intVal) };
+        const decltype(intVal) result{ ~intVal };
         return static_cast<te_type>(result);
         }
 
@@ -813,7 +813,7 @@ namespace te_builtins
             }
 
         const uint64_t intVal{ static_cast<uint64_t>(val) };
-        const decltype(intVal) result{ static_cast<decltype(intVal)>(~intVal) };
+        const decltype(intVal) result{ ~intVal };
         return static_cast<te_type>(result);
         }
 
