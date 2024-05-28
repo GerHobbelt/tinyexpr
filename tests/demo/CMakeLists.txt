@@ -7,13 +7,12 @@
 # Licence:     3-Clause BSD licence
 #############################################################################
 
-PROJECT(TEDemo)
+project(TEDemo)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
-SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_STANDARD_REQUIRED True)
+cmake_minimum_required(VERSION 3.12)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
-ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} tinyexpr.cpp tedemo.cpp)
-
+add_executable(${CMAKE_PROJECT_NAME} ../../tinyexpr.cpp tedemo.cpp)
