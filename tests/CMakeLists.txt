@@ -42,6 +42,14 @@ if(CLANG_TIDY_COMMAND AND USE_CLANG_TIDY)
     endif()
 endif()
 
+if(USE_ADDRESS_SANITIZE)
+    message(STATUS "Address Sanitizer enabled")
+endif()
+
+if(USE_CLANG_TIDY)
+    message(STATUS "clang-tidy enabled")
+endif()
+
 if(TE_FLOAT)
     message(STATUS "Datatype: float")
     add_definitions(-DTE_FLOAT)
@@ -89,6 +97,9 @@ add_executable(${CMAKE_PROJECT_NAME} ../tinyexpr.cpp tetests.cpp testingmain.cpp
 if(MSVC)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC _DISABLE_VECTOR_ANNOTATION _DISABLE_STRING_ANNOTATION
                                $<$<CONFIG:Release>:NDEBUG>)
+    # This warning:
+    # C4554: check operator precedence for possible error; use parentheses to clarify precedence
+    # is suppressed because of unit test, not the code itself.
     if(USE_ADDRESS_SANITIZE)
         target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC /Zc:__cplusplus /MP /W3 /WX /wd4554
                            $<$<CONFIG:Debug>:/Od /fsanitize=address> $<$<CONFIG:Release>:/O2>)
