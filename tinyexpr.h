@@ -262,6 +262,8 @@ class te_parser
         m_decimalSeparator = that.m_decimalSeparator;
         m_listSeparator = that.m_listSeparator;
 
+        reset_state();
+
         return *this;
         }
 
@@ -624,6 +626,24 @@ class te_parser
     static std::string info();
 
   private:
+    /// Reset everything from previous call.
+    void reset_state()
+        {
+        m_errorPos = te_parser::npos;
+        m_lastErrorMessage.clear();
+        m_result = te_nan;
+        m_parseSuccess = false;
+        te_free(m_compiledExpression);
+        m_compiledExpression = nullptr;
+        m_currentVar = m_functions.cend();
+        m_varFound = false;
+#ifndef TE_NO_BOOKKEEPING
+        m_usedFunctions.clear();
+        m_usedVars.clear();
+#endif
+        m_resolvedVariables.clear();
+        }
+
     /// @brief Resets any resolved variables from USR if not being cached.
     void reset_usr_resolved_if_necessary()
         {

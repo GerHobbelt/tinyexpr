@@ -2273,20 +2273,7 @@ te_expr* te_parser::te_compile(const std::string_view expression, std::set<te_va
 //--------------------------------------------------
 bool te_parser::compile(const std::string_view expression)
     {
-    // reset everything from previous call
-    m_errorPos = te_parser::npos;
-    m_lastErrorMessage.clear();
-    m_result = te_nan;
-    m_parseSuccess = false;
-    te_free(m_compiledExpression);
-    m_compiledExpression = nullptr;
-    m_currentVar = m_functions.cend();
-    m_varFound = false;
-#ifndef TE_NO_BOOKKEEPING
-    m_usedFunctions.clear();
-    m_usedVars.clear();
-#endif
-    m_resolvedVariables.clear();
+    reset_state();
     if (get_list_separator() == get_decimal_separator())
         {
         throw std::runtime_error("List and decimal separators cannot be the same");
