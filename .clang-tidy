@@ -1,5 +1,5 @@
 ---
-Checks: '-clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,readability-*,cert-*,bugprone-*,misc-*,openmp-*,performance-*,portability-*,hicpp-*,google-*,-readability-function-cognitive-complexity,-bugprone-branch-clone,-hicpp-signed-bitwise,-misc-use-anonymous-namespace,-misc-no-recursion,-modernize-use-trailing-return-type'
+Checks: '-clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,readability-*,cert-*,bugprone-*,misc-*,openmp-*,performance-*,portability-*,hicpp-*,google-*,-misc-include-cleaner,-readability-function-cognitive-complexity,-bugprone-branch-clone,-hicpp-signed-bitwise,-misc-use-anonymous-namespace,-misc-no-recursion,-modernize-use-trailing-return-type'
 HeaderFilterRegex:   ''
 FormatStyle:         none
 InheritParentConfig: true
@@ -9,6 +9,7 @@ CheckOptions:
   readability-identifier-naming.ClassMemberPrefix: m_
   readability-identifier-naming.ClassMemberCase: camelBack
   readability-identifier-naming.LocalVariableCase: camelBack
+  readability-identifier-naming.ConstexprVariableCase: UPPER_CASE
   readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
   readability-identifier-naming.ParameterCase: camelBack
   readability-identifier-naming.ClassCase: lower_case
