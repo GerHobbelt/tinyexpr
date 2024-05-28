@@ -516,11 +516,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        else if (val2 > 8)
+        if (val2 > 8)
             {
             throw std::runtime_error("Rotation operation must be between 0-8.");
             }
@@ -536,11 +536,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        else if (val2 > 8)
+        if (val2 > 8)
             {
             throw std::runtime_error("Rotation operation must be between 0-8.");
             }
@@ -556,11 +556,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        else if (val2 > 16)
+        if (val2 > 16)
             {
             throw std::runtime_error("Rotation operation must be between 0-16.");
             }
@@ -576,11 +576,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        else if (val2 > 16)
+        if (val2 > 16)
             {
             throw std::runtime_error("Rotation operation must be between 0-16.");
             }
@@ -600,11 +600,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        else if (val2 > 32)
+        if (val2 > 32)
             {
             throw std::runtime_error("Rotation operation must be between 0-32.");
             }
@@ -624,11 +624,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        else if (val2 > 32)
+        if (val2 > 32)
             {
             throw std::runtime_error("Rotation operation must be between 0-32.");
             }
@@ -648,11 +648,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        else if (val2 > 63)
+        if (val2 > 63)
             {
             throw std::runtime_error("Rotation operation must be between 0-63");
             }
@@ -672,11 +672,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        else if (val2 > 63)
+        if (val2 > 63)
             {
             throw std::runtime_error("Rotation operation must be between 0-63");
             }
@@ -728,11 +728,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise NOT must use integers.");
             }
-        else if (val < 0)
+        if (val < 0)
             {
             throw std::runtime_error("Bitwise NOT value must be positive.");
             }
-        else if (val > std::numeric_limits<uint8_t>::max())
+        if (val > std::numeric_limits<uint8_t>::max())
             {
             throw std::runtime_error("Value is too large for bitwise NOT.");
             }
@@ -751,11 +751,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise NOT must use integers.");
             }
-        else if (val < 0)
+        if (val < 0)
             {
             throw std::runtime_error("Bitwise NOT value must be positive.");
             }
-        else if (val > std::numeric_limits<uint16_t>::max())
+        if (val > std::numeric_limits<uint16_t>::max())
             {
             throw std::runtime_error("Value is too large for bitwise NOT.");
             }
@@ -777,11 +777,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise NOT must use integers.");
             }
-        else if (val < 0)
+        if (val < 0)
             {
             throw std::runtime_error("Bitwise NOT value must be positive.");
             }
-        else if (val > std::numeric_limits<uint32_t>::max())
+        if (val > std::numeric_limits<uint32_t>::max())
             {
             throw std::runtime_error("Value is too large for bitwise NOT.");
             }
@@ -803,11 +803,11 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise NOT must use integers.");
             }
-        else if (val < 0)
+        if (val < 0)
             {
             throw std::runtime_error("Bitwise NOT value must be positive.");
             }
-        else if (val > std::numeric_limits<uint64_t>::max())
+        if (val > std::numeric_limits<uint64_t>::max())
             {
             throw std::runtime_error("Value is too large for bitwise NOT.");
             }
@@ -845,11 +845,11 @@ namespace te_builtins
             }
         // negative technically should be allowed, but spreadsheet programs do
         // not allow them; hence, we won't either
-        else if (val1 < 0 || val2 < 0)
+        if (val1 < 0 || val2 < 0)
             {
             throw std::runtime_error("Bitwise OR operation must use positive integers.");
             }
-        else if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
+        if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
             {
             throw std::runtime_error("Value is too large for bitwise operation.");
             }
@@ -866,11 +866,11 @@ namespace te_builtins
             }
         // negative technically should be allowed, but spreadsheet programs do
         // not allow them; hence, we won't either
-        else if (val1 < 0 || val2 < 0)
+        if (val1 < 0 || val2 < 0)
             {
             throw std::runtime_error("Bitwise XOR operation must use positive integers.");
             }
-        else if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
+        if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
             {
             throw std::runtime_error("Value is too large for bitwise operation.");
             }
@@ -887,11 +887,11 @@ namespace te_builtins
             }
         // negative technically should be allowed, but spreadsheet programs do
         // not allow them; hence, we won't either
-        else if (val1 < 0 || val2 < 0)
+        if (val1 < 0 || val2 < 0)
             {
             throw std::runtime_error("Bitwise AND operation must use positive integers.");
             }
-        else if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
+        if (val1 > te_parser::MAX_BITOPS_VAL || val2 > te_parser::MAX_BITOPS_VAL)
             {
             throw std::runtime_error("Value is too large for bitwise operation.");
             }
@@ -912,22 +912,22 @@ namespace te_builtins
             {
             throw std::runtime_error("Left side of left shift (<<) operation must be an integer.");
             }
-        else if (std::floor(val2) != val2)
+        if (std::floor(val2) != val2)
             {
             throw std::runtime_error(
                 "Additive expression of left shift (<<) operation must be an integer.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Left side of left shift (<<) operation cannot be negative.");
             }
-        else if (val1 > te_parser::MAX_BITOPS_VAL)
+        if (val1 > te_parser::MAX_BITOPS_VAL)
             {
             throw std::runtime_error("Value is too large for bitwise operation.");
             }
         // bitness is limited to 53-bit or 64-bit, so ensure shift doesn't go beyond that
         // and cause undefined behavior
-        else if (val2 < 0 || val2 > MAX_BITNESS_PARAM)
+        if (val2 < 0 || val2 > MAX_BITNESS_PARAM)
             {
             throw std::runtime_error(
                 "Additive expression of left shift (<<) operation must be between 0-" +
@@ -956,20 +956,20 @@ namespace te_builtins
             {
             throw std::runtime_error("Left side of right shift (>>) operation must be an integer.");
             }
-        else if (std::floor(val2) != val2)
+        if (std::floor(val2) != val2)
             {
             throw std::runtime_error(
                 "Additive expression of right shift (>>) operation must be an integer.");
             }
-        else if (val1 < 0)
+        if (val1 < 0)
             {
             throw std::runtime_error("Left side of right shift (<<) operation cannot be negative.");
             }
-        else if (val1 > te_parser::MAX_BITOPS_VAL)
+        if (val1 > te_parser::MAX_BITOPS_VAL)
             {
             throw std::runtime_error("Value is too large for bitwise operation.");
             }
-        else if (val2 < 0 || val2 > MAX_BITNESS_PARAM)
+        if (val2 < 0 || val2 > MAX_BITNESS_PARAM)
             {
             throw std::runtime_error(
                 "Additive expression of right shift (>>) operation must be between 0-" +
