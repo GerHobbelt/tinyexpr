@@ -249,7 +249,7 @@ class te_parser
     te_parser(const te_parser& that)
         : m_customFuncsAndVars(that.m_customFuncsAndVars),
           m_unknownSymbolResolve(that.m_unknownSymbolResolve),
-          m_keepResolvedVarialbes(that.m_keepResolvedVarialbes),
+          m_keepResolvedVariables(that.m_keepResolvedVariables),
           m_decimalSeparator(that.m_decimalSeparator), m_listSeparator(that.m_listSeparator)
         {
         }
@@ -258,7 +258,7 @@ class te_parser
         {
         m_customFuncsAndVars = that.m_customFuncsAndVars;
         m_unknownSymbolResolve = that.m_unknownSymbolResolve;
-        m_keepResolvedVarialbes = that.m_keepResolvedVarialbes;
+        m_keepResolvedVariables = that.m_keepResolvedVariables;
         m_decimalSeparator = that.m_decimalSeparator;
         m_listSeparator = that.m_listSeparator;
 
@@ -440,7 +440,7 @@ class te_parser
                                      const bool keepResolvedVariables = true)
         {
         m_unknownSymbolResolve = usr;
-        m_keepResolvedVarialbes = keepResolvedVariables;
+        m_keepResolvedVariables = keepResolvedVariables;
         }
 
     /// @private
@@ -627,7 +627,7 @@ class te_parser
     /// @brief Resets any resolved variables from USR if not being cached.
     void reset_usr_resolved_if_necessary()
         {
-        if (!m_keepResolvedVarialbes && m_resolvedVariables.size())
+        if (!m_keepResolvedVariables && m_resolvedVariables.size())
             {
             for (const auto& resolvedVar : m_resolvedVariables)
                 {
@@ -1131,7 +1131,7 @@ class te_parser
 
     te_usr_variant_type m_unknownSymbolResolve{ te_usr_noop{} };
 
-    bool m_keepResolvedVarialbes{ true };
+    bool m_keepResolvedVariables{ true };
 
     char m_decimalSeparator{ '.' };
     char m_listSeparator{ ',' };
