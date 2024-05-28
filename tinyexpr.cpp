@@ -512,6 +512,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_right_rotate8(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 8 };
         if (std::floor(val1) != val1 || std::floor(val2) != val2)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
@@ -520,7 +521,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        if (val2 > 8)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-8.");
             }
@@ -532,6 +533,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_left_rotate8(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 8 };
         if (std::floor(val1) != val1 || std::floor(val2) != val2)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
@@ -540,7 +542,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        if (val2 > 8)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-8.");
             }
@@ -552,6 +554,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_right_rotate16(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 16 };
         if (std::floor(val1) != val1 || std::floor(val2) != val2)
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE operation must use integers.");
@@ -560,7 +563,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        if (val2 > 16)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-16.");
             }
@@ -572,6 +575,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_left_rotate16(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 16 };
         if (std::floor(val1) != val1 || std::floor(val2) != val2)
             {
             throw std::runtime_error("Bitwise LEFT ROTATE operation must use integers.");
@@ -580,7 +584,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        if (val2 > 16)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-16.");
             }
@@ -592,6 +596,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_right_rotate32(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 32 };
         if constexpr (!te_parser::supports_32bit())
             {
             throw std::runtime_error("32-bit bitwise operations are not supported.");
@@ -604,7 +609,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        if (val2 > 32)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-32.");
             }
@@ -616,6 +621,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_left_rotate32(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 32 };
         if constexpr (!te_parser::supports_32bit())
             {
             throw std::runtime_error("32-bit bitwise operations are not supported.");
@@ -628,7 +634,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        if (val2 > 32)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-32.");
             }
@@ -640,6 +646,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_right_rotate64(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 63 };
         if constexpr (!te_parser::supports_64bit())
             {
             throw std::runtime_error("64-bit bitwise operations are not supported.");
@@ -652,7 +659,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise RIGHT ROTATE value must be positive.");
             }
-        if (val2 > 63)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-63");
             }
@@ -664,6 +671,7 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_left_rotate64(te_type val1, te_type val2)
         {
+        constexpr int BITNESS{ 63 };
         if constexpr (!te_parser::supports_64bit())
             {
             throw std::runtime_error("64-bit bitwise operations are not supported.");
@@ -676,7 +684,7 @@ namespace te_builtins
             {
             throw std::runtime_error("Bitwise LEFT ROTATE value must be positive.");
             }
-        if (val2 > 63)
+        if (val2 > BITNESS)
             {
             throw std::runtime_error("Rotation operation must be between 0-63");
             }
