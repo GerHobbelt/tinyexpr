@@ -1108,8 +1108,29 @@ class te_parser
     [[nodiscard]]
     te_expr* list(state* theState);
 
+    // built-in functions
+    static const std::set<te_variable> m_functions;
+
+    // customizable settings
+    std::set<te_variable> m_customFuncsAndVars;
+
+    te_usr_variant_type m_unknownSymbolResolve{ te_usr_noop{} };
+
+    bool m_keepResolvedVarialbes{ true };
+
+    char m_decimalSeparator{ '.' };
+    char m_listSeparator{ ',' };
+
+    // state information
     std::string m_expression;
     te_expr* m_compiledExpression{ nullptr };
+
+    bool m_parseSuccess{ false };
+    int64_t m_errorPos{ 0 };
+    std::string m_lastErrorMessage;
+    te_type m_result{ te_nan };
+
+    std::set<te_variable::name_type> m_resolvedVariables;
 
     std::set<te_variable>::const_iterator m_currentVar;
     bool m_varFound{ false };
@@ -1117,20 +1138,6 @@ class te_parser
     std::set<te_variable::name_type, te_string_less> m_usedFunctions;
     std::set<te_variable::name_type, te_string_less> m_usedVars;
 #endif
-
-    static const std::set<te_variable> m_functions;
-    std::set<te_variable> m_customFuncsAndVars;
-
-    te_usr_variant_type m_unknownSymbolResolve{ te_usr_noop{} };
-    std::set<te_variable::name_type> m_resolvedVariables;
-    bool m_keepResolvedVarialbes{ true };
-
-    bool m_parseSuccess{ false };
-    int64_t m_errorPos{ 0 };
-    std::string m_lastErrorMessage;
-    te_type m_result{ te_nan };
-    char m_decimalSeparator{ '.' };
-    char m_listSeparator{ ',' };
     };
 
 #endif // __TINYEXPR_PLUS_PLUS_H__
