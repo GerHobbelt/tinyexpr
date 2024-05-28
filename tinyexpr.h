@@ -246,6 +246,7 @@ class te_parser
     /// @private
     te_parser() = default;
     /// @private
+    // cppcheck-suppress uninitMemberVar
     te_parser(const te_parser& that)
         : m_customFuncsAndVars(that.m_customFuncsAndVars),
           m_unknownSymbolResolve(that.m_unknownSymbolResolve),
