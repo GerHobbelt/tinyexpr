@@ -53,7 +53,7 @@ Note: for current users of *TinyExpr++*, please see the [compatibility advisory]
 - Supports C and C++ style comments within math expressions.
 - Released under the zlib license - free for nearly any use.
 - Easy to use and integrate with your code.
-- Thread-safe; parser is in a self-contained object.
+- Thread-safe; parser can be constructed as per thread objects.
 
 ## Changes from TinyExpr
 
