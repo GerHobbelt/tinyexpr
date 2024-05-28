@@ -262,6 +262,8 @@ class te_parser
         m_keepResolvedVarialbes = that.m_keepResolvedVarialbes;
         m_decimalSeparator = that.m_decimalSeparator;
         m_listSeparator = that.m_listSeparator;
+
+        return *this;
         }
 
     /// @private
