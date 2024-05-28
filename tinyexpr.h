@@ -247,12 +247,11 @@ class te_parser
     te_parser() = default;
     /// @private
     te_parser(const te_parser& that)
+        : m_customFuncsAndVars(that.m_customFuncsAndVars),
+          m_unknownSymbolResolve(that.m_unknownSymbolResolve),
+          m_keepResolvedVarialbes(that.m_keepResolvedVarialbes),
+          m_decimalSeparator(that.m_decimalSeparator), m_listSeparator(that.m_listSeparator)
         {
-        m_customFuncsAndVars = that.m_customFuncsAndVars;
-        m_unknownSymbolResolve = that.m_unknownSymbolResolve;
-        m_keepResolvedVarialbes = that.m_keepResolvedVarialbes;
-        m_decimalSeparator = that.m_decimalSeparator;
-        m_listSeparator = that.m_listSeparator;
         }
     /// @private
     te_parser& operator=(const te_parser& that)
