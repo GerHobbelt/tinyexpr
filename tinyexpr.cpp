@@ -747,7 +747,7 @@ namespace te_builtins
 
         // force the bit manipulation to stay unsigned, like what Excel does
         const uint8_t intVal{ static_cast<uint8_t>(val) };
-        const decltype(intVal) result{ static_cast<decltype(intVal)>(~intVal) };
+        const decltype(intVal) result{ std::bit_not<decltype(intVal)>{}(intVal) };
         return static_cast<te_type>(result);
         }
 
@@ -769,7 +769,7 @@ namespace te_builtins
             }
 
         const uint16_t intVal{ static_cast<uint16_t>(val) };
-        const decltype(intVal) result{ static_cast<decltype(intVal)>(~intVal) };
+        const decltype(intVal) result{ std::bit_not<decltype(intVal)>{}(intVal) };
         return static_cast<te_type>(result);
         }
 
@@ -795,7 +795,7 @@ namespace te_builtins
             }
 
         const uint32_t intVal{ static_cast<uint32_t>(val) };
-        const decltype(intVal) result{ ~intVal };
+        const decltype(intVal) result{ std::bit_not<decltype(intVal)>{}(intVal) };
         return static_cast<te_type>(result);
         }
 
@@ -821,7 +821,7 @@ namespace te_builtins
             }
 
         const uint64_t intVal{ static_cast<uint64_t>(val) };
-        const decltype(intVal) result{ ~intVal };
+        const decltype(intVal) result{ std::bit_not<decltype(intVal)>{}(intVal) };
         return static_cast<te_type>(result);
         }
 
@@ -1210,7 +1210,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
 #ifndef TE_FLOAT
     { "bitand", static_cast<te_fun2>(te_builtins::te_bitwise_and), TE_PURE },
     { "bitor", static_cast<te_fun2>(te_builtins::te_bitwise_or), TE_PURE },
-#if __cplusplus >= 202002L
+    #if __cplusplus >= 202002L
     { "bitlrotate8", static_cast<te_fun2>(te_builtins::te_left_rotate8), TE_PURE },
     { "bitrrotate8", static_cast<te_fun2>(te_builtins::te_right_rotate8), TE_PURE },
     { "bitlrotate16", static_cast<te_fun2>(te_builtins::te_left_rotate16), TE_PURE },
@@ -1221,7 +1221,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "bitrrotate64", static_cast<te_fun2>(te_builtins::te_right_rotate64), TE_PURE },
     { "bitlrotate", static_cast<te_fun2>(te_builtins::te_left_rotate), TE_PURE },
     { "bitrrotate", static_cast<te_fun2>(te_builtins::te_right_rotate), TE_PURE },
-#endif
+    #endif
     { "bitnot8", static_cast<te_fun1>(te_builtins::te_bitwise_not8), TE_PURE },
     { "bitnot16", static_cast<te_fun1>(te_builtins::te_bitwise_not16), TE_PURE },
     { "bitnot32", static_cast<te_fun1>(te_builtins::te_bitwise_not32), TE_PURE },

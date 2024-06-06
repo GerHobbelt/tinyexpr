@@ -71,13 +71,13 @@
 #include <variant>
 #include <vector>
 #if __has_include(<bit>)
-#include <bit>
+    #include <bit>
 #endif
 
 class te_parser;
 
 #if defined(TE_FLOAT) && defined(TE_LONG_DOUBLE)
-#error TE_FLOAT and TE_LONG_DOUBLE compile options cannot be combined. Only one data type can be specified.
+    #error TE_FLOAT and TE_LONG_DOUBLE compile options cannot be combined. Only one data type can be specified.
 #endif
 
 /// @brief Define this to use @c float instead of @c double for the parser's data type.
@@ -92,7 +92,7 @@ using te_type = double;
 #endif
 
 #if defined(TE_FLOAT) && defined(TE_BITWISE_OPERATORS)
-#error TE_FLOAT and TE_BITWISE_OPERATORS compile options cannot be combined. TE_FLOAT will not support bitwise operations.
+    #error TE_FLOAT and TE_BITWISE_OPERATORS compile options cannot be combined. TE_FLOAT will not support bitwise operations.
 #endif
 
 class te_expr;
@@ -245,6 +245,7 @@ class te_parser
   public:
     /// @private
     te_parser() = default;
+
     /// @private
     // cppcheck-suppress uninitMemberVar
     te_parser(const te_parser& that)
@@ -254,6 +255,7 @@ class te_parser
           m_decimalSeparator(that.m_decimalSeparator), m_listSeparator(that.m_listSeparator)
         {
         }
+
     /// @private
     te_parser& operator=(const te_parser& that)
         {
