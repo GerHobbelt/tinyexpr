@@ -1,17 +1,17 @@
-name: i18n-check
+name: quneiform
 on: [push]
 
 jobs:
   build:
-    name: i18n-check
+    name: quneiform
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: install i18n-check
+      - name: install quneiform
         run: |
-             git clone https://github.com/Blake-Madden/i18n-check.git --recurse-submodules
-             cd i18n-check
+             git clone https://github.com/Blake-Madden/quneiform.git --recurse-submodules
+             cd quneiform
              cmake ./
              make -j4
              cd ..
@@ -19,7 +19,7 @@ jobs:
       - name: analyze
         run: |
              # Just checking file format here
-             ./i18n-check/bin/i18n-check ./ --ignore=i18n-check,tests -q -v --disable=notL10NAvailable -o i18nresults.txt
+             ./iquneiform/bin/quneiform ./ --ignore=quneiform,tests -q -v --disable=notL10NAvailable -o i18nresults.txt
 
       - name: review results
         run: |
