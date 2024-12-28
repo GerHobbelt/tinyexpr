@@ -19,7 +19,7 @@ jobs:
       - name: analyze
         run: |
              # Just checking file format here
-             ./iquneiform/bin/quneiform ./ --ignore=quneiform,tests -q -v --disable=notL10NAvailable -o i18nresults.txt
+             ./quneiform/bin/quneiform ./ --ignore=quneiform,tests -q -v --disable=notL10NAvailable -o i18nresults.txt
 
       - name: review results
         run: |
