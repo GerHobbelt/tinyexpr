@@ -18,6 +18,18 @@ Compile with `TE_LONG_DOUBLE` defined to use `long double` as the default data t
 Depending on the compiler, this may provide support for handling `uint64_t` values. Call `te_parser::supports_64bit()`
 (or `SUPPORTS64BIT()` in an expression at runtime) to confirm this.
 
+## `TE_RAND_SEED` {-}
+
+Define this as an unsigned integer to seed the random number generator with.
+This will affect the function `RAND()`, causing it to produce a deterministic series of numbers.
+
+## `TE_RAND_SEED_TIME` {-}
+
+Compile with `TE_RAND_SEED_TIME` to seed the random number generator with the current time.
+This is useful if compiling for microcontrollers that do not support entropy devices.
+
+The default is to seed the random number generator with `std::random_device`.
+
 ## `TE_BITWISE_OPERATORS` {-#te-bitwise-ops}
 
 By default, the operators `&`, `|`, and `^` represent logical AND, logical OR, and exponentiation. If `TE_BITWISE_OPERATORS` is defined,

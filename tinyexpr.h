@@ -59,6 +59,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <functional>
 #include <initializer_list>
 #include <limits>
@@ -75,6 +76,10 @@
 #endif
 
 class te_parser;
+
+#if defined(TE_RAND_SEED) && defined(TE_RAND_SEED_TIME)
+    #error TE_RAND_SEED and TE_RAND_SEED_TIME compile options cannot be combined. Only one random number generator seeding method can be specified.
+#endif
 
 #if defined(TE_FLOAT) && defined(TE_LONG_DOUBLE)
     #error TE_FLOAT and TE_LONG_DOUBLE compile options cannot be combined. Only one data type can be specified.

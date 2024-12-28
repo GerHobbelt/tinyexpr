@@ -360,8 +360,15 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_random()
         {
-        std::random_device rdev;
+#ifdef TE_RAND_SEED
+        std::mt19937 gen(static_cast<unsigned int>(RAND_SEED));
+#elif defined(TE_RAND_SEED_TIME)
+        std::mt19937 gen(static_cast<unsigned int>(time(nullptr)));
+#else
+        static std::random_device rdev;
         std::mt19937 gen(rdev());
+#endif
+
         std::uniform_real_distribution<te_type> distr(0, 1);
         return distr(gen);
         }

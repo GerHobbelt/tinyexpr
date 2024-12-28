@@ -21,6 +21,11 @@ case insensitivity, and bookkeeping operations.
 
 Refer to [compile-time options](#compile-time-options) for flags that can provide optimization.
 
+## Device Compatibility
+
+By default, *TinyExpr++* uses `std::random_device` to seed its random number generator, which may cause compatibility issues with some microcontrollers.
+To instead seed it with the current time, compile with `TE_RAND_SEED_TIME`.
+
 ## Volatility {-}
 
 If needing to use a `te_parser` object as `volatile`

@@ -2202,8 +2202,11 @@ TEST_CASE("Random", "[random]")
     {
     te_parser tep;
     // can't have reproducible results for rand, so just run it and make
-    // sure it doesn't crash
+    // sure it doesn't crash...
     CHECK_NOTHROW(tep.evaluate("rand()"));
+    // ...and within 0-1
+    auto res = tep.evaluate("rand()");
+    CHECK((res >= 0 && res <= 1));
     }
 
 TEST_CASE("Available functions", "[available]")
