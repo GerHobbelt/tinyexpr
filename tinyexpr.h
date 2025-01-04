@@ -101,27 +101,118 @@ using te_type = double;
 #endif
 
 class te_expr;
-
+// clang-format off
 // regular functions
-using te_fun0 = te_type (*)();
-using te_fun1 = te_type (*)(te_type);
-using te_fun2 = te_type (*)(te_type, te_type);
-using te_fun3 = te_type (*)(te_type, te_type, te_type);
-using te_fun4 = te_type (*)(te_type, te_type, te_type, te_type);
-using te_fun5 = te_type (*)(te_type, te_type, te_type, te_type, te_type);
-using te_fun6 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type);
-using te_fun7 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun0  = te_type (*)();
+using te_fun1  = te_type (*)(te_type);
+using te_fun2  = te_type (*)(te_type, te_type);
+using te_fun3  = te_type (*)(te_type, te_type, te_type);
+using te_fun4  = te_type (*)(te_type, te_type, te_type, te_type);
+using te_fun5  = te_type (*)(te_type, te_type, te_type, te_type, te_type);
+using te_fun6  = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun7  = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun8  = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun9  = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun10 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun11 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun12 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun13 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun14 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun15 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun16 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun17 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun18 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun19 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun20 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun21 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun22 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun23 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_fun24 = te_type (*)(te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
 // context functions (where te_variable passes a client's te_expr as the first argument)
-using te_confun0 = te_type (*)(const te_expr*);
-using te_confun1 = te_type (*)(const te_expr*, te_type);
-using te_confun2 = te_type (*)(const te_expr*, te_type, te_type);
-using te_confun3 = te_type (*)(const te_expr*, te_type, te_type, te_type);
-using te_confun4 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type);
-using te_confun5 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type);
-using te_confun6 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type,
-                               te_type);
-using te_confun7 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type,
-                               te_type);
+using te_confun0  = te_type (*)(const te_expr*);
+using te_confun1  = te_type (*)(const te_expr*, te_type);
+using te_confun2  = te_type (*)(const te_expr*, te_type, te_type);
+using te_confun3  = te_type (*)(const te_expr*, te_type, te_type, te_type);
+using te_confun4  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type);
+using te_confun5  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type);
+using te_confun6  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun7  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun8  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun9  = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun10 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun11 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun12 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun13 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun14 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun15 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun16 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun17 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun18 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun19 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun20 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun21 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun22 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun23 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+using te_confun24 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
+// clang-format on
+// type_traits to get n_args.
+#include <tuple>
+#include <type_traits>
+template<typename FuncType>
+struct te_fun_traits;
+
+// Specialization for function pointers
+template<typename ReturnType, typename... Args>
+struct te_fun_traits<ReturnType (*)(Args...)>
+    {
+    using arg_tuple = std::tuple<Args...>;
+    constexpr static size_t arity = std::tuple_size<arg_tuple>::value;
+    };
+
+// Specialization for function types
+template<typename ReturnType, typename... Args>
+struct te_fun_traits<ReturnType(Args...)>
+    {
+    using arg_tuple = std::tuple<Args...>;
+    constexpr static size_t arity = std::tuple_size<arg_tuple>::value;
+    };
+
+// Helper variable template for easier access
+template<typename FuncType>
+constexpr size_t te_function_arity = te_fun_traits<FuncType>::arity;
+
+template<typename T>
+constexpr bool te_is_constant_v = std::is_same_v<T, te_type>;
+
+template<typename T>
+constexpr bool te_is_variable_v = std::is_same_v<T, const te_type*>;
+
+template<typename FuncType>
+struct te_is_closure
+    {
+    constexpr static bool value{ false };
+    };
+
+// Specialization for function pointers
+template<typename ReturnType, typename... Args>
+struct te_is_closure<ReturnType (*)(const te_expr*, Args...)>
+    {
+    constexpr static bool value{ true };
+    };
+
+// Specialization for function types
+template<typename ReturnType, typename... Args>
+struct te_is_closure<ReturnType(const te_expr*, Args...)>
+    {
+    constexpr static bool value{ true };
+    };
+
+template<typename T>
+constexpr bool te_is_closure_v = te_is_closure<T>::value;
+
+template<typename T>
+constexpr bool te_is_function_v =
+    !te_is_constant_v<T> && !te_is_variable_v<T> && !te_is_closure_v<T>;
 
 // functions for unknown symbol resolution
 using te_usr_noop = std::function<void()>;
@@ -134,11 +225,13 @@ using te_usr_variant_type = std::variant<te_usr_noop, te_usr_fun0, te_usr_fun1>;
 // the value type of a te_variable
 using te_variant_type =
     std::variant<te_type, const te_type*, // indices 0-1
-                                          // indices 2-9
-                 te_fun0, te_fun1, te_fun2, te_fun3, te_fun4, te_fun5, te_fun6, te_fun7,
-                 // indices 10-17
+                 te_fun0, te_fun1, te_fun2, te_fun3, te_fun4, te_fun5, te_fun6, te_fun7, te_fun8,
+                 te_fun9, te_fun10, te_fun11, te_fun12, te_fun13, te_fun14, te_fun15, te_fun16,
+                 te_fun17, te_fun18, te_fun19, te_fun20, te_fun21, te_fun22, te_fun23, te_fun24,
                  te_confun0, te_confun1, te_confun2, te_confun3, te_confun4, te_confun5, te_confun6,
-                 te_confun7>;
+                 te_confun7, te_confun8, te_confun9, te_confun10, te_confun11, te_confun12,
+                 te_confun13, te_confun14, te_confun15, te_confun16, te_confun17, te_confun18,
+                 te_confun19, te_confun20, te_confun21, te_confun22, te_confun23, te_confun24>;
 
 /// @brief A variable's flags, effecting how it is evaluated.
 /// @note This is a bitmask, so flags (TE_PURE and TE_VARIADIC) can be OR'ed.
@@ -761,16 +854,24 @@ class te_parser
     [[nodiscard]]
     inline static auto get_arity(const te_variant_type& var) noexcept
         {
-        return (var.index() == 0 || var.index() == 1)  ? 0 :
-               (is_function0(var) || is_closure0(var)) ? 0 :
-               (is_function1(var) || is_closure1(var)) ? 1 :
-               (is_function2(var) || is_closure2(var)) ? 2 :
-               (is_function3(var) || is_closure3(var)) ? 3 :
-               (is_function4(var) || is_closure4(var)) ? 4 :
-               (is_function5(var) || is_closure5(var)) ? 5 :
-               (is_function6(var) || is_closure6(var)) ? 6 :
-               (is_function7(var) || is_closure7(var)) ? 7 :
-                                                         0;
+        return std::visit(
+            [](const auto& var) -> size_t
+            {
+                using T = std::decay_t<decltype(var)>;
+                if constexpr (te_is_constant_v<T> || te_is_variable_v<T>)
+                    {
+                    return 0;
+                    }
+                else if constexpr (te_is_closure_v<T>)
+                    {
+                    return te_function_arity<T> - 1; // minus the first ctx variable.
+                    }
+                else
+                    { // te_is_function_v
+                    return te_function_arity<T>;
+                    }
+            },
+            var);
         }
 
     [[nodiscard]]
@@ -802,222 +903,56 @@ class te_parser
     [[nodiscard]]
     constexpr static bool is_function(const te_variant_type& var) noexcept
         {
-        return (var.index() >= 2 && var.index() <= 9);
+        return std::visit(
+            [](const auto& var) -> bool
+            {
+                using T = std::decay_t<decltype(var)>;
+                return te_is_function_v<T>;
+            },
+            var);
         }
 
-    [[nodiscard]]
-    constexpr static bool is_function0(const te_variant_type& var) noexcept
-        {
-        return var.index() == 2;
+#define TE_DEF_FUNCTION(n)                                                                         \
+    [[nodiscard]] constexpr static bool is_function##n(const te_variant_type& var) noexcept        \
+        {                                                                                          \
+        return std::holds_alternative<te_fun##n>(var);                                             \
+        }                                                                                          \
+    [[nodiscard]] constexpr static te_fun##n get_function##n(const te_variant_type& var)           \
+        {                                                                                          \
+        assert(std::holds_alternative<te_fun##n>(var));                                            \
+        return std::get<te_fun##n>(var);                                                           \
         }
-
-    [[nodiscard]]
-    constexpr static te_fun0 get_function0(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun0>(var));
-        return std::get<2>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function1(const te_variant_type& var) noexcept
-        {
-        return var.index() == 3;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun1 get_function1(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun1>(var));
-        return std::get<3>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function2(const te_variant_type& var) noexcept
-        {
-        return var.index() == 4;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun2 get_function2(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun2>(var));
-        return std::get<4>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function3(const te_variant_type& var) noexcept
-        {
-        return var.index() == 5;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun3 get_function3(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun3>(var));
-        return std::get<5>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function4(const te_variant_type& var) noexcept
-        {
-        return var.index() == 6;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun4 get_function4(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun4>(var));
-        return std::get<6>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function5(const te_variant_type& var) noexcept
-        {
-        return var.index() == 7;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun5 get_function5(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun5>(var));
-        return std::get<7>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function6(const te_variant_type& var) noexcept
-        {
-        return var.index() == 8;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun6 get_function6(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun6>(var));
-        return std::get<8>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_function7(const te_variant_type& var) noexcept
-        {
-        return var.index() == 9;
-        }
-
-    [[nodiscard]]
-    constexpr static te_fun7 get_function7(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_fun7>(var));
-        return std::get<9>(var);
-        }
+    TE_DEF_FUNCTION(0);
+    TE_DEF_FUNCTION(1);
+    TE_DEF_FUNCTION(2);
+#undef TE_DEF_FUNCTION
 
     [[nodiscard]]
     constexpr static bool is_closure(const te_variant_type& var) noexcept
         {
-        return (var.index() >= 10 && var.index() <= 17);
+        return std::visit(
+            [](const auto& var) -> bool
+            {
+                using T = std::decay_t<decltype(var)>;
+                return te_is_closure<T>::value;
+            },
+            var);
         }
 
-    [[nodiscard]]
-    constexpr static bool is_closure0(const te_variant_type& var) noexcept
-        {
-        return var.index() == 10;
+#define TE_DEF_CLOSURE(n)                                                                          \
+    [[nodiscard]] constexpr static bool is_closure##n(const te_variant_type& var) noexcept         \
+        {                                                                                          \
+        return std::holds_alternative<te_confun##n>(var);                                          \
+        }                                                                                          \
+    [[nodiscard]] constexpr static te_confun##n get_closure##n(const te_variant_type& var)         \
+        {                                                                                          \
+        assert(std::holds_alternative<te_confun##n>(var));                                         \
+        return std::get<te_confun##n>(var);                                                        \
         }
-
-    [[nodiscard]]
-    constexpr static te_confun0 get_closure0(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun0>(var));
-        return std::get<10>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure1(const te_variant_type& var) noexcept
-        {
-        return var.index() == 11;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun1 get_closure1(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun1>(var));
-        return std::get<11>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure2(const te_variant_type& var) noexcept
-        {
-        return var.index() == 12;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun2 get_closure2(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun2>(var));
-        return std::get<12>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure3(const te_variant_type& var) noexcept
-        {
-        return var.index() == 13;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun3 get_closure3(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun3>(var));
-        return std::get<13>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure4(const te_variant_type& var) noexcept
-        {
-        return var.index() == 14;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun4 get_closure4(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun4>(var));
-        return std::get<14>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure5(const te_variant_type& var) noexcept
-        {
-        return var.index() == 15;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun5 get_closure5(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun5>(var));
-        return std::get<15>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure6(const te_variant_type& var) noexcept
-        {
-        return var.index() == 16;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun6 get_closure6(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun6>(var));
-        return std::get<16>(var);
-        }
-
-    [[nodiscard]]
-    constexpr static bool is_closure7(const te_variant_type& var) noexcept
-        {
-        return var.index() == 17;
-        }
-
-    [[nodiscard]]
-    constexpr static te_confun7 get_closure7(const te_variant_type& var)
-        {
-        assert(std::holds_alternative<te_confun7>(var));
-        return std::get<17>(var);
-        }
+    TE_DEF_CLOSURE(0);
+    TE_DEF_CLOSURE(1);
+    TE_DEF_CLOSURE(2);
+#undef TE_DEF_CLOSURE
 
     struct state
         {
