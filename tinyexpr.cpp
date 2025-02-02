@@ -395,27 +395,45 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_sum(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
-                          te_type val6, te_type val7)
+                          te_type val6, te_type val7, te_type val8, te_type val9, te_type val10,
+                          te_type val11, te_type val12, te_type val13, te_type val14, te_type val15,
+                          te_type val16, te_type val17, te_type val18, te_type val19, te_type val20,
+                          te_type val21, te_type val22, te_type val23, te_type val24)
         {
         const auto getSumMaybeNan = [](const auto val) { return (!std::isfinite(val) ? 0 : val); };
 
-        return getSumMaybeNan(val1) + getSumMaybeNan(val2) +
-               getSumMaybeNan(val3)+ getSumMaybeNan(val4) +
-               getSumMaybeNan(val5) + getSumMaybeNan(val6) +
-               getSumMaybeNan(val7);
+        return getSumMaybeNan(val1) + getSumMaybeNan(val2) + getSumMaybeNan(val3) +
+               getSumMaybeNan(val4) + getSumMaybeNan(val5) + getSumMaybeNan(val6) +
+               getSumMaybeNan(val7) + getSumMaybeNan(val8) + getSumMaybeNan(val9) +
+               getSumMaybeNan(val10) + getSumMaybeNan(val11) + getSumMaybeNan(val12) +
+               getSumMaybeNan(val13) + getSumMaybeNan(val14) + getSumMaybeNan(val15) +
+               getSumMaybeNan(val16) + getSumMaybeNan(val17) + getSumMaybeNan(val18) +
+               getSumMaybeNan(val19) + getSumMaybeNan(val20) + getSumMaybeNan(val21) +
+               getSumMaybeNan(val22) + getSumMaybeNan(val23) + getSumMaybeNan(val24);
         }
 
     [[nodiscard]]
     static te_type te_average(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
-                              te_type val6, te_type val7)
+                              te_type val6, te_type val7, te_type val8, te_type val9, te_type val10,
+                              te_type val11, te_type val12, te_type val13, te_type val14,
+                              te_type val15, te_type val16, te_type val17, te_type val18,
+                              te_type val19, te_type val20, te_type val21, te_type val22,
+                              te_type val23, te_type val24)
         {
         const auto isValidMaybeNan = [](const auto val) { return (!std::isfinite(val) ? 0 : 1); };
 
-        const auto validN = isValidMaybeNan(val1) + isValidMaybeNan(val2) +
-                            isValidMaybeNan(val3) + isValidMaybeNan(val4) +
-                            isValidMaybeNan(val5) + isValidMaybeNan(val6) +
-                            isValidMaybeNan(val7);
-        const auto total = te_sum(val1, val2, val3, val4, val5, val6, val7);
+        const auto validN =
+            isValidMaybeNan(val1) + isValidMaybeNan(val2) + isValidMaybeNan(val3) +
+            isValidMaybeNan(val4) + isValidMaybeNan(val5) + isValidMaybeNan(val6) +
+            isValidMaybeNan(val7) + isValidMaybeNan(val8) + isValidMaybeNan(val9) +
+            isValidMaybeNan(val10) + isValidMaybeNan(val11) + isValidMaybeNan(val12) +
+            isValidMaybeNan(val13) + isValidMaybeNan(val14) + isValidMaybeNan(val15) +
+            isValidMaybeNan(val16) + isValidMaybeNan(val17) + isValidMaybeNan(val18) +
+            isValidMaybeNan(val19) + isValidMaybeNan(val20) + isValidMaybeNan(val21) +
+            isValidMaybeNan(val22) + isValidMaybeNan(val23) + isValidMaybeNan(val24);
+        const auto total =
+            te_sum(val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13,
+                   val14, val15, val16, val17, val18, val19, val20, val21, val22, val23, val24);
         return te_divide(total, static_cast<te_type>(validN));
         }
 
@@ -1256,7 +1274,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "asin", static_cast<te_fun1>(te_builtins::te_asin), TE_PURE },
     { "atan", static_cast<te_fun1>(te_builtins::te_atan), TE_PURE },
     { "atan2", static_cast<te_fun2>(te_builtins::te_atan2), TE_PURE },
-    { "average", static_cast<te_fun7>(te_builtins::te_average),
+    { "average", static_cast<te_fun24>(te_builtins::te_average),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
 #ifndef TE_FLOAT
     { "bitand", static_cast<te_fun2>(te_builtins::te_bitwise_and), TE_PURE },
@@ -1334,7 +1352,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "sinh", static_cast<te_fun1>(te_builtins::te_sinh), TE_PURE },
     { "sqr", static_cast<te_fun1>(te_builtins::te_sqr), TE_PURE },
     { "sqrt", static_cast<te_fun1>(te_builtins::te_sqrt), TE_PURE },
-    { "sum", static_cast<te_fun7>(te_builtins::te_sum),
+    { "sum", static_cast<te_fun24>(te_builtins::te_sum),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "supports32bit", static_cast<te_fun0>(te_builtins::te_supports_32bit), TE_PURE },
     { "supports64bit", static_cast<te_fun0>(te_builtins::te_supports_64bit), TE_PURE },

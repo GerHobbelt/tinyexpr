@@ -637,6 +637,24 @@ TEST_CASE("Main tests", "[main]")
         CHECK(tep.evaluate("sum(9,9,9,9)") == 36);
         CHECK(tep.evaluate("sum(9,9,9,9,9)") == 45);
         CHECK(tep.evaluate("sum(9,9,9,9,9,9)") == 54);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8)") == 62);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4)") == 66);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7)") == 73);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1)") == 74);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4)") == 70);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10)") == 60);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8)") == 68);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5)") == 73);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7)") == 80);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9)") == 89);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11)") == 100);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23)") == 123);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17)") == 140);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17, 50)") == 190);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17, 50, -90)") == 100);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17, 50, -90, 100)") == 200);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17, 50, -90, 100, -100)") == 100);
+        CHECK(tep.evaluate("sum(9,9,9,9,9,9,8,4,7,1,-4,-10, 8, 5, 7,9,11, 23, 17, 50, -90, 100, -100, -50)") == 50);
         CHECK(tep.evaluate("sum(pow(3,2),sum(3,3,3),9,pow(3,2),6+3,9,9)") == 63);
         CHECK(tep.evaluate("pow(3,2)+sum(pow(3,2),sum(3,3,3),9,pow(3,2),6+3,9,9)") == 72);
         CHECK(tep.evaluate("pow(2, sum(2,2))") == 16);
@@ -647,6 +665,23 @@ TEST_CASE("Main tests", "[main]")
         CHECK(tep.evaluate("average(1,2,3,4,5)") == 3);
         CHECK(tep.evaluate("average(1,2,3,4,5,6)") == 3.5);
         CHECK(tep.evaluate("average(1,2,3,4,5,6,7)") == 4);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8)") == 4.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9)") == 5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10)") == 5.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11)") == 6);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12)") == 6.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13)") == 7);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14)") == 7.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)") == 8);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)") == 8.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17)") == 9);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18)") == 9.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19)") == 10);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)") == 10.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21)") == 11);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22)") == 11.5);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)") == 12);
+        CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)") == 12.5);
         }
 
     SECTION("logical")
