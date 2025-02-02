@@ -74,6 +74,9 @@
 #if __has_include(<bit>)
     #include <bit>
 #endif
+// type_traits to get n_args.
+#include <tuple>
+#include <type_traits>
 
 class te_parser;
 
@@ -155,9 +158,6 @@ using te_confun22 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_ty
 using te_confun23 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
 using te_confun24 = te_type (*)(const te_expr*, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type, te_type);
 // clang-format on
-// type_traits to get n_args.
-#include <tuple>
-#include <type_traits>
 template<typename FuncType>
 struct te_fun_traits;
 
