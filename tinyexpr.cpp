@@ -397,25 +397,29 @@ namespace te_builtins
     static te_type te_sum(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
                           te_type val6, te_type val7)
         {
-        return (!std::isfinite(val1) ? 0 : val1) + (!std::isfinite(val2) ? 0 : val2) +
-               (!std::isfinite(val3) ? 0 : val3) + (!std::isfinite(val4) ? 0 : val4) +
-               (!std::isfinite(val5) ? 0 : val5) + (!std::isfinite(val6) ? 0 : val6) +
-               (!std::isfinite(val7) ? 0 : val7);
+        const auto getSumMaybeNan = [](const auto val) { return (!std::isfinite(val) ? 0 : val); };
+
+        return getSumMaybeNan(val1) + getSumMaybeNan(val2) +
+               getSumMaybeNan(val3)+ getSumMaybeNan(val4) +
+               getSumMaybeNan(val5) + getSumMaybeNan(val6) +
+               getSumMaybeNan(val7);
         }
 
     [[nodiscard]]
     static te_type te_average(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
                               te_type val6, te_type val7)
         {
-        const auto validN = (!std::isfinite(val1) ? 0 : 1) + (!std::isfinite(val2) ? 0 : 1) +
-                            (!std::isfinite(val3) ? 0 : 1) + (!std::isfinite(val4) ? 0 : 1) +
-                            (!std::isfinite(val5) ? 0 : 1) + (!std::isfinite(val6) ? 0 : 1) +
-                            (!std::isfinite(val7) ? 0 : 1);
+        const auto isValidMaybeNan = [](const auto val) { return (!std::isfinite(val) ? 0 : 1); };
+
+        const auto validN = isValidMaybeNan(val1) + isValidMaybeNan(val2) +
+                            isValidMaybeNan(val3) + isValidMaybeNan(val4) +
+                            isValidMaybeNan(val5) + isValidMaybeNan(val6) +
+                            isValidMaybeNan(val7);
         const auto total = te_sum(val1, val2, val3, val4, val5, val6, val7);
         return te_divide(total, static_cast<te_type>(validN));
         }
 
-    /// @warning This version of round emulates Excel behavior of supporting
+    /// @warning This version of round emulates Excel's behavior of supporting
     ///     negative decimal places (e.g., ROUND(21.5, -1) = 20). Be aware
     ///     of that if using this function outside of TinyExpr++.
     [[nodiscard]]
