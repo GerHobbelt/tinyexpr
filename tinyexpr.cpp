@@ -1228,12 +1228,25 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_ifs(te_type if1, te_type if1True, te_type if2, te_type if2True, te_type if3,
-                          te_type if3True)
+                          te_type if3True, te_type if4, te_type if4True, te_type if5,
+                          te_type if5True, te_type if6, te_type if6True, te_type if7,
+                          te_type if7True, te_type if8, te_type if8True, te_type if9,
+                          te_type if9True, te_type if10, te_type if10True, te_type if11,
+                          te_type if11True, te_type if12, te_type if12True)
         {
-        return te_parser::number_to_bool(if1) ? if1True :
-               te_parser::number_to_bool(if2) ? if2True :
-               te_parser::number_to_bool(if3) ? if3True :
-                                                te_parser::te_nan;
+        return te_parser::number_to_bool(if1)  ? if1True :
+               te_parser::number_to_bool(if2)  ? if2True :
+               te_parser::number_to_bool(if3)  ? if3True :
+               te_parser::number_to_bool(if4)  ? if4True :
+               te_parser::number_to_bool(if5)  ? if5True :
+               te_parser::number_to_bool(if6)  ? if6True :
+               te_parser::number_to_bool(if7)  ? if7True :
+               te_parser::number_to_bool(if8)  ? if8True :
+               te_parser::number_to_bool(if9)  ? if9True :
+               te_parser::number_to_bool(if10) ? if10True :
+               te_parser::number_to_bool(if11) ? if11True :
+               te_parser::number_to_bool(if12) ? if12True :
+                                                 te_parser::te_nan;
         }
 
     [[nodiscard]]
@@ -1365,7 +1378,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "iseven", static_cast<te_fun1>(te_builtins::te_is_even), TE_PURE },
     { "isodd", static_cast<te_fun1>(te_builtins::te_is_odd), TE_PURE },
     { "if", static_cast<te_fun3>(te_builtins::te_if), TE_PURE },
-    { "ifs", static_cast<te_fun6>(te_builtins::te_ifs),
+    { "ifs", static_cast<te_fun24>(te_builtins::te_ifs),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "ln", static_cast<te_fun1>(te_builtins::te_log), TE_PURE },
     { "log10", static_cast<te_fun1>(te_builtins::te_log10), TE_PURE },

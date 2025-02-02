@@ -705,6 +705,15 @@ TEST_CASE("Main tests", "[main]")
         CHECK(tep.evaluate("IFS(true, 9, 0.0, 7, 1, 5)") == 9);
         CHECK(tep.evaluate("IFS(FALSE, 9, TRUE, 7)") == 7);
         CHECK(tep.evaluate("IFS(FALSE, 9, 0.0, 7, 1, 5)") == 5);
+        CHECK(tep.evaluate("IFS(FALSE, 9, 0.0, 7, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, 0.0, 7, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
+        CHECK(tep.evaluate("IFS(FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, FALSE, 9, 0.0, 7, 0, 8, 0, 8, 0, 5, TRUE, 86)") == 86);
         // complex expressions
         CHECK(tep.evaluate("IFS(9 > 1, 9, 0.0, 7, 1, 5)") == 9);
         CHECK(tep.evaluate("IFS(9 > 10, 9, 6 > 9, 6, AND(1 > 0, 1 > -1), 1)") == 1);

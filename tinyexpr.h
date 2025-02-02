@@ -714,7 +714,7 @@ class te_parser
     /// @brief Helper function to convert a number into boolean.
     /// @details This takes NaN into account, returning @c for NaN.
     /// @param val The value to examine.
-    /// @returns @c true if the value is non-zero and also a valid double
+    /// @returns @c true if the value is non-zero and also valid
     ///     (not NaN or infinite).
     /// @private
     [[nodiscard]]
