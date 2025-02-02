@@ -1133,7 +1133,11 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_and_variadic(te_type val1, te_type val2, te_type val3, te_type val4,
-                                   te_type val5, te_type val6, te_type val7)
+                                   te_type val5, te_type val6, te_type val7, te_type val8,
+                                   te_type val9, te_type val10, te_type val11, te_type val12,
+                                   te_type val13, te_type val14, te_type val15, te_type val16,
+                                   te_type val17, te_type val18, te_type val19, te_type val20,
+                                   te_type val21, te_type val22, te_type val23, te_type val24)
         {
         // at least val1 must be legit, rest can be NaN
         if (!std::isfinite(val1))
@@ -1146,7 +1150,24 @@ namespace te_builtins
         andVal = te_and_maybe_nan(andVal, val4);
         andVal = te_and_maybe_nan(andVal, val5);
         andVal = te_and_maybe_nan(andVal, val6);
-        return te_and_maybe_nan(andVal, val7);
+        andVal = te_and_maybe_nan(andVal, val7);
+        andVal = te_and_maybe_nan(andVal, val8);
+        andVal = te_and_maybe_nan(andVal, val9);
+        andVal = te_and_maybe_nan(andVal, val10);
+        andVal = te_and_maybe_nan(andVal, val11);
+        andVal = te_and_maybe_nan(andVal, val12);
+        andVal = te_and_maybe_nan(andVal, val13);
+        andVal = te_and_maybe_nan(andVal, val14);
+        andVal = te_and_maybe_nan(andVal, val15);
+        andVal = te_and_maybe_nan(andVal, val16);
+        andVal = te_and_maybe_nan(andVal, val17);
+        andVal = te_and_maybe_nan(andVal, val18);
+        andVal = te_and_maybe_nan(andVal, val19);
+        andVal = te_and_maybe_nan(andVal, val20);
+        andVal = te_and_maybe_nan(andVal, val21);
+        andVal = te_and_maybe_nan(andVal, val22);
+        andVal = te_and_maybe_nan(andVal, val23);
+        return te_and_maybe_nan(andVal, val24);
         // NOLINTEND
         }
 
@@ -1161,7 +1182,11 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_or_variadic(te_type val1, te_type val2, te_type val3, te_type val4,
-                                  te_type val5, te_type val6, te_type val7)
+                                  te_type val5, te_type val6, te_type val7, te_type val8,
+                                  te_type val9, te_type val10, te_type val11, te_type val12,
+                                  te_type val13, te_type val14, te_type val15, te_type val16,
+                                  te_type val17, te_type val18, te_type val19, te_type val20,
+                                  te_type val21, te_type val22, te_type val23, te_type val24)
         {
         // at least val1 must be legit, rest can be NaN
         if (!std::isfinite(val1))
@@ -1174,7 +1199,24 @@ namespace te_builtins
         orVal = te_or_maybe_nan(orVal, val4);
         orVal = te_or_maybe_nan(orVal, val5);
         orVal = te_or_maybe_nan(orVal, val6);
-        return te_or_maybe_nan(orVal, val7);
+        orVal = te_or_maybe_nan(orVal, val7);
+        orVal = te_or_maybe_nan(orVal, val8);
+        orVal = te_or_maybe_nan(orVal, val9);
+        orVal = te_or_maybe_nan(orVal, val10);
+        orVal = te_or_maybe_nan(orVal, val11);
+        orVal = te_or_maybe_nan(orVal, val12);
+        orVal = te_or_maybe_nan(orVal, val13);
+        orVal = te_or_maybe_nan(orVal, val14);
+        orVal = te_or_maybe_nan(orVal, val15);
+        orVal = te_or_maybe_nan(orVal, val16);
+        orVal = te_or_maybe_nan(orVal, val17);
+        orVal = te_or_maybe_nan(orVal, val18);
+        orVal = te_or_maybe_nan(orVal, val19);
+        orVal = te_or_maybe_nan(orVal, val20);
+        orVal = te_or_maybe_nan(orVal, val21);
+        orVal = te_or_maybe_nan(orVal, val22);
+        orVal = te_or_maybe_nan(orVal, val23);
+        return te_or_maybe_nan(orVal, val24);
         // NOLINTEND
         }
 
@@ -1268,8 +1310,8 @@ void te_parser::te_free_parameters(te_expr* texp)
 const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "abs", static_cast<te_fun1>(te_builtins::te_absolute_value), TE_PURE },
     { "acos", static_cast<te_fun1>(te_builtins::te_acos), TE_PURE },
-    // variadic, accepts 1-7 arguments
-    { "and", static_cast<te_fun7>(te_builtins::te_and_variadic),
+    // variadic, accepts 1-24 arguments
+    { "and", static_cast<te_fun24>(te_builtins::te_and_variadic),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "asin", static_cast<te_fun1>(te_builtins::te_asin), TE_PURE },
     { "atan", static_cast<te_fun1>(te_builtins::te_atan), TE_PURE },
@@ -1338,7 +1380,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "not", static_cast<te_fun1>(te_builtins::te_not), TE_PURE },
     { "npr", static_cast<te_fun2>(te_builtins::te_npr), TE_PURE },
     { "odd", static_cast<te_fun1>(te_builtins::te_odd), TE_PURE },
-    { "or", static_cast<te_fun7>(te_builtins::te_or_variadic),
+    { "or", static_cast<te_fun24>(te_builtins::te_or_variadic),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "permut", static_cast<te_fun2>(te_builtins::te_npr), TE_PURE },
     { "pi", static_cast<te_fun0>(te_builtins::te_pi), TE_PURE },
