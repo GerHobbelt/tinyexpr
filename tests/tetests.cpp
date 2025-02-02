@@ -126,12 +126,271 @@ te_type clo7(const te_expr* context, te_type a, te_type b, te_type c, te_type d,
     return a + b + c + d + e + f + g;
 }
 
+te_type clo8(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+             te_type h) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h;
+    return a + b + c + d + e + f + g + h;
+}
+
+te_type clo9(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+             te_type h, te_type i) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i;
+    return a + b + c + d + e + f + g + h + i;
+}
+
+te_type clo10(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j;
+    return a + b + c + d + e + f + g + h + i + j;
+}
+
+te_type clo11(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k;
+    return a + b + c + d + e + f + g + h + i + j + k;
+}
+
+te_type clo12(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l;
+    return a + b + c + d + e + f + g + h + i + j + k + l;
+}
+
+te_type clo13(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m;
+}
+
+te_type clo14(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n;
+}
+
+te_type clo15(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o;
+}
+
+te_type clo16(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p;
+}
+
+te_type clo17(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q;
+}
+
+te_type clo18(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q, te_type r) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) +
+                     a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r;
+}
+
+te_type clo19(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q, te_type r, te_type s) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) +
+                     a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s;
+}
+
+te_type clo20(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q, te_type r, te_type s, te_type t) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) +
+                     a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t;
+}
+
+te_type clo21(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q, te_type r, te_type s, te_type t, te_type u) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) +
+                     a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u;
+}
+
+te_type clo22(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+              te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n, te_type o, te_type p,
+              te_type q, te_type r, te_type s, te_type t, te_type u, te_type v) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) +
+                     a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v;
+}
+
+te_type clo23(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+             te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n,
+             te_type o, te_type p, te_type q, te_type r, te_type s, te_type t, te_type u,
+             te_type v, te_type w) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v + w;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v + w;
+}
+
+
+te_type clo24(const te_expr* context, te_type a, te_type b, te_type c, te_type d, te_type e, te_type f, te_type g,
+             te_type h, te_type i, te_type j, te_type k, te_type l, te_type m, te_type n,
+             te_type o, te_type p, te_type q, te_type r, te_type s, te_type t, te_type u,
+             te_type v, te_type w, te_type x ) {
+    if (context) return *(std::get<const te_type*>(context->m_value)) + a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v + w + x;
+    return a + b + c + d + e + f + g + h + i + j + k + l + m + n + o + p + q + r + s + t + u + v + w + x;
+}
+
 inline te_type AddEm(const te_type a, const te_type b){
     return a+b;
 }
 
 inline te_type AddEm3(const te_type a, const te_type b, const te_type c){
     return a+b+c;
+}
+
+inline te_type AddEm4(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4){
+    return v1 + v2 +
+    v3 + v4;
+}
+
+inline te_type AddEm5(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5){
+    return v1 + v2 +
+    v3 + v4 + v5;
+}
+
+inline te_type AddEm6(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6;
+}
+
+inline te_type AddEm7(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7;
+}
+
+inline te_type AddEm8(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8;
+}
+
+inline te_type AddEm9(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9;
+}
+
+inline te_type AddEm10(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10;
+}
+
+
+inline te_type AddEm11(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11;
+}
+
+inline te_type AddEm12(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12;
+}
+
+inline te_type AddEm13(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13;
+}
+
+inline te_type AddEm14(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14;
+}
+
+inline te_type AddEm15(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15;
+}
+
+inline te_type AddEm16(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16;
+}
+
+inline te_type AddEm17(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17;
+}
+
+inline te_type AddEm18(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18;
+}
+
+inline te_type AddEm19(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18 + v19;
+}
+
+inline te_type AddEm20(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19, const te_type v20){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18 + v19 + v20;
+}
+
+inline te_type AddEm21(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19, const te_type v20, const te_type v21){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 + v18 + v19 + v20 + v21;
+}
+
+inline te_type AddEm22(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19, const te_type v20, const te_type v21, const te_type v22){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 +v18 + v19 + v20 + v21 + v22;
+}
+
+inline te_type AddEm23(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19, const te_type v20, const te_type v21, const te_type v22, const te_type v23){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 +v18 + v19 + v20 + v21 + v22 + v23;
+}
+
+inline te_type AddEm24(const te_type v1, const te_type v2,
+    const te_type v3, const te_type v4, const te_type v5, const te_type v6, const te_type v7, const te_type v8, const te_type v9, const te_type v10,
+    const te_type v11, const te_type v12, const te_type v13, const te_type v14, const te_type v15, const te_type v16, const te_type v17, const te_type v18, const te_type v19, const te_type v20, const te_type v21, const te_type v22, const te_type v23, const te_type v24){
+    return v1 + v2 +
+    v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11 + v12 + v13 + v14 + v15 + v16 + v17 +v18 + v19 + v20 + v21 +  v22 + v23 + v24;
 }
 
 inline te_type __value(const te_type a){
@@ -1119,7 +1378,24 @@ TEST_CASE("Closure", "[closure]")
         {"c4", clo4, TE_DEFAULT, &te},
         {"c5", clo5, TE_DEFAULT, &te},
         {"c6", clo6, TE_DEFAULT, &te},
-        {"c7", clo7, TE_DEFAULT, &te}
+        {"c7", clo7, TE_DEFAULT, &te},
+        {"c8", clo8, TE_DEFAULT, &te},
+        {"c9", clo9, TE_DEFAULT, &te},
+        {"c10", clo10, TE_DEFAULT, &te},
+        {"c11", clo11, TE_DEFAULT, &te},
+        {"c12", clo12, TE_DEFAULT, &te},
+        {"c13", clo13, TE_DEFAULT, &te},
+        {"c14", clo14, TE_DEFAULT, &te},
+        {"c15", clo15, TE_DEFAULT, &te},
+        {"c16", clo16, TE_DEFAULT, &te},
+        {"c17", clo17, TE_DEFAULT, &te},
+        {"c18", clo18, TE_DEFAULT, &te},
+        {"c19", clo19, TE_DEFAULT, &te},
+        {"c20", clo20, TE_DEFAULT, &te},
+        {"c21", clo21, TE_DEFAULT, &te},
+        {"c22", clo22, TE_DEFAULT, &te},
+        {"c23", clo23, TE_DEFAULT, &te},
+        {"c24", clo24, TE_DEFAULT, &te}
     };
 
     te_parser tep;
@@ -1225,6 +1501,244 @@ TEST_CASE("Closure", "[closure]")
         extra = 0;
         answer = 58;
         res = tep.evaluate("C7 (10, 20, 5, 2, 8, 9, 4)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C8")
+        {
+        extra = 0;
+        answer = 120;
+        res = tep.evaluate("C8 (10, 20, 5, 2, 8, 9, 4, 62)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C9")
+        {
+        extra = 0;
+        answer = 44;
+        res = tep.evaluate("C9 (10, 5, 2, 8, 9, 4, 1, 3, 2)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C10")
+        {
+        extra = 0;
+        answer = 55;
+        res = tep.evaluate("C10 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C11")
+        {
+        extra = 0;
+        answer = 61;
+        res = tep.evaluate("C11 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C12")
+        {
+        extra = 0;
+        answer = 68;
+        res = tep.evaluate("C12 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C13")
+    {
+        extra = 0;
+        answer = 76;
+        res = tep.evaluate("C13 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C14")
+        {
+        extra = 0;
+        answer = 85;
+        res = tep.evaluate("C14 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C15")
+        {
+        extra = 0;
+        answer = 95;
+        res = tep.evaluate("C15 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C16")
+        {
+        extra = 0;
+        answer = 106;
+        res = tep.evaluate("C16 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C17")
+        {
+        extra = 0;
+        answer = 118;
+        res = tep.evaluate("C17 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C18")
+        {
+        extra = 0;
+        answer = 131;
+        res = tep.evaluate("C18 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12, 13)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C19")
+        {
+        extra = 0;
+        answer = 145;
+        res = tep.evaluate("C19 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C20")
+        {
+        extra = 0;
+        answer = 160;
+        res = tep.evaluate("C20 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C21")
+        {
+        extra = 0;
+        answer = 176;
+        res = tep.evaluate("C21 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C22")
+        {
+        extra = 0;
+        answer = 193;
+        res = tep.evaluate("C22 (10, 5, 2, 8, 9, 4, 1, 3, 2, 11, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C23")
+        {
+        extra = 0;
+        answer = 298;
+        res = tep.evaluate("C23 (10, 20, 5, 2, 8, 9, 4, 62, 10, 20, 5, 2, 8, 9, 4, 62, 10, 20, 5, 2, 8, 9, 4)");
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+
+        extra = 10;
+        res = tep.evaluate();
+        CHECK(tep.success());
+        CHECK(tep.evaluate() == answer + extra);
+        }
+
+    SECTION("C24")
+        {
+        extra = 0;
+        answer = 370;
+        res = tep.evaluate("C24 (10, 20, 5, 2, 8, 9, 4, 62, 10, 20, 5, 2, 8, 9, 4, 62, 10, 20, 5, 2, 8, 9, 4, 72)");
         CHECK(tep.success());
         CHECK(tep.evaluate() == answer + extra);
 
@@ -1728,6 +2242,217 @@ TEST_CASE("Custom test", "[functions]")
         p.remove_variable_or_function("addem3");
         CHECK_FALSE(p.compile(("ADDEM3(2.1, 86.8, 2)")));
         }
+
+
+    SECTION("24 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm24", AddEm24} });
+        p.compile("AddEm24(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1)");
+        CHECK_THAT(18456.8, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm24");
+        CHECK_FALSE(p.compile(("AddEm24(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1)")));
+        }
+
+    SECTION("23 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm23", AddEm23} });
+        p.compile("AddEm23(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945)");
+        CHECK_THAT(18454.7, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm23");
+        CHECK_FALSE(p.compile("AddEm23(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945)"));
+        }
+
+    SECTION("22 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm22", AddEm22} });
+        p.compile("AddEm22(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3, -9, 8)");
+        CHECK_THAT(9563.5, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm22");
+        CHECK_FALSE(p.compile("AddEm22(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1, 2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3, -9, 8)"));
+        }
+
+    SECTION("21 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm21", AddEm21} });
+        p.compile("AddEm21(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3, -9)");
+        CHECK_THAT(9555.5, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm21");
+        CHECK_FALSE(p.compile("AddEm21(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3, -9)"));
+        }
+
+    SECTION("20 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm20", AddEm20} });
+        p.compile("AddEm20(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3)");
+        CHECK_THAT(9564.5, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm20");
+        CHECK_FALSE(p.compile("AddEm20(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9, 72.9, 8, 73, 2.3)"));
+        }
+
+    SECTION("19 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm19", AddEm19} });
+        p.compile("AddEm19(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9, 8, 73)");
+        CHECK_THAT(9562.2, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm19");
+        CHECK_FALSE(p.compile("AddEm19(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9, 72.9, 8, 73)"));
+        }
+
+    SECTION("18 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm18", AddEm18} });
+        p.compile("AddEm18(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9, 8)");
+        CHECK_THAT(9489.2, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm18");
+        CHECK_FALSE(p.compile("AddEm18(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9, 72.9, 8)"));
+        }
+
+    SECTION("17 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm17", AddEm17} });
+        p.compile("AddEm17(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9, 72.9)");
+        CHECK_THAT(9481.2, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm17");
+        CHECK_FALSE(p.compile("AddEm17(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9, 72.9)"));
+        }
+
+    SECTION("16 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm16", AddEm16} });
+        p.compile("AddEm16(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82, 9)");
+        CHECK_THAT(9408.3, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm16");
+        CHECK_FALSE(p.compile("AddEm16(.2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82, 9)"));
+        }
+
+    SECTION("15 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm15", AddEm15} });
+        p.compile("AddEm15(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,"
+                           "2.1, 86.8, 82)");
+        CHECK_THAT(9399.3, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm15");
+        CHECK_FALSE(p.compile("AddEm15(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1,2.1, 86.8, 82))"));
+        }
+
+    SECTION("14 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm14", AddEm14} });
+        p.compile("AddEm14(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1, 2.1, 69)");
+        CHECK_THAT(9299.5, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm14");
+        CHECK_FALSE(p.compile("AddEm14(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1, 2.1, 69)"));
+        }
+
+    SECTION("13 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm13", AddEm13} });
+        p.compile("AddEm13(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1, 69)");
+        CHECK_THAT(9297.4, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm13");
+        CHECK_FALSE(p.compile("AddEm13(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 2.1, 69)"));
+        }
+
+    SECTION("12 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm12", AddEm12} });
+        p.compile("AddEm12(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 3.1)");
+        CHECK_THAT(9229.4, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm12");
+        CHECK_FALSE(p.compile("AddEm12(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945, 3.1)"));
+        }
+
+    SECTION("11 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm11", AddEm11} });
+        p.compile("AddEm11(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945)");
+        CHECK_THAT(9226.3, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm11");
+        CHECK_FALSE(p.compile("AddEm11(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98, 8945)"));
+        }
+
+    SECTION("10 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm10", AddEm10} });
+        p.compile("AddEm10(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98)");
+        CHECK_THAT(281.3, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        p.remove_variable_or_function("AddEm10");
+        CHECK_FALSE(p.compile("AddEm10(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2, 98)"));
+        }
+
+    SECTION("9 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm9", AddEm9} });
+        p.compile("AddEm9(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2)");
+        CHECK_THAT(183.3, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm9");
+        CHECK_FALSE(p.compile("AddEm9(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9, 7.2)"));
+        }
+
+    SECTION("8 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm8", AddEm8} });
+        p.compile("AddEm8(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9)");
+        CHECK_THAT(176.1, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm8");
+        CHECK_FALSE(p.compile("AddEm8(2.1, 86.8, 2, 72.9, -5, 0.3, 8, 9)"));
+        }
+
+    SECTION("7 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm7", AddEm7} });
+        p.compile("AddEm7(2.1, 86.8, 2, 72.9, -5, 0.3, 8)");
+        CHECK_THAT(167.1, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm7");
+        CHECK_FALSE(p.compile("AddEm7(2.1, 86.8, 2, 72.9, -5, 0.3, 8)"));
+        }
+
+    SECTION("6 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm6", AddEm6} });
+        p.compile("AddEm6(2.1, 86.8, 2, 72.9, -5, 0.3)");
+        CHECK_THAT(159.1, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm6");
+        CHECK_FALSE(p.compile("AddEm6(2.1, 86.8, 2, 72.9, -5, 0.3)"));
+        }
+
+
+    SECTION("5 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm5", AddEm5} });
+        p.compile("AddEm5(2.1, 86.8, 2, 72.9, -5)");
+        CHECK_THAT(158.8, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm5");
+        CHECK_FALSE(p.compile("AddEm5(2.1, 86.8, 2, 72.9, -5)"));
+        }
+
+    SECTION("4 Parameters")
+        {
+        p.set_variables_and_functions({ {"AddEm4", AddEm4} });
+        p.compile("AddEm4(2.1, 86.8, 2, 72.9)");
+        CHECK_THAT(163.8, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(p.evaluate())));
+        // remove function
+        p.remove_variable_or_function("AddEm4");
+        CHECK_FALSE(p.compile("AddEm4(2.1, 86.8, 2, 72.9)"));
+        }
+
     SECTION("Custom variables")
         {
         p.set_variables_and_functions({ {"STRESS_L", static_cast<te_type>(10.1) },
