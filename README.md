@@ -47,7 +47,7 @@ Note: for current users of *TinyExpr++*, please see the [compatibility advisory]
 - Exposes standard C math functions (`sin`, `sqrt`, `ln`, etc.), as well as some *Excel*-like functions (e.g., `AVERAGE()` and `IF()`).
 - Can add custom functions and variables easily.
 - Can bind constants at eval-time.
-- Supports variadic functions (taking between 1-7 arguments).
+- Supports variadic functions (taking between 1-24 arguments).
 - Case insensitive.
 - Supports non-US formulas (e.g., `POW(2,2; 2)` instead of `POW(2.2, 2)`).
 - Supports C and C++ style comments within math expressions.

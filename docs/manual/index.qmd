@@ -39,7 +39,7 @@ It's open-source, free, easy-to-use, and self-contained in a single source and h
 - Can add custom functions and variables easily.
 - Can add a custom handler to resolve unknown variables.
 - Can bind constants at eval-time.
-- Supports variadic functions (taking between 1-7 arguments).
+- Supports variadic functions (taking between 1-24 arguments).
 - Case insensitive.
 - Supports non-US formulas (e.g., `POW(2,2; 2)` instead of `POW(2.2, 2)`).
 - Supports C and C++ style comments within math expressions.

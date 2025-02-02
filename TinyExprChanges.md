@@ -9,7 +9,7 @@ The following are changes from the original TinyExpr C library:
 - Variable/function types (e.g., `TE_FUNCTION0`) have been removed; types are now deduced by the compiler. The available flags
   for variables and functions are now just combinations of `TE_DEFAULT`, `TE_PURE`, and `TE_VARIADIC`.
 - Formula parsing is now case insensitive.
-- Added support for variadic functions (can accept 1-7 arguments); enabled through the `TE_VARIADIC` flag.
+- Added support for variadic functions (can accept 1-24 arguments); enabled through the `TE_VARIADIC` flag.
   (Refer to the `AVERAGE()` function in `tinyexp.cpp` for an example.)
 - Added support for parsing formulas in non-US format (e.g., `pow(2,2; 2)` instead of `pow(2.2, 2)`). Useful for when the program's locale is non-English.
   (Refer to [Example 4](Examples.md) for a demonstration.)
@@ -31,8 +31,8 @@ The following are changes from the original TinyExpr C library:
 - Custom functions and variables can now be removed.
 - Added support for custom handlers to resolve unknown variables.
 - Added new built-in functions:
-  - `and`: returns true (i.e., non-zero) if all conditions are true (accepts 1-7 arguments).
-  - `average`: returns the mean for a range of values (accepts 1-7 arguments).
+  - `and`: returns true (i.e., non-zero) if all conditions are true (accepts 1-24 arguments).
+  - `average`: returns the mean for a range of values (accepts 1-24 arguments).
   - `bitand`: bitwise AND.
   - `bitlrotate`: bitwise left rotate. Versions of this are available for 8-, 16-, 32-, and 64-bit integers (if supported by the platform). (Only available if compiled as C++20.)
   - `bitlshift`: left shift.
@@ -53,13 +53,13 @@ The following are changes from the original TinyExpr C library:
   - `isodd`: returns true if a number is odd, false if even.
   - `if`: if a value is true (i.e., non-zero), then returns the second argument; otherwise, returns the third argument.
   - `ifs`: checks up to three conditions, returning the value corresponding to the first met condition.
-  - `max`: returns the maximum of a range of values (accepts 1-7 arguments).
+  - `max`: returns the maximum of a range of values (accepts 1-24 arguments).
   - `maxint`: returns the largest integer value that the parser can store.
-  - `min`: returns the minimum of a range of values (accepts 1-7 arguments).
+  - `min`: returns the minimum of a range of values (accepts 1-24 arguments).
   - `mod`: returns remainder from a division.
   - `nan`: returns `NaN` (i.e., Not-a-Number) in a boolean expression.
   - `odd`: returns a value rounded up to the nearest odd integer.
-  - `or`: returns true (i.e., non-zero) if any condition is true (accepts 1-7 arguments).
+  - `or`: returns true (i.e., non-zero) if any condition is true (accepts 1-24 arguments).
   - `not`: returns logical negation of value.
   - `permut`: alias for `npr()`, like the *Excel* function.
   - `power`: alias for `pow()`, like the *Excel* function.
@@ -69,7 +69,7 @@ The following are changes from the original TinyExpr C library:
      (Decimal point is optional and defaults to `0`.)
      Negative number-of-digits arguments (similar to *Excel*) is supported.
   - `sign`: returns the sign of a number: `1` if positive, `-1` if negative, `0` if zero.
-  - `sum`: returns the sum of a list of values (accepts 1-7 arguments).
+  - `sum`: returns the sum of a list of values (accepts 1-24 arguments).
   - `sqr`: returns a number squared.
   - `tgamma`: returns gamma function of a specified value.
   - `trunc`: returns the integer part of a number.
