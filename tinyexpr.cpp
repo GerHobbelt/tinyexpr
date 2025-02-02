@@ -1026,7 +1026,10 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_max(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
-                          te_type val6, te_type val7) noexcept
+                          te_type val6, te_type val7, te_type val8, te_type val9, te_type val10,
+                          te_type val11, te_type val12, te_type val13, te_type val14, te_type val15,
+                          te_type val16, te_type val17, te_type val18, te_type val19, te_type val20,
+                          te_type val21, te_type val22, te_type val23, te_type val24) noexcept
         {
         // assumes that at least val1 is a number, rest can be NaN
         // NOLINTBEGIN
@@ -1035,7 +1038,24 @@ namespace te_builtins
         maxVal = te_max_maybe_nan(maxVal, val4);
         maxVal = te_max_maybe_nan(maxVal, val5);
         maxVal = te_max_maybe_nan(maxVal, val6);
-        return te_max_maybe_nan(maxVal, val7);
+        maxVal = te_max_maybe_nan(maxVal, val7);
+        maxVal = te_max_maybe_nan(maxVal, val8);
+        maxVal = te_max_maybe_nan(maxVal, val9);
+        maxVal = te_max_maybe_nan(maxVal, val10);
+        maxVal = te_max_maybe_nan(maxVal, val11);
+        maxVal = te_max_maybe_nan(maxVal, val12);
+        maxVal = te_max_maybe_nan(maxVal, val13);
+        maxVal = te_max_maybe_nan(maxVal, val14);
+        maxVal = te_max_maybe_nan(maxVal, val15);
+        maxVal = te_max_maybe_nan(maxVal, val16);
+        maxVal = te_max_maybe_nan(maxVal, val17);
+        maxVal = te_max_maybe_nan(maxVal, val18);
+        maxVal = te_max_maybe_nan(maxVal, val19);
+        maxVal = te_max_maybe_nan(maxVal, val20);
+        maxVal = te_max_maybe_nan(maxVal, val21);
+        maxVal = te_max_maybe_nan(maxVal, val22);
+        maxVal = te_max_maybe_nan(maxVal, val23);
+        return te_max_maybe_nan(maxVal, val24);
         // NOLINTEND
         }
 
@@ -1047,7 +1067,10 @@ namespace te_builtins
 
     [[nodiscard]]
     static te_type te_min(te_type val1, te_type val2, te_type val3, te_type val4, te_type val5,
-                          te_type val6, te_type val7) noexcept
+                          te_type val6, te_type val7, te_type val8, te_type val9, te_type val10,
+                          te_type val11, te_type val12, te_type val13, te_type val14, te_type val15,
+                          te_type val16, te_type val17, te_type val18, te_type val19, te_type val20,
+                          te_type val21, te_type val22, te_type val23, te_type val24) noexcept
         {
         // assumes that at least val1 is legit, rest can be NaN
         // NOLINTBEGIN
@@ -1056,7 +1079,24 @@ namespace te_builtins
         minVal = te_min_maybe_nan(minVal, val4);
         minVal = te_min_maybe_nan(minVal, val5);
         minVal = te_min_maybe_nan(minVal, val6);
-        return te_min_maybe_nan(minVal, val7);
+        minVal = te_min_maybe_nan(minVal, val7);
+        minVal = te_min_maybe_nan(minVal, val8);
+        minVal = te_min_maybe_nan(minVal, val9);
+        minVal = te_min_maybe_nan(minVal, val10);
+        minVal = te_min_maybe_nan(minVal, val11);
+        minVal = te_min_maybe_nan(minVal, val12);
+        minVal = te_min_maybe_nan(minVal, val13);
+        minVal = te_min_maybe_nan(minVal, val14);
+        minVal = te_min_maybe_nan(minVal, val15);
+        minVal = te_min_maybe_nan(minVal, val16);
+        minVal = te_min_maybe_nan(minVal, val17);
+        minVal = te_min_maybe_nan(minVal, val18);
+        minVal = te_min_maybe_nan(minVal, val19);
+        minVal = te_min_maybe_nan(minVal, val20);
+        minVal = te_min_maybe_nan(minVal, val21);
+        minVal = te_min_maybe_nan(minVal, val22);
+        minVal = te_min_maybe_nan(minVal, val23);
+        return te_min_maybe_nan(minVal, val24);
         // NOLINTEND
         }
 
@@ -1265,10 +1305,10 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "ln", static_cast<te_fun1>(te_builtins::te_log), TE_PURE },
     { "log10", static_cast<te_fun1>(te_builtins::te_log10), TE_PURE },
-    { "max", static_cast<te_fun7>(te_builtins::te_max),
+    { "max", static_cast<te_fun24>(te_builtins::te_max),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "maxint", static_cast<te_fun0>(te_builtins::te_max_integer), TE_PURE },
-    { "min", static_cast<te_fun7>(te_builtins::te_min),
+    { "min", static_cast<te_fun24>(te_builtins::te_min),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "mod", static_cast<te_fun2>(te_builtins::te_modulus), TE_PURE },
     { "nan", static_cast<te_fun0>(te_builtins::te_nan_value), TE_PURE },
