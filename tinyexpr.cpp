@@ -1758,7 +1758,7 @@ te_expr* te_parser::base(te_parser::state* theState)
         }
     else if (is_function(theState->m_value) || is_closure(theState->m_value))
         {
-        const int arity = get_arity(theState->m_value);
+        const auto arity = get_arity(theState->m_value);
 
         ret = new_expr(theState->m_varType, theState->m_value);
         if (is_closure(theState->m_value))
@@ -2234,7 +2234,7 @@ void te_parser::optimize(te_expr* texp)
     /* Only optimize out functions flagged as pure. */
     if (is_pure(texp->m_type))
         {
-        const int arity = get_arity(texp->m_value);
+        const auto arity = get_arity(texp->m_value);
         bool known{ true };
         for (int i = 0; i < arity; ++i)
             {
