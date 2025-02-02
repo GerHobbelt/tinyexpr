@@ -1756,12 +1756,7 @@ te_expr* te_parser::base(te_parser::state* theState)
         next_token(theState);
         ret->m_parameters[0] = power(theState);
         }
-    else if (is_function2(theState->m_value) || is_closure2(theState->m_value) ||
-             is_function3(theState->m_value) || is_closure3(theState->m_value) ||
-             is_function4(theState->m_value) || is_closure4(theState->m_value) ||
-             is_function5(theState->m_value) || is_closure5(theState->m_value) ||
-             is_function6(theState->m_value) || is_closure6(theState->m_value) ||
-             is_function7(theState->m_value) || is_closure7(theState->m_value))
+    else if (is_function(theState->m_value) || is_closure(theState->m_value))
         {
         const int arity = get_arity(theState->m_value);
 
@@ -2155,6 +2150,19 @@ te_expr* te_parser::power(te_parser::state* theState)
     }
 
 //--------------------------------------------------
+// tuple-list-maker
+template<typename F, size_t... Indices>
+auto make_closure_arg_list(const F& fn, te_expr* ctx, std::index_sequence<Indices...>)
+    {
+    return std::make_tuple(ctx, fn(Indices)...);
+    }
+
+template<typename F, size_t... Indices>
+auto make_function_arg_list(const F& fn, std::index_sequence<Indices...>)
+    {
+    return std::make_tuple(fn(Indices)...);
+    }
+
 te_type te_parser::te_eval(const te_expr* texp)
     {
     if (texp == nullptr)
@@ -2167,49 +2175,46 @@ te_type te_parser::te_eval(const te_expr* texp)
     const auto M = [&texp = std::as_const(texp)](const size_t e)
     { return (e < texp->m_parameters.size()) ? te_eval(texp->m_parameters[e]) : te_nan; };
 
-    switch (texp->m_value.index())
+    return std::visit(
+        [&, texp](const auto& var) -> te_type
         {
-    case 0:
-        return get_constant(texp->m_value);
-    case 1:
-        return *(get_variable(texp->m_value));
-    case 2:
-        return get_function0(texp->m_value)();
-    case 3:
-        return get_function1(texp->m_value)(M(0));
-    case 4:
-        return get_function2(texp->m_value)(M(0), M(1));
-    case 5:
-        return get_function3(texp->m_value)(M(0), M(1), M(2));
-    case 6:
-        return get_function4(texp->m_value)(M(0), M(1), M(2), M(3));
-    case 7:
-        return get_function5(texp->m_value)(M(0), M(1), M(2), M(3), M(4));
-    case 8:
-        return get_function6(texp->m_value)(M(0), M(1), M(2), M(3), M(4), M(5));
-    case 9:
-        return get_function7(texp->m_value)(M(0), M(1), M(2), M(3), M(4), M(5), M(6));
-    case 10:
-        return get_closure0(texp->m_value)(texp->m_parameters[0]);
-    case 11:
-        return get_closure1(texp->m_value)(texp->m_parameters[1], M(0));
-    case 12:
-        return get_closure2(texp->m_value)(texp->m_parameters[2], M(0), M(1));
-    case 13:
-        return get_closure3(texp->m_value)(texp->m_parameters[3], M(0), M(1), M(2));
-    case 14:
-        return get_closure4(texp->m_value)(texp->m_parameters[4], M(0), M(1), M(2), M(3));
-    case 15:
-        return get_closure5(texp->m_value)(texp->m_parameters[5], M(0), M(1), M(2), M(3), M(4));
-    case 16:
-        return get_closure6(texp->m_value)(texp->m_parameters[6], M(0), M(1), M(2), M(3), M(4),
-                                           M(5));
-    case 17:
-        return get_closure7(texp->m_value)(texp->m_parameters[7], M(0), M(1), M(2), M(3), M(4),
-                                           M(5), M(6));
-    default:
-        return te_nan;
-        };
+            using T = std::decay_t<decltype(var)>;
+            if constexpr (te_is_constant_v<T>)
+                {
+                return var;
+                }
+            else if constexpr (te_is_variable_v<T>)
+                {
+                return *var;
+                }
+            else if constexpr (std::is_same_v<T, te_fun0>)
+                {
+                return var();
+                }
+            else if constexpr (std::is_same_v<T, te_confun0>)
+                {
+                return var(texp->m_parameters[0]);
+                }
+            else if constexpr (te_is_closure_v<T>)
+                {
+                constexpr size_t n_args = te_function_arity<T>;
+                static_assert(n_args > 0);
+                return std::apply(var,
+                                  make_closure_arg_list(M, texp->m_parameters[n_args - 1],
+                                                        std::make_index_sequence<n_args - 1>{}));
+                }
+            else if constexpr (te_is_function_v<T>)
+                {
+                constexpr size_t n_args = te_function_arity<T>;
+                return std::apply(var,
+                                  make_function_arg_list(M, std::make_index_sequence<n_args>{}));
+                }
+            else
+                {
+                return te_nan;
+                }
+        },
+        texp->m_value);
     // NOLINTEND
     }
 
