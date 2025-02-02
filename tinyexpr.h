@@ -711,13 +711,14 @@ class te_parser
         return m_expression;
         }
 
-    /// @brief Helper function to see if a double value is boolean.
+    /// @brief Helper function to convert a number into boolean.
+    /// @details This takes NaN into account, returning @c for NaN.
     /// @param val The value to examine.
-    /// @returns @c if the value is non-zero and also a valid double
+    /// @returns @c true if the value is non-zero and also a valid double
     ///     (not NaN or infinite).
     /// @private
     [[nodiscard]]
-    static bool double_to_bool(te_type val)
+    static bool number_to_bool(te_type val)
         {
         return std::isfinite(val) ? static_cast<bool>(val) : false;
         }

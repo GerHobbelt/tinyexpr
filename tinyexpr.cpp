@@ -171,7 +171,7 @@ namespace te_builtins
         return (!std::isfinite(val1) && !std::isfinite(val2)) ?
             te_parser::te_nan :
             static_cast<te_type>(
-                (te_parser::double_to_bool(val1) && te_parser::double_to_bool(val2)) ? 1 : 0);
+                (te_parser::number_to_bool(val1) && te_parser::number_to_bool(val2)) ? 1 : 0);
         // clang-format on
         }
 
@@ -182,14 +182,14 @@ namespace te_builtins
         return (!std::isfinite(val1) && !std::isfinite(val2)) ?
             te_parser::te_nan :
             static_cast<te_type>(
-                (te_parser::double_to_bool(val1) || te_parser::double_to_bool(val2)) ? 1 : 0);
+                (te_parser::number_to_bool(val1) || te_parser::number_to_bool(val2)) ? 1 : 0);
         // clang-format on
         }
 
     [[nodiscard]]
     static te_type te_not(te_type val)
         {
-        return std::isfinite(val) ? static_cast<te_type>(!te_parser::double_to_bool(val)) :
+        return std::isfinite(val) ? static_cast<te_type>(!te_parser::number_to_bool(val)) :
                                     te_parser::te_nan;
         }
 
@@ -1126,9 +1126,9 @@ namespace te_builtins
     static te_type te_and_maybe_nan(te_type val1, te_type val2MaybeNan)
         {
         return !std::isfinite(val2MaybeNan) ?
-                   static_cast<te_type>(te_parser::double_to_bool(val1)) :
-                   static_cast<te_type>(te_parser::double_to_bool(val1) &&
-                                        te_parser::double_to_bool(val2MaybeNan));
+                   static_cast<te_type>(te_parser::number_to_bool(val1)) :
+                   static_cast<te_type>(te_parser::number_to_bool(val1) &&
+                                        te_parser::number_to_bool(val2MaybeNan));
         }
 
     [[nodiscard]]
@@ -1175,9 +1175,9 @@ namespace te_builtins
     static te_type te_or_maybe_nan(te_type val1, te_type val2MaybeNan)
         {
         return !std::isfinite(val2MaybeNan) ?
-                   static_cast<te_type>(te_parser::double_to_bool(val1)) :
-                   static_cast<te_type>(te_parser::double_to_bool(val1) ||
-                                        te_parser::double_to_bool(val2MaybeNan));
+                   static_cast<te_type>(te_parser::number_to_bool(val1)) :
+                   static_cast<te_type>(te_parser::number_to_bool(val1) ||
+                                        te_parser::number_to_bool(val2MaybeNan));
         }
 
     [[nodiscard]]
@@ -1223,16 +1223,16 @@ namespace te_builtins
     [[nodiscard]]
     static te_type te_if(te_type val1, te_type val2, te_type val3)
         {
-        return te_parser::double_to_bool(val1) ? val2 : val3;
+        return te_parser::number_to_bool(val1) ? val2 : val3;
         }
 
     [[nodiscard]]
     static te_type te_ifs(te_type if1, te_type if1True, te_type if2, te_type if2True, te_type if3,
                           te_type if3True)
         {
-        return te_parser::double_to_bool(if1) ? if1True :
-               te_parser::double_to_bool(if2) ? if2True :
-               te_parser::double_to_bool(if3) ? if3True :
+        return te_parser::number_to_bool(if1) ? if1True :
+               te_parser::number_to_bool(if2) ? if2True :
+               te_parser::number_to_bool(if3) ? if3True :
                                                 te_parser::te_nan;
         }
 
