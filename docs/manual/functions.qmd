@@ -110,6 +110,16 @@ The first argument to any logic function must be valid (i.e., not NaN). If the f
 Any subsequent arguments that evaluate to NaN will be ignored.
 :::
 
+::: {.minipage data-latex="{\textwidth}"}
+| Function | Description |
+| :-- | :-- |
+| DB(Cost, Salvage, Lifetime, Period, Month) | Returns the depreciation of an asset for a specified period using the fixed-declining balance method. |
+| EFFECT(NominalRate, Periods) | Returns the effective annual interest rate, provided the nominal annual interest rate and the number of compounding periods per year.<br>\linebreak NaN will be returned if *Periods* is < 1 or if *NominalRate* <= 0.  |
+| NOMINAL(EffectiveRate, Periods) | Returns the nominal annual interest rate, provided the effective rate and the number of compounding periods per year.<br>\linebreak NaN will be returned if *Periods* is < 1 or if *EffectiveRate* <= 0. |
+
+Table: Financial Functions\index{functions!financial}
+:::
+
 ## Compatibility Note {-}
 
 `BITNOT` will call either `BITNOT32` or `BITNOT64`, depending on whether 64-bit integers\index{data types!\texttt{64-bit integer}} are supported.

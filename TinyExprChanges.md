@@ -46,6 +46,8 @@ The following are changes from the original TinyExpr C library:
   - `cot`: returns the cotangent of an angle.
   - `combin`: alias for `ncr()`, like the *Excel* function.
   - `clamp`: constrains a value to a range.
+  - `db`: returns the depreciation of an asset for a specified period using the fixed-declining balance method.
+  - `effect`: returns the effective annual interest rate, provided the nominal annual interest rate and the number of compounding periods per year.
   - `even`: returns a value rounded up to the nearest even integer.
   - `fact`: alias for `fac()`, like the *Excel* function.
   - `false`: returns `false` (i.e., `0`) in a boolean expression.
@@ -58,6 +60,7 @@ The following are changes from the original TinyExpr C library:
   - `min`: returns the minimum of a range of values (accepts 1-24 arguments).
   - `mod`: returns remainder from a division.
   - `nan`: returns `NaN` (i.e., Not-a-Number) in a boolean expression.
+  - `nominal`: returns the nominal annual interest rate, provided the effective rate and the number of compounding periods per year.
   - `odd`: returns a value rounded up to the nearest odd integer.
   - `or`: returns true (i.e., non-zero) if any condition is true (accepts 1-24 arguments).
   - `not`: returns logical negation of value.

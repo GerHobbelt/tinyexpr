@@ -4010,6 +4010,56 @@ COMBIN(15,
         }
     }
 
+// Financial functions
+TEST_CASE("Nominal", "[finance]")
+    {
+    te_parser tep;
+
+    CHECK_THAT(4, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("NOMINAL(8, 2)"))));
+    CHECK_THAT(0.05250032, Catch::Matchers::WithinRel(tep.evaluate("NOMINAL(0.053543, 4)"),  0.000001));
+    CHECK_THAT(0.00995132100969354, Catch::Matchers::WithinRel(tep.evaluate("=NOMINAL(0.01,50)"),  0.000001));
+    CHECK_THAT(0.20744331009791, Catch::Matchers::WithinRel(tep.evaluate("=NOMINAL(0.23,50)"),  0.000001));
+
+    CHECK(std::isnan(tep.evaluate("NOMINAL(8, 0)")));
+    CHECK(std::isnan(tep.evaluate("NOMINAL(0, 4)")));
+    CHECK(std::isnan(tep.evaluate("NOMINAL(-.1, 4)")));
+    }
+
+TEST_CASE("Effect", "[finance]")
+    {
+    te_parser tep;
+
+    CHECK_THAT(0.0535427, Catch::Matchers::WithinRel(tep.evaluate("EFFECT(0.0525, 4)"),  0.000001));
+    CHECK_THAT(0.127340987166906, Catch::Matchers::WithinRel(tep.evaluate("EFFECT(0.12, 52)"),  0.000001));
+
+    CHECK(std::isnan(tep.evaluate("EFFECT(8, 0)")));
+    CHECK(std::isnan(tep.evaluate("EFFECT(0, 4)")));
+    CHECK(std::isnan(tep.evaluate("EFFECT(-.1, 4)")));
+    }
+
+TEST_CASE("DB", "[finance]")
+    {
+    te_parser tep;
+
+    CHECK_THAT(186083.33, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,1,7)"),  0.000001));
+    CHECK_THAT(259639.42, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,2,7)"),  0.000001));
+    CHECK_THAT(176814.44, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,3,7)"),  0.000001));
+    CHECK_THAT(120410.64, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,4,7)"),  0.000001));
+    CHECK_THAT(81999.64, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,5,7)"),  0.000001));
+    CHECK_THAT(55841.76, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,6,7)"),  0.000001));
+    CHECK_THAT(15845.10 , Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,7,7)"),  0.000001));
+    CHECK_THAT(23632.18, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,7,5)"),  0.000001));
+    CHECK_THAT(23632.18, Catch::Matchers::WithinRel(tep.evaluate("DB(1000000,100000,6,7,5.9)"),  0.000001));
+
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,1,0)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,1,13)")));
+    CHECK(std::isnan(tep.evaluate("DB(0,100000,6,1,7)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,0,6,1,13)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,0,1,13)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,7.5,5)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6.5,7,5)")));
+    }
+
 TEST_CASE("Benchmarks", "[!benchmark]")
     {
     te_type benchmarkVar{ 9 };
@@ -4051,7 +4101,4 @@ TEST_CASE("Benchmarks", "[!benchmark]")
     BENCHMARK("(1/(a+1)+2/(a+2)+3/(a+3)) Native")
         { return bench_al(benchmarkVar); };
     }
-} // namespace TETesting
-
-// NOLINTEND
-// clang-format on
+}

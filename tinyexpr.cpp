@@ -193,6 +193,124 @@ namespace te_builtins
                                     te_parser::te_nan;
         }
 
+    /// @warning This version of round emulates Excel's behavior of supporting
+    ///     negative decimal places (e.g., ROUND(21.5, -1) = 20). Be aware
+    ///     of that if using this function outside of TinyExpr++.
+    [[nodiscard]]
+    static te_type te_round(te_type val, te_type decimalPlaces) // NOLINT
+        {
+        const bool useNegativeRound{ decimalPlaces < 0 };
+        const size_t adjustedDecimalPlaces{ !std::isfinite(decimalPlaces) ?
+                                                0 :
+                                                static_cast<size_t>(std::abs(decimalPlaces)) };
+
+        const auto decimalPostition = static_cast<te_type>(std::pow(10, adjustedDecimalPlaces));
+        if (!std::isfinite(decimalPostition))
+            {
+            return te_parser::te_nan;
+            }
+        constexpr te_type ROUND_EPSILON{ 0.5 }; // NOLINT
+
+        if (!useNegativeRound)
+            {
+            if (val < 0)
+                {
+                return (decimalPostition == 0) ?
+                           std::ceil(val - ROUND_EPSILON) :
+                           std::ceil(static_cast<te_type>(val * decimalPostition) - ROUND_EPSILON) /
+                               decimalPostition;
+                }
+            return (decimalPostition == 0) ?
+                       std::floor(val + ROUND_EPSILON) :
+                       std::floor(static_cast<te_type>(val * decimalPostition) + ROUND_EPSILON) /
+                           decimalPostition;
+            }
+        // ROUND(21.5, -1) = 20
+        if (val < 0)
+            {
+            return std::ceil(static_cast<te_type>(val / decimalPostition) - ROUND_EPSILON) *
+                   decimalPostition;
+            }
+        return std::floor(static_cast<te_type>(val / decimalPostition) + ROUND_EPSILON) *
+               decimalPostition;
+        }
+
+    [[nodiscard]]
+    static te_type te_nominal(te_type effectiveRate, te_type periods)
+        {
+        if (periods < 1 || effectiveRate <= 0)
+            {
+            return te_parser::te_nan;
+            }
+        return periods * (std::pow(1 + effectiveRate, (1 / periods)) - 1);
+        }
+
+    [[nodiscard]]
+    static te_type te_effect(te_type nomicalRate, te_type periods)
+        {
+        if (periods < 1 || nomicalRate <= 0)
+            {
+            return te_parser::te_nan;
+            }
+        return std::pow(1 + (nomicalRate / periods), periods) - 1;
+        }
+
+    [[nodiscard]]
+    static te_type te_asset_depreciation(te_type cost, te_type salvage,
+                                         te_type life, te_type period,
+                                         te_type month)
+        {
+        if (!std::isfinite(month))
+            {
+            month = 12;
+            }
+        else if (month < 1 || month > 12 || life <= 0 || cost <= 0 || period < 1)
+            {
+            return te_parser::te_nan;
+            }
+
+        te_type intPrefix;
+        te_type mantissa = std::modf(life, &intPrefix) * 100;
+        if (mantissa > 0)
+            {
+            return te_parser::te_nan;
+            }
+        mantissa = std::modf(period, &intPrefix) * 100;
+        if (mantissa > 0)
+            {
+            return te_parser::te_nan;
+            }
+
+        // month gets rounded down in spreadsheet programs
+        month = std::floor(static_cast<te_type>(month));
+
+        // we just verified that this are integral, but round down to fully ensure that
+        life = std::floor(static_cast<te_type>(life));
+        period = std::floor(static_cast<te_type>(period));
+
+        // rate gets clipped to three-decimal precision according to Excel docs
+        const auto rate = te_round(1 - (std::pow((salvage / cost), (1 / life))), 3);
+        if (period == 1)
+            {
+            return cost * rate * (month / 12);
+            }
+        else
+            {
+            te_type priorDepreciation{ 0.0 };
+            te_type costAfterDepreciation{ cost };
+            for (uint64_t i = 1; i < static_cast<uint64_t>(period) - 1; ++i)
+                {
+                auto depreciation = (costAfterDepreciation * rate);
+                priorDepreciation += depreciation;
+                costAfterDepreciation -= depreciation;
+                }
+            priorDepreciation += costAfterDepreciation * rate * (month / 12);
+            return (period == life + 1) ?
+                ((cost - priorDepreciation) * rate * (12 - month)) / 12 :
+                (cost - priorDepreciation) * rate;
+            }
+        }
+
     [[nodiscard]]
     constexpr static te_type te_pi() noexcept
         {
@@ -435,48 +553,6 @@ namespace te_builtins
             te_sum(val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13,
                    val14, val15, val16, val17, val18, val19, val20, val21, val22, val23, val24);
         return te_divide(total, static_cast<te_type>(validN));
-        }
-
-    /// @warning This version of round emulates Excel's behavior of supporting
-    ///     negative decimal places (e.g., ROUND(21.5, -1) = 20). Be aware
-    ///     of that if using this function outside of TinyExpr++.
-    [[nodiscard]]
-    static te_type te_round(te_type val, te_type decimalPlaces) // NOLINT
-        {
-        const bool useNegativeRound{ decimalPlaces < 0 };
-        const size_t adjustedDecimalPlaces{ !std::isfinite(decimalPlaces) ?
-                                                0 :
-                                                static_cast<size_t>(std::abs(decimalPlaces)) };
-
-        const auto decimalPostition = static_cast<te_type>(std::pow(10, adjustedDecimalPlaces));
-        if (!std::isfinite(decimalPostition))
-            {
-            return te_parser::te_nan;
-            }
-        constexpr te_type ROUND_EPSILON{ 0.5 }; // NOLINT
-
-        if (!useNegativeRound)
-            {
-            if (val < 0)
-                {
-                return (decimalPostition == 0) ?
-                           std::ceil(val - ROUND_EPSILON) :
-                           std::ceil(static_cast<te_type>(val * decimalPostition) - ROUND_EPSILON) /
-                               decimalPostition;
-                }
-            return (decimalPostition == 0) ?
-                       std::floor(val + ROUND_EPSILON) :
-                       std::floor(static_cast<te_type>(val * decimalPostition) + ROUND_EPSILON) /
-                           decimalPostition;
-            }
-        // ROUND(21.5, -1) = 20
-        if (val < 0)
-            {
-            return std::ceil(static_cast<te_type>(val / decimalPostition) - ROUND_EPSILON) *
-                   decimalPostition;
-            }
-        return std::floor(static_cast<te_type>(val / decimalPostition) + ROUND_EPSILON) *
-               decimalPostition;
         }
 
     // Combinations (without repetition)
@@ -1368,7 +1444,9 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "cos", static_cast<te_fun1>(te_builtins::te_cos), TE_PURE },
     { "cosh", static_cast<te_fun1>(te_builtins::te_cosh), TE_PURE },
     { "cot", static_cast<te_fun1>(te_builtins::te_cot), TE_PURE },
+    { "db", static_cast<te_fun5>(te_builtins::te_asset_depreciation), TE_PURE },
     { "e", static_cast<te_fun0>(te_builtins::te_e), TE_PURE },
+    { "effect", static_cast<te_fun2>(te_builtins::te_effect), TE_PURE },
     { "even", static_cast<te_fun1>(te_builtins::te_even), TE_PURE },
     { "exp", static_cast<te_fun1>(te_builtins::te_exp), TE_PURE },
     { "fac", static_cast<te_fun1>(te_builtins::te_fac), TE_PURE },
@@ -1390,6 +1468,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "mod", static_cast<te_fun2>(te_builtins::te_modulus), TE_PURE },
     { "nan", static_cast<te_fun0>(te_builtins::te_nan_value), TE_PURE },
     { "ncr", static_cast<te_fun2>(te_builtins::te_ncr), TE_PURE },
+    { "nominal", static_cast<te_fun2>(te_builtins::te_nominal), TE_PURE },
     { "not", static_cast<te_fun1>(te_builtins::te_not), TE_PURE },
     { "npr", static_cast<te_fun2>(te_builtins::te_npr), TE_PURE },
     { "odd", static_cast<te_fun1>(te_builtins::te_odd), TE_PURE },
