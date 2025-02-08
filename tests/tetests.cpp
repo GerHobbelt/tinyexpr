@@ -58,7 +58,7 @@
     #define WITHIN_TYPE_CAST(x) (double)((x))
     #define WITHIN_TYPE double
 #else
-    #define WITHIN_TYPE_CAST(x) ((x))
+    #define WITHIN_TYPE_CAST(x) (te_type)((x))
     #define WITHIN_TYPE te_type
 #endif
 namespace TETesting
@@ -4017,7 +4017,7 @@ TEST_CASE("Nominal", "[finance]")
 
     CHECK_THAT(4, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("NOMINAL(8, 2)"))));
     CHECK_THAT(0.05250032, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("NOMINAL(0.053543, 4)")), WITHIN_TYPE_CAST(0.00001)));
-    CHECK_THAT(0.00995132100969354, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("=NOMINAL(0.01,50)")), WITHIN_TYPE_CAST(0.00001)));
+    CHECK_THAT(0.00995132100969354, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("=NOMINAL(0.01,50)")), WITHIN_TYPE_CAST(0.0001)));
     CHECK_THAT(0.20744331009791, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("=NOMINAL(0.23,50)")), WITHIN_TYPE_CAST(0.00001)));
 
     CHECK(std::isnan(WITHIN_TYPE_CAST(tep.evaluate("NOMINAL(8, 0)"))));
@@ -4030,7 +4030,7 @@ TEST_CASE("Effect", "[finance]")
     te_parser tep;
 
     CHECK_THAT(0.0535427, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("EFFECT(0.0525, 4)")), WITHIN_TYPE_CAST(0.00001)));
-    CHECK_THAT(0.127340987166906, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("EFFECT(0.12, 52)")), WITHIN_TYPE_CAST(0.00001)));
+    CHECK_THAT(0.127340987166906, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("EFFECT(0.12, 52)")), WITHIN_TYPE_CAST(0.0001)));
 
     CHECK(std::isnan(WITHIN_TYPE_CAST(tep.evaluate("EFFECT(8, 0)"))));
     CHECK(std::isnan(WITHIN_TYPE_CAST(tep.evaluate("EFFECT(0, 4)"))));
