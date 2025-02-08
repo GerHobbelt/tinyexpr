@@ -71,11 +71,10 @@ This can be connected as such:
 te_parser tep;
 tep.set_unknown_symbol_resolver(ResolveResolutionSymbols);
 
-// Will resolve to 288, and "RESOLUTION" will be added as a
-// variable to the parser with a value of 96.
-// Also, beccause TinyExpr++ is case insensitive,
-// "resolution" will also be seen as 96 once "RESOLUTION"
-// was resolved.
+/* Will resolve to 288, and "RESOLUTION" will be added as a
+   variable to the parser with a value of 96.
+   Also, beccause TinyExpr++ is case insensitive,
+   "resolution" will also be seen as 96 once "RESOLUTION" was resolved.*/
 tep.evaluate("RESOLUTION * 3");
 ```
 :::
@@ -106,11 +105,11 @@ tep.set_unknown_symbol_resolver(
     std::string var{ str };
     if (std::regex_search(var.cbegin(), var.cend(), matches, re))
         {
-        // Unrecognized token is something like "FY1982," so extract "1982"
-        // from that and return 1982 as a number. At this point, the variable
-        // "FY1982" will be added to the parser and set to 1982. All future
-        // evaluations will see this as 1982 (unless set_constant() is called
-        // to change it).
+        /* Unrecognized token is something like "FY1982," so extract "1982"
+           from that and return 1982 as a number. At this point, the variable
+           "FY1982" will be added to the parser and set to 1982.
+           All future evaluations will see this as 1982 (unless set_constant()
+           is called to change it).*/
         if (matches.size() > 1)
             { return std::atol(matches[1].str().c_str()); }
         else
@@ -159,9 +158,9 @@ tep.set_unknown_symbol_resolver(
 
 // Initial resolution of STRESS_LEVEL will be 3.
 tep.evaluate("STRESS_LEVEL");
-// Because STRESS_LEVEL wasn't kept as a variable (with a value of 3)
-// in the parser, then subsequent evaluations will require
-// resolving it again:
+/* Because STRESS_LEVEL wasn't kept as a variable (with a value of 3)
+   in the parser, then subsequent evaluations will require
+   resolving it again:*/
 tep.evaluate("STRESS_LEVEL"); // Will be 4.
 tep.evaluate("STRESS_LEVEL"); // 5
 tep.evaluate("STRESS_LEVEL"); // 6
@@ -169,5 +168,5 @@ tep.evaluate("STRESS_LEVEL"); // 6
 :::
 
 As a final note, if you are not keeping resolved variables, your USR will only be called again if you call `evaluate` or `compile` with an expression.
-Because the original expression gets optimized, `evaluate()` it will not re-evaluate any variables. Calling `evaluate` with the original expression
-will force a re-compilation and in turn call the USR again.
+Because the original expression gets optimized, `evaluate()` will not re-evaluate any variables.
+Calling `evaluate` with the original expression will force a re-compilation and in turn call the USR again.

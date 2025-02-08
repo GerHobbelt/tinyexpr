@@ -23,7 +23,8 @@ This book is licensed under the [Creative Commons Attribution-NonCommercial-NoDe
 
 # Overview {-}
 
-This is the programming manual for *TinyExpr++*, the C++ version of the *TinyExpr* [@TinyExpr] formula parsing library. (This manual includes documentation from *TinyExpr* by Lewis Van Winkle.)
+This is the programming manual for *TinyExpr++*, the C++ version of the *TinyExpr* [@TinyExpr] formula parsing library.
+(This manual includes documentation from *TinyExpr* by Lewis Van Winkle.)
 
 *TinyExpr++* is a small parser and evaluation library for solving math expressions from C++.
 It's open-source, free, easy-to-use, and self-contained in a single source and header file pair.
@@ -36,7 +37,7 @@ It's open-source, free, easy-to-use, and self-contained in a single source and h
 - Implements standard operator precedence.
 - Implements logical and comparison operators.
 - Includes standard C math functions (`sin`, `sqrt`, `ln`, etc.).
-- Includes some *Excel*-like statistical, logical, and financial functions (e.g., `AVERAGE()` and `IF()`).
+- Includes some *Excel*-like statistical, logical, and financial functions (e.g., `AVERAGE` and `IF`).
 - Can add custom functions and variables easily.
 - Can add a custom handler to resolve unknown variables.
 - Can bind constants at eval-time.

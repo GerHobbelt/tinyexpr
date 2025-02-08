@@ -45,7 +45,7 @@ Note: for current users of *TinyExpr++*, please see the [compatibility advisory]
 - Implements standard operator precedence.
 - Implements logical and comparison operators.
 - Includes standard C math functions (`sin`, `sqrt`, `ln`, etc.).
-- Includes some *Excel*-like statistical, logical, and financial functions (e.g., `AVERAGE()` and `IF()`).
+- Includes some *Excel*-like statistical, logical, and financial functions (e.g., `AVERAGE` and `IF`).
 - Can add custom functions and variables easily.
 - Can bind constants at eval-time.
 - Supports variadic functions (taking between 1-24 arguments).

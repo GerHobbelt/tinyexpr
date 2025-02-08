@@ -68,8 +68,10 @@ With `TE_POW_FROM_RIGHT` defined, the behavior is:
 
 That will match how many scripting languages do it (e.g., Python, Ruby).
 
-Note that symbols can be defined by passing them to your compiler's
-command line (or in a CMake configuration) as such: `-DTE_POW_FROM_RIGHT`
+::: {.tipsection data-latex=""}
+Symbols can be defined by passing them to your compiler's
+command line (or in a *CMake* configuration) as such: `-DTE_POW_FROM_RIGHT`
+:::
 
 ## C++20 Features {-}
 
