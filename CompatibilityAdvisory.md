@@ -2,6 +2,7 @@
 
 ## Function Changes
 
+- `MIN`, `MAX`, `SUM`, `AVERAGE`, `IFS`, `OR`, and `AND` now take up to 24 arguments.
 - `set_variables_and_functions()` now requires a `std::set<te_variable>` argument instead of a
   `std::vector<te_variable>`. Prefer calling this function with an initializer list
    (see [Example 2](Examples.md)) or use `std::set<te_variable>`.
