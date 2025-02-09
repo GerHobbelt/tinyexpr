@@ -256,15 +256,15 @@ namespace te_builtins
         }
 
     [[nodiscard]]
-    static te_type te_asset_depreciation(te_type cost, te_type salvage,
-                                         te_type life, te_type period,
-                                         te_type month)
+    static te_type te_asset_depreciation(te_type cost, te_type salvage, te_type life,
+                                         te_type period, te_type month)
         {
+        // month in the first year of depreciation is optional and defaults to a full year
         if (!std::isfinite(month))
             {
             month = 12;
             }
-        else if (month < 1 || month > 12 || life <= 0 || cost <= 0 || period < 1)
+        if (month < 1 || month > 12 || life <= 0 || cost <= 0 || period < 1 || period >= (life + 2))
             {
             return te_parser::te_nan;
             }
@@ -305,9 +305,8 @@ namespace te_builtins
                 costAfterDepreciation -= depreciation;
                 }
             priorDepreciation += costAfterDepreciation * rate * (month / 12);
-            return (period == life + 1) ?
-                ((cost - priorDepreciation) * rate * (12 - month)) / 12 :
-                (cost - priorDepreciation) * rate;
+            return (period == life + 1) ? ((cost - priorDepreciation) * rate * (12 - month)) / 12 :
+                                          (cost - priorDepreciation) * rate;
             }
         }
 
@@ -1444,7 +1443,8 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "cos", static_cast<te_fun1>(te_builtins::te_cos), TE_PURE },
     { "cosh", static_cast<te_fun1>(te_builtins::te_cosh), TE_PURE },
     { "cot", static_cast<te_fun1>(te_builtins::te_cot), TE_PURE },
-    { "db", static_cast<te_fun5>(te_builtins::te_asset_depreciation), TE_PURE },
+    { "db", static_cast<te_fun5>(te_builtins::te_asset_depreciation),
+      static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "e", static_cast<te_fun0>(te_builtins::te_e), TE_PURE },
     { "effect", static_cast<te_fun2>(te_builtins::te_effect), TE_PURE },
     { "even", static_cast<te_fun1>(te_builtins::te_even), TE_PURE },

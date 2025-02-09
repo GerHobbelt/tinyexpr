@@ -4047,9 +4047,13 @@ TEST_CASE("DB", "[finance]")
     CHECK_THAT(120410.64, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,4,7)")), WITHIN_TYPE_CAST(0.00001)));
     CHECK_THAT(81999.64, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,5,7)")), WITHIN_TYPE_CAST(0.00001)));
     CHECK_THAT(55841.76, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,6,7)")), WITHIN_TYPE_CAST(0.00001)));
-    CHECK_THAT(15845.10 , Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,7,7)")), WITHIN_TYPE_CAST(0.00001)));
+    CHECK_THAT(15845.10, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,7,7)")), WITHIN_TYPE_CAST(0.00001)));
     CHECK_THAT(23632.18, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,7,5)")), WITHIN_TYPE_CAST(0.00001)));
     CHECK_THAT(23632.18, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,7,5.9)")), WITHIN_TYPE_CAST(0.00001)));
+
+    CHECK_THAT(319000.00, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,1)")), WITHIN_TYPE_CAST(0.00001)));
+    CHECK_THAT(217239.00, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,2)")), WITHIN_TYPE_CAST(0.00001)));
+    CHECK_THAT(100746.98, Catch::Matchers::WithinRel(WITHIN_TYPE_CAST(tep.evaluate("DB(1000000,100000,6,4)")), WITHIN_TYPE_CAST(0.00001)));
 
     CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,1,0)")));
     CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,1,13)")));
@@ -4058,6 +4062,7 @@ TEST_CASE("DB", "[finance]")
     CHECK(std::isnan(tep.evaluate("DB(1000000,100000,0,1,13)")));
     CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,7.5,5)")));
     CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6.5,7,5)")));
+    CHECK(std::isnan(tep.evaluate("DB(1000000,100000,6,8)")));
     }
 
 TEST_CASE("Benchmarks", "[!benchmark]")
