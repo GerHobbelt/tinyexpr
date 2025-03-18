@@ -1974,7 +1974,7 @@ te_expr* te_parser::base(te_parser::state* theState)
             const bool varValid{ m_varFound };
             const std::set<te_variable>::const_iterator openingVar = m_currentVar;
             // load any parameters
-            int i{ 0 }; // NOLINT
+            std::decay<decltype(arity)>::type i{ 0 }; // NOLINT
             for (i = 0; i < arity; i++)
                 {
                 next_token(theState);
@@ -2432,7 +2432,7 @@ void te_parser::optimize(te_expr* texp)
         {
         const auto arity = get_arity(texp->m_value);
         bool known{ true };
-        for (int i = 0; i < arity; ++i)
+        for (std::decay<decltype(arity)>::type i = 0; i < arity; ++i)
             {
             if (texp->m_parameters[i] == nullptr)
                 {
