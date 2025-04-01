@@ -1086,6 +1086,25 @@ TEST_CASE("Copy", "[copy]")
         }
     }
 
+TEST_CASE("Empty", "[empty]")
+    {
+    te_parser tep;
+
+    SECTION("Empty Eval")
+        {
+        CHECK(std::isnan(tep.evaluate()));
+        CHECK_FALSE(tep.success());
+        CHECK(std::string{ "Expression is emtpy." } == tep.get_last_error_message());
+        }
+
+    SECTION("Empty String")
+        {
+        CHECK(std::isnan(tep.evaluate("")));
+        CHECK_FALSE(tep.success());
+        CHECK(std::string{ "Expression is emtpy." } == tep.get_last_error_message());
+        }
+    }
+
 TEST_CASE("Inf", "[inf]")
     {
     te_parser tep;

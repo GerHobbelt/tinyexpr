@@ -2484,7 +2484,7 @@ bool te_parser::compile(const std::string_view expression)
     reset_state();
     if (get_list_separator() == get_decimal_separator())
         {
-        throw std::runtime_error("List and decimal separators cannot be the same");
+        throw std::runtime_error("List and decimal separators cannot be the same.");
         }
     if (expression.empty())
         {
@@ -2561,6 +2561,12 @@ te_type te_parser::evaluate()
     {
     try
         {
+        if (m_expression.empty())
+            {
+            m_parseSuccess = false;
+            m_errorPos = 0;
+            m_lastErrorMessage = "Expression is emtpy.";
+            }
         m_result = (m_compiledExpression != nullptr) ? te_eval(m_compiledExpression) : te_nan;
         }
     catch (const std::exception& expt)
@@ -2583,6 +2589,14 @@ te_parser::evaluate(const std::string_view expression) // NOLINT(-readability-id
         {
         return evaluate();
         }
+
+    if (expression.empty())
+        {
+        m_parseSuccess = false;
+        m_errorPos = 0;
+        m_lastErrorMessage = "Expression is emtpy.";
+        }
+
     return te_nan;
     }
 
