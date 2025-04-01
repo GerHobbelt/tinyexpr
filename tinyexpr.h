@@ -253,8 +253,7 @@ class te_string_less
     {
   public:
     [[nodiscard]]
-    bool
-    operator()(const std::string& lhv, const std::string& rhv) const
+    bool operator()(const std::string& lhv, const std::string& rhv) const
         {
         const auto minStrLen = std::min(lhv.length(), rhv.length());
         for (size_t i = 0; i < minStrLen; ++i)
@@ -293,7 +292,8 @@ class te_expr
     explicit te_expr(const te_variable_flags type) noexcept : m_type(type) {}
 
     /// @private
-    te_expr() noexcept {};
+    te_expr() noexcept {}
+
     /// @private
     te_expr(const te_expr&) = delete;
     /// @private
@@ -319,8 +319,7 @@ class te_variable
 
     /// @private
     [[nodiscard]]
-    bool
-    operator<(const te_variable& that) const
+    bool operator<(const te_variable& that) const
         {
         return te_string_less{}(m_name, that.m_name);
         }
@@ -350,8 +349,23 @@ class te_parser
         : m_customFuncsAndVars(that.m_customFuncsAndVars),
           m_unknownSymbolResolve(that.m_unknownSymbolResolve),
           m_keepResolvedVariables(that.m_keepResolvedVariables),
-          m_decimalSeparator(that.m_decimalSeparator), m_listSeparator(that.m_listSeparator)
+          m_decimalSeparator(that.m_decimalSeparator), m_listSeparator(that.m_listSeparator),
+          m_expression(that.m_expression)
         {
+        try
+            {
+            if (!m_expression.empty())
+                {
+                [[maybe_unused]]
+                const auto retVal = evaluate(m_expression);
+                }
+            }
+        catch (const std::exception& expt)
+            {
+            m_parseSuccess = false;
+            m_result = te_nan;
+            m_lastErrorMessage = expt.what();
+            }
         }
 
     /// @private
@@ -362,8 +376,25 @@ class te_parser
         m_keepResolvedVariables = that.m_keepResolvedVariables;
         m_decimalSeparator = that.m_decimalSeparator;
         m_listSeparator = that.m_listSeparator;
+        m_expression = that.m_expression;
 
+        // re-run the expression that was copied over
         reset_state();
+
+        try
+            {
+            if (!m_expression.empty())
+                {
+                [[maybe_unused]]
+                const auto retVal = evaluate(m_expression);
+                }
+            }
+        catch (const std::exception& expt)
+            {
+            m_parseSuccess = false;
+            m_result = te_nan;
+            m_lastErrorMessage = expt.what();
+            }
 
         return *this;
         }
@@ -914,11 +945,13 @@ class te_parser
         }
 
 #define TE_DEF_FUNCTION(n)                                                                         \
-    [[nodiscard]] constexpr static bool is_function##n(const te_variant_type& var) noexcept        \
+    [[nodiscard]]                                                                                  \
+    constexpr static bool is_function##n(const te_variant_type& var) noexcept                      \
         {                                                                                          \
         return std::holds_alternative<te_fun##n>(var);                                             \
         }                                                                                          \
-    [[nodiscard]] constexpr static te_fun##n get_function##n(const te_variant_type& var)           \
+    [[nodiscard]]                                                                                  \
+    constexpr static te_fun##n get_function##n(const te_variant_type& var)                         \
         {                                                                                          \
         assert(std::holds_alternative<te_fun##n>(var));                                            \
         return std::get<te_fun##n>(var);                                                           \
@@ -941,11 +974,13 @@ class te_parser
         }
 
 #define TE_DEF_CLOSURE(n)                                                                          \
-    [[nodiscard]] constexpr static bool is_closure##n(const te_variant_type& var) noexcept         \
+    [[nodiscard]]                                                                                  \
+    constexpr static bool is_closure##n(const te_variant_type& var) noexcept                       \
         {                                                                                          \
         return std::holds_alternative<te_confun##n>(var);                                          \
         }                                                                                          \
-    [[nodiscard]] constexpr static te_confun##n get_closure##n(const te_variant_type& var)         \
+    [[nodiscard]]                                                                                  \
+    constexpr static te_confun##n get_closure##n(const te_variant_type& var)                       \
         {                                                                                          \
         assert(std::holds_alternative<te_confun##n>(var));                                         \
         return std::get<te_confun##n>(var);                                                        \

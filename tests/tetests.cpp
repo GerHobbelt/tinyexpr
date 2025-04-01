@@ -683,6 +683,11 @@ TEST_CASE("Main tests", "[main]")
         CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23)") == 12);
         CHECK(tep.evaluate("average(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)") == 12.5);
         }
+    }
+
+TEST_CASE("Logic & Operators", "[main]")
+    {
+    te_parser tep;
 
     SECTION("logical")
         {
@@ -1056,6 +1061,29 @@ TEST_CASE("Dynamic", "[dynamic]")
     CHECK(tep.evaluate("sum5(2,3,4,5,6)") == 20);
     CHECK(tep.evaluate("sum6(2,3,4,5,6,7)") == 27);
     CHECK(tep.evaluate("sum7(2,3,4,5,6,7,8)") == 35);
+    }
+
+TEST_CASE("Copy", "[copy]")
+    {
+    te_parser tep;
+    te_type x{ 8 }, y{ 2 };
+    tep.set_variables_and_functions({ {"x", &x}, {"y", &y} });
+    CHECK(tep.evaluate("trunc(9.57878423)") == 9);
+    CHECK(tep.evaluate() == 9);
+        {
+        // test operator== and copy CTOR
+        te_parser tep2 = tep;
+        CHECK(tep2.evaluate() == 9);
+        CHECK(te_parser{ tep }.evaluate() == 9);
+        }
+
+    CHECK(tep.evaluate("(x + y) * y") == 20);
+    // variable connection logic should be copied over too
+        {
+        te_parser tep2 = tep;
+        CHECK(tep2.evaluate() == 20);
+        CHECK(te_parser{ tep }.evaluate() == 20);
+        }
     }
 
 TEST_CASE("Inf", "[inf]")
