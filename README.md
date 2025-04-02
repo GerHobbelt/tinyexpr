@@ -413,13 +413,13 @@ the compiled expression returned by `te_compile()` would become:
 *TinyExpr++* parses the following grammar (from lowest-to-highest operator precedence):
 
     <list>      =    <expr> {(",", ";" [dependent on locale]) <expr>}
-    <expr>      =    <term> {("&" | "|") <term>}
+    <expr>      =    <term> {("&" | "|" | "&&" | "||") <term>}
     <expr>      =    <term> {("<>" | "!=" | "=" | "<") | "<=") | ">" | ">=") <term>}
-    <expr>      =    <term> {("<<" | ">>") <term>}
+    <expr>      =    <term> {("<<" | ">>" | "<<<" | ">>>") <term>}
     <expr>      =    <term> {("+" | "-") <term>}
     <term>      =    <factor> {("*" | "/" | "%") <factor>}
     <factor>    =    <power> {("^" | "**") <power>}
-    <power>     =    {("-" | "+")} <base>
+    <power>     =    {("-" | "+" | "~")} <base>
     <base>      =    <constant>
                    | <variable>
                    | <function-0> {"(" ")"}
