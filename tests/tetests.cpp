@@ -788,6 +788,13 @@ TEST_CASE("Logic & Operators", "[main]")
         CHECK(tep.evaluate("NOT(0)") == 1);
         CHECK_FALSE(tep.evaluate("NOT(5)"));
         CHECK(std::isnan(tep.evaluate("NOT(NAN)")));
+        CHECK(tep.evaluate("NOT(FALSE)"));
+        CHECK_FALSE(tep.evaluate("NOT(TRUE)"));
+        CHECK_FALSE(tep.evaluate("NOT(1+1=2)"));
+        CHECK(tep.evaluate("NOT(2+2=5)"));
+        CHECK(tep.evaluate("NOT(50>100)"));
+        CHECK(-1 == tep.evaluate("IF(AND(NOT(50>1),NOT(50<100)),50,-1)"));
+        CHECK(100 == tep.evaluate("=IF(OR(NOT(100<0),NOT(100>50)),100,-1)"));
 
         // garbage values
 #ifndef TE_BITWISE_OPERATORS
