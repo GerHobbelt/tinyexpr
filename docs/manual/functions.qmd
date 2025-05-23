@@ -29,7 +29,8 @@ The following built-in functions are available:
 | MAX(Number1, Number2, ...) | Returns the largest value from a specified range of values. |
 | MAXINT() | Returns the largest integer that the parser can process. |
 | MOD(Number, Divisor) | Returns the remainder after *Number* is divided by *Divisor*. The result has the same sign as divisor. |
-| NAN | Returns an invalid value (i.e., Not-a-number). |
+| NA  | Returns an invalid value (i.e., Not-a-number). |
+| NAN | Alias for `NA()`. |
 | NCR(Number, NumberChosen) | Alias for `COMBIN()`. |
 | NPR(Number, NumberChosen) | Alias for `PERMUT()`. |
 | ODD(Number) | Returns *Number* rounded up to the nearest odd integer.<br>\linebreak Values are always rounded away from zero (e.g., `ODD(-4)` = -5). |

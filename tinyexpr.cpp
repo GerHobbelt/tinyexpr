@@ -1466,6 +1466,7 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "min", static_cast<te_fun24>(te_builtins::te_min),
       static_cast<te_variable_flags>(TE_PURE | TE_VARIADIC) },
     { "mod", static_cast<te_fun2>(te_builtins::te_modulus), TE_PURE },
+    { "na", static_cast<te_fun0>(te_builtins::te_nan_value), TE_PURE },
     { "nan", static_cast<te_fun0>(te_builtins::te_nan_value), TE_PURE },
     { "ncr", static_cast<te_fun2>(te_builtins::te_ncr), TE_PURE },
     { "nominal", static_cast<te_fun2>(te_builtins::te_nominal), TE_PURE },
