@@ -1101,14 +1101,14 @@ TEST_CASE("Empty", "[empty]")
         {
         CHECK(std::isnan(tep.evaluate()));
         CHECK_FALSE(tep.success());
-        CHECK(std::string{ "Expression is emtpy." } == tep.get_last_error_message());
+        CHECK(std::string{ "Expression is empty." } == tep.get_last_error_message());
         }
 
     SECTION("Empty String")
         {
         CHECK(std::isnan(tep.evaluate("")));
         CHECK_FALSE(tep.success());
-        CHECK(std::string{ "Expression is emtpy." } == tep.get_last_error_message());
+        CHECK(std::string{ "Expression is empty." } == tep.get_last_error_message());
         }
     }
 

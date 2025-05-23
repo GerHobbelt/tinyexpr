@@ -1755,7 +1755,7 @@ void te_parser::next_token(te_parser::state* theState)
                     std::advance(theState->m_next, 2);
                     }
 #else
-                // if rotation is not availble, error if used in formula
+                // if rotation is not available, error if used in formula
                 else if ((tok == '<' && (*theState->m_next == '<') &&
                           (*std::next(theState->m_next) == '<')) ||
                          (tok == '>' && (*theState->m_next == '>') &&
@@ -2208,12 +2208,12 @@ te_expr* te_parser::expr_level9(te_parser::state* theState)
     return ret;
     }
 
-// Higher levels of operator precendence:
+// Higher levels of operator precedence:
 //--------------------------------------------------
 te_expr* te_parser::term(te_parser::state* theState)
     {
     /* <term>      =    <factor> {("*" | "/" | "%") <factor>} */
-    // third from highest level of operator precendence
+    // third from highest level of operator precedence
     te_expr* ret = factor(theState);
 
     while (theState->m_type == te_parser::state::token_type::TOK_INFIX &&
@@ -2235,7 +2235,7 @@ te_expr* te_parser::term(te_parser::state* theState)
 te_expr* te_parser::factor(te_parser::state* theState)
     {
     /* <factor>    =    <power> {"^" <power>} */
-    // second from highest level of operator precendence
+    // second from highest level of operator precedence
     te_expr* ret = power(theState);
 
     int neg{ 0 };
@@ -2282,7 +2282,7 @@ te_expr* te_parser::factor(te_parser::state* theState)
 te_expr* te_parser::factor(te_parser::state* theState)
     {
     /* <factor>    =    <power> {"^" <power>} */
-    // second from highest level of operator precendence
+    // second from highest level of operator precedence
     te_expr* ret = power(theState);
 
     while (theState->m_type == te_parser::state::token_type::TOK_INFIX &&
@@ -2302,7 +2302,7 @@ te_expr* te_parser::factor(te_parser::state* theState)
 te_expr* te_parser::power(te_parser::state* theState)
     {
     /* <power>     =    {("-" | "+")} <base> */
-    // highest level of operator precendence
+    // highest level of operator precedence
     int theSign{ 1 };
     bool bitwiseNot{ false };
     while (theState->m_type == te_parser::state::token_type::TOK_INFIX &&
@@ -2566,15 +2566,15 @@ te_type te_parser::evaluate()
             {
             m_parseSuccess = false;
             m_errorPos = 0;
-            m_lastErrorMessage = "Expression is emtpy.";
+            m_lastErrorMessage = "Expression is empty.";
             }
         m_result = (m_compiledExpression != nullptr) ? te_eval(m_compiledExpression) : te_nan;
         }
-    catch (const std::exception& expt)
+    catch (const std::exception& except)
         {
         m_parseSuccess = false;
         m_result = te_nan;
-        m_lastErrorMessage = expt.what();
+        m_lastErrorMessage = except.what();
         }
 
     reset_usr_resolved_if_necessary();
@@ -2595,7 +2595,7 @@ te_parser::evaluate(const std::string_view expression) // NOLINT(-readability-id
         {
         m_parseSuccess = false;
         m_errorPos = 0;
-        m_lastErrorMessage = "Expression is emtpy.";
+        m_lastErrorMessage = "Expression is empty.";
         }
 
     return te_nan;
@@ -2622,7 +2622,7 @@ std::string te_parser::list_available_functions_and_variables()
 // cppcheck-suppress unusedFunction
 std::string te_parser::info()
     {
-    std::string sysInfo{ "tinyexpr++ system info:\n=======================\n" };
+    std::string sysInfo{ "TinyExpr++ system info:\n=======================\n" };
 #ifdef TE_FLOAT
     sysInfo += "Data type:                float\n";
 #elif defined(TE_LONG_DOUBLE)
