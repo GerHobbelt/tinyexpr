@@ -77,6 +77,12 @@ namespace te_builtins
         }
 
     [[nodiscard]]
+    static te_type te_is_nan(te_type val)
+        {
+        return (!std::isfinite(val) ? 1 : 0);
+        }
+
+    [[nodiscard]]
     static te_type te_even(te_type val)
         {
         if (!std::isfinite(val))
@@ -1465,7 +1471,11 @@ const std::set<te_variable> te_parser::m_functions = { // NOLINT
     { "fact", static_cast<te_fun1>(te_builtins::te_fac), TE_PURE },
     { "false", static_cast<te_fun0>(te_builtins::te_false_value), TE_PURE },
     { "floor", static_cast<te_fun1>(te_builtins::te_floor), TE_PURE },
+    { "iserr", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
+    { "iserror", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
     { "iseven", static_cast<te_fun1>(te_builtins::te_is_even), TE_PURE },
+    { "isna", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
+    { "isnan", static_cast<te_fun1>(te_builtins::te_is_nan), TE_PURE },
     { "isodd", static_cast<te_fun1>(te_builtins::te_is_odd), TE_PURE },
     { "if", static_cast<te_fun3>(te_builtins::te_if), TE_PURE },
     { "ifs", static_cast<te_fun24>(te_builtins::te_ifs),

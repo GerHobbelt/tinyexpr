@@ -19,9 +19,13 @@ The following built-in functions are available:
 | EXP(Number) | Euler to the power of *Number*. |
 | EVEN(Number) | Returns *Number* rounded up to the nearest even integer.<br>\linebreak Values are always rounded away from zero (e.g., `EVEN(-3)` = -4). |
 | FAC(Number) | Returns the factorial of *Number*. The factorial of *Number* is equal to 1\*2\*3\*...\* *Number* |
-| FACT(Number) | Alias for `FAC()` |
+| FACT(Number) | Alias for `FAC()`. |
 | FLOOR(Number) | Returns the largest integer not greater than *Number*.<br>\linebreak `FLOOR(-3.2)` = -4<br>\linebreak `FLOOR(3.2)` = 3 |
+| ISERR(Expression) | Returns true if *Expression* evaluates to NaN. |
+| ISERROR(Expression) | Alias for `ISERR()`. |
 | ISEVEN(Number) | Returns true if *Number* is even, false if odd. |
+| ISNA(Expression) | Alias for `ISERR()`. |
+| ISNAN(Expression) | Alias for `ISERR()`. |
 | ISODD(Number) | Returns true if *Number* is odd, false if even. |
 | LN(Number) | Natural logarithm of *Number* (base Euler). |
 | LOG10(Number) | Common logarithm of *Number* (base 10). |
@@ -48,6 +52,12 @@ The following built-in functions are available:
 | TRUNC(Number) | Discards the fractional part of *Number*.<br>\linebreak `TRUNC(-3.2)` = -3<br>\linebreak `TRUNC(3.2)` = 3 |
 
 Table: Math Functions\index{functions!math}
+:::
+
+::: {.warningsection data-latex=""}
+`ISNA()` differs from some spreadsheet programs for certain expressions, such as divisions by zero.
+*TinyExpr++* will return true for this situation, while *Excel* will return false.
+This is because *Excel* distinguishes between `#DIV/0!` and `#N/A` errors, while *TinyExpr++* treats all invalid numbers (e.g., NaN, INF, -INF) as NaN.
 :::
 
 {{< pagebreak >}}

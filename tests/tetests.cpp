@@ -1139,12 +1139,26 @@ TEST_CASE("NaN", "[nan]")
     CHECK(std::isnan(tep.evaluate("npr(-2, 4)")));
     CHECK(std::isnan(tep.evaluate("npr(2, -4)")));
 
-    CHECK(tep.evaluate("NAN()"));
+    CHECK(std::isnan(tep.evaluate("NAN()")));
     CHECK(tep.success());
-    CHECK(tep.evaluate("NAN"));
+    CHECK(std::isnan(tep.evaluate("NAN")));
     CHECK(tep.success());
-    CHECK(tep.evaluate("npr(NAN,90)"));
+    CHECK(std::isnan(tep.evaluate("NA")));
     CHECK(tep.success());
+    CHECK(std::isnan(tep.evaluate("npr(NAN,90)")));
+    CHECK(tep.success());
+
+    CHECK(tep.evaluate("ISNAN(NA)"));
+    CHECK(tep.evaluate("ISNAN(5/0)"));
+    CHECK(tep.evaluate("ISNA(5/0)"));
+    CHECK(tep.evaluate("ISNA(npr(2, -4))"));
+    CHECK_FALSE(tep.evaluate("ISNA(2 + 2)"));
+
+    CHECK(tep.evaluate("ISERROR(NA)"));
+    CHECK(tep.evaluate("ISERR(5/0)"));
+    CHECK(tep.evaluate("ISERROR(5/0)"));
+    CHECK(tep.evaluate("ISERR(npr(2, -4))"));
+    CHECK_FALSE(tep.evaluate("ISERROR(2 + 2)"));
     }
 
 TEST_CASE("Even", "[even]")
