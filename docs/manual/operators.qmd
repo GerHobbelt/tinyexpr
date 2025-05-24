@@ -38,6 +38,11 @@ Table: Operators
 Define `TE_BITWISE_OPERATORS` to enable bitwise behavior for `&`, `|`, and `^`.
 :::
 
+::: {.warningsection data-latex=""}
+If any argument within a comparison operation is NaN, then the result will be NaN.
+(This is how *Excel* works.)
+:::
+
 ::: {.minipage data-latex="{\textwidth}"}
 For operators, the order of precedence is:
 

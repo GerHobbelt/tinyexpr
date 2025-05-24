@@ -4064,6 +4064,25 @@ COMBIN(15,
         }
     }
 
+TEST_CASE("NaN Comparison", "[nan]")
+    {
+    te_parser tep;
+
+    CHECK(std::isnan(tep.evaluate("NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() == NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() != NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() <> NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() < NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() <= NAN()")));
+    CHECK(std::isnan(tep.evaluate("NAN() >= NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 == NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 != NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 <> NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 < NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 <= NAN()")));
+    CHECK(std::isnan(tep.evaluate("8 >= NAN()")));
+    }
+
 // Financial functions
 TEST_CASE("Nominal", "[finance]")
     {

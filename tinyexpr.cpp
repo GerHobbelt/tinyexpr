@@ -131,37 +131,49 @@ namespace te_builtins
     [[nodiscard]]
     constexpr static te_type te_equal(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 == val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 == val2) ? 1 : 0);
         }
 
     [[nodiscard]]
     constexpr static te_type te_not_equal(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 != val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 != val2) ? 1 : 0);
         }
 
     [[nodiscard]]
     constexpr static te_type te_less_than(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 < val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 < val2) ? 1 : 0);
         }
 
     [[nodiscard]]
     constexpr static te_type te_less_than_equal_to(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 <= val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 <= val2) ? 1 : 0);
         }
 
     [[nodiscard]]
     constexpr static te_type te_greater_than(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 > val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 > val2) ? 1 : 0);
         }
 
     [[nodiscard]]
     constexpr static te_type te_greater_than_equal_to(te_type val1, te_type val2) noexcept
         {
-        return static_cast<te_type>((val1 >= val2) ? 1 : 0);
+        return (!std::isfinite(val1) || !std::isfinite(val2)) ?
+                   te_parser::te_nan :
+                   static_cast<te_type>((val1 >= val2) ? 1 : 0);
         }
 
     [[nodiscard]]
@@ -333,9 +345,9 @@ namespace te_builtins
             {
             return std::numeric_limits<te_type>::infinity();
             }
-        const auto usignVal = static_cast<size_t>(val);
+        const auto unsignedVal = static_cast<size_t>(val);
         uint32_t result{ 1 };
-        for (uint32_t i = 1; i <= usignVal; i++)
+        for (uint32_t i = 1; i <= unsignedVal; i++)
             {
             if (i > (std::numeric_limits<uint32_t>::max)() / result)
                 {
