@@ -78,6 +78,11 @@
 #include <tuple>
 #include <type_traits>
 
+constexpr int TINYEXPR_CPP_MAJOR_VERSION = 1;
+constexpr int TINYEXPR_CPP_MINOR_VERSION = 0;
+constexpr int TINYEXPR_CPP_PATCH_VERSION = 0;
+constexpr int TINYEXPR_CPP_TWEAK_VERSION = 0;
+
 class te_parser;
 
 #if defined(TE_RAND_SEED) && defined(TE_RAND_SEED_TIME)
