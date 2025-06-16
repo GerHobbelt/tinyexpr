@@ -61,7 +61,7 @@ static int isNaN(double f)
 }
 
 
-static void test_results() {
+static void test_results(void) {
     test_case cases[] = {
         {"1", 1},
         {"1 ", 1},
@@ -210,7 +210,7 @@ static void test_results() {
 }
 
 
-void test_syntax() {
+void test_syntax(void) {
     test_case errors[] = {
         {"", 1},
         {"1+", 2},
@@ -255,7 +255,7 @@ void test_syntax() {
 }
 
 
-static void test_unary_ops() {
+static void test_unary_ops(void) {
 	test_case cases[] = {
 		{ "!~-1023", !(0x1FFFFFFFFFFFFFLL & ~- 1023LL) },
 		{"+1", 1},
@@ -316,7 +316,7 @@ static void test_unary_ops() {
 
 
 
-void test_nans() {
+void test_nans(void) {
 
     const char* nans[] = {
         "0/0",
@@ -351,7 +351,7 @@ void test_nans() {
 }
 
 
-void test_infs() {
+void test_infs(void) {
 
     const char* infs[] = {
             "1/0",
@@ -385,7 +385,7 @@ void test_infs() {
 }
 
 
-void test_variables() {
+void test_variables(void) {
 
     double x, y, test;
     te_variable lookup[] = { {.name = "x", {.variable = &x }}, {.name = "y", {.variable = &y }}, {.name = "te_st", {.variable = &test }} };
@@ -452,7 +452,7 @@ void test_variables() {
 }
 
 
-void test_variables2() {
+void test_variables2(void) {
 
 	double x = 1, y = 2, a = 3, _a_ = 4, ca = 5, aa = 6;
 	te_variable lookup[] = {
@@ -498,7 +498,7 @@ void test_variables2() {
     te_free(expr);\
 }while(0)
 
-void test_functions() {
+void test_functions(void) {
 
     double x, y;
     te_variable lookup[] = { {.name = "x", {.variable = &x }}, {.name = "y", {.variable = &y }} };
@@ -559,7 +559,7 @@ double sum7(double a, double b, double c, double d, double e, double f, double g
 }
 
 
-void test_dynamic() {
+void test_dynamic(void) {
 
     double x, f;
     te_variable lookup[] = {
@@ -635,7 +635,7 @@ double cell(te_expr* context, double a) {
     return c[(int)a];
 }
 
-void test_closure() {
+void test_closure(void) {
 
     double extra;
     double c[] = { 5,6,7,8,9 };
@@ -698,7 +698,7 @@ void test_closure() {
     }
 }
 
-void test_optimize() {
+void test_optimize(void) {
 
     test_case cases[] = {
         {"5+5", 10},
@@ -725,7 +725,7 @@ void test_optimize() {
     }
 }
 
-void test_pow() {
+void test_pow(void) {
 #ifdef TE_POW_FROM_RIGHT
     test_equ cases[] = {
         {"2**3**4", "2**(3**4)"},
@@ -800,7 +800,7 @@ void test_pow() {
 
 }
 
-void test_combinatorics() {
+void test_combinatorics(void) {
     test_case cases[] = {
             {"fac(0)", 1},
             {"fac(0.2)", 1},
@@ -844,7 +844,7 @@ void test_combinatorics() {
 }
 
 
-void test_logic() {
+void test_logic(void) {
     test_case cases[] = {
             {"1 && 1", 1},
             {"1 && 0", 0},
@@ -940,7 +940,7 @@ void test_logic() {
 
 
 
-void test_left_assoc() {
+void test_left_assoc(void) {
 	test_case cases[] = {
 		{"0 + 2 + 3 + 4 + 5 + 6", 20},
 		{"0 - 2 - 3 - 4 - 5 - 6", -20},
@@ -973,7 +973,7 @@ void test_left_assoc() {
 
 
 
-void test_right_assoc() {
+void test_right_assoc(void) {
 	test_case cases[] = {
 		{"2 ** 3 ** 4", pow(2, 9 * 9)},
 	};
