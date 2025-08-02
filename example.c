@@ -1,4 +1,4 @@
-#include "tinyexpr.c"
+#include "tinyexpr.h"
 #include <stdio.h>
 
 #include "monolithic_examples.h"
